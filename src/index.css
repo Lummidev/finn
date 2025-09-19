@@ -1,0 +1,24 @@
+html {
+  height: 100dvh;
+}
+body {
+  width: 100dvw;
+  height: 100dvh;
+  margin: 0;
+  font-family: "Roboto Variable", sans-serif;
+}
+:root {
+  @media (width <= 350px) {
+    font-size: 6.5pt;
+  }
+
+  @media (350px < width <= 690px) {
+    font-size: 8.5pt;
+  }
+  @media (690px < width <= 1000px) {
+    font-size: 10pt;
+  }
+  @media (width > 1000px) {
+    font-size: 12pt;
+  }
+}

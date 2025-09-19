@@ -1,0 +1,28 @@
+[data-theme="dark"] {
+  --theme-base: #24273a;
+  --theme-text: #cad3f5;
+  --theme-pink: #f5bde6;
+  --theme-mauve: #c6a0f6;
+  --theme-red: #ed8796;
+  --theme-maroon: #ee99a0;
+  --theme-peach: #f5a97f;
+  --theme-yellow: #eed49f;
+  --theme-green: #a6da95;
+  --theme-teal: #8bd5ca;
+  --theme-sky: #91d7e3;
+  --theme-sapphire: #7dc4e4;
+  --theme-blue: #8aadf4;
+  --theme-lavender: #b7bdf8;
+  --theme-text: #cad3f5;
+  --theme-subtext1: #b8c0e0;
+  --theme-subtext0: #a5adcb;
+  --theme-overlay2: #939ab7;
+  --theme-overlay1: #8087a2;
+  --theme-overlay0: #6e738d;
+  --theme-surface2: #5b6078;
+  --theme-surface1: #494d64;
+  --theme-surface0: #363a4f;
+  --theme-base: #24273a;
+  --theme-mantle: #1e2030;
+  --theme-crust: #181926;
+}
