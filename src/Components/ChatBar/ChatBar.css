@@ -1,0 +1,38 @@
+.chat-bar {
+  background-color: var(--theme-surface0);
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.3);
+  border-radius: 2rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.chat-bar__input {
+  border: none;
+  background-color: transparent;
+  color: var(--theme-text);
+  outline: none;
+  border-radius: 16px;
+  padding-left: 1.5rem;
+  padding-right: 0.5rem;
+  flex-grow: 1;
+}
+.chat-bar__button-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0.5rem;
+}
+.chat-bar__button {
+  background-color: var(--theme-blue);
+  color: var(--theme-crust);
+  font-size: 1.5rem;
+  aspect-ratio: 1/1;
+  min-height: 3rem;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
