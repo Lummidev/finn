@@ -1,18 +1,47 @@
-import { useState } from "react";
-import "./App.css";
+import { useEffect, useState } from "react";
 import { Message } from "../Entities/Message";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { faRobot } from "@fortawesome/free-solid-svg-icons/faRobot";
+import { parseEntry } from "../Parser/parser";
+import { ParserError } from "../Parser/ParserError";
+import "./App.css";
 function App() {
   const [message, setMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState<Message[]>([]);
-  const insertSystemMessage = () => {
-    setMessageHistory([Message.system(message), ...messageHistory]);
+  const [currentMessage, setCurrentMessage] = useState<string | null>(null);
+
+  const sendUserMessage = () => {
+    setMessageHistory([Message.user(message.trim()), ...messageHistory]);
+    setCurrentMessage(message.trim());
   };
-  const insertUserMessage = () => {
-    setMessageHistory([Message.user(message), ...messageHistory]);
+  const handleCurrentMessage = () => {
+    if (!currentMessage) return;
+    try {
+      const entry = parseEntry(currentMessage);
+      setMessageHistory([
+        Message.system(JSON.stringify(entry, null, " ")),
+        ...messageHistory,
+      ]);
+    } catch (e) {
+      if (e instanceof ParserError) {
+        setMessageHistory([Message.system(e.message), ...messageHistory]);
+      } else {
+        setMessageHistory([
+          Message.system(`Ocorreu um erro : ${JSON.stringify(e)}`),
+          ...messageHistory,
+        ]);
+      }
+    }
   };
+  useEffect(() => {
+    if (!currentMessage) return;
+    if (messageHistory.length === 0 || !messageHistory[0]?.fromUser) {
+      setCurrentMessage(null);
+      return;
+    }
+    handleCurrentMessage();
+    setCurrentMessage(null);
+  }, [currentMessage, messageHistory]);
   return (
     <div className="app">
       <div className="app__chat-area">
@@ -28,7 +57,7 @@ function App() {
       <form
         className="app__chat-bar"
         onSubmit={(e) => {
-          insertUserMessage();
+          sendUserMessage();
           e.preventDefault();
         }}
       >
@@ -41,15 +70,6 @@ function App() {
           }}
         />
         <div className="app__chat-button-area">
-          <button
-            type="button"
-            onClick={() => {
-              insertSystemMessage();
-            }}
-            className="app__chat-button"
-          >
-            <FontAwesomeIcon icon={faRobot} />
-          </button>
           <button className="app__chat-button" type="submit">
             <FontAwesomeIcon icon={faPaperPlane} />
           </button>
