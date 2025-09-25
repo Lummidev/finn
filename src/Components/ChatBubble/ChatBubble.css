@@ -13,3 +13,7 @@
   align-self: start;
   background-color: var(--theme-surface0);
 }
+.chat-bubble--error {
+  background-color: var(--theme-red);
+  color: var(--theme-crust);
+}

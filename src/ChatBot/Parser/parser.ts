@@ -1,9 +1,11 @@
-import { Entry } from "../Entities/Entry";
-import { getLastNumber } from "../util";
+import { getLastNumber } from "../../util";
 import { ParserError } from "./ParserError";
 import { ParserErrorKind } from "./ParserErrorKind";
-
-export const parseEntry = (message: string) => {
+interface MessageComponents {
+  moneyExpent: number;
+  description: string;
+}
+export const parseMessageComponents = (message: string): MessageComponents => {
   const lastNumber = getLastNumber(message);
   if (!lastNumber) {
     throw new ParserError(
@@ -22,7 +24,7 @@ export const parseEntry = (message: string) => {
   const numberAtStart = lastNumber.index === 0;
   const numberAtEnd =
     message.length === lastNumber.index + lastNumber.lastNumber.length;
-  let messageWithTrimmedRelevantNumber;
+  let messageWithTrimmedRelevantNumber: string;
   if (numberAtStart) {
     messageWithTrimmedRelevantNumber = message.slice(
       lastNumber.lastNumber.length,
@@ -36,5 +38,8 @@ export const parseEntry = (message: string) => {
     messageWithTrimmedRelevantNumber.length === 0
       ? message
       : messageWithTrimmedRelevantNumber;
-  return new Entry(foundNumber, messageWithTrimmedRelevantNumber.trim());
+  return {
+    moneyExpent: foundNumber,
+    description: messageWithTrimmedRelevantNumber,
+  };
 };
