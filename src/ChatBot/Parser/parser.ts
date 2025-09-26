@@ -1,11 +1,45 @@
+import type { Category } from "../../Entities/Category";
 import { getLastNumber } from "../../util";
+import { testCategories } from "../testCategories";
 import { ParserError } from "./ParserError";
 import { ParserErrorKind } from "./ParserErrorKind";
 interface MessageComponents {
   moneyExpent: number;
   description: string;
+  category?: Category;
 }
-export const parseMessageComponents = (message: string): MessageComponents => {
+
+export const getCategory = (message: string) => {
+  for (const category of testCategories) {
+    const categoryMatches = [
+      ...message.matchAll(new RegExp(category.name, "gi")),
+    ].shift();
+    if (categoryMatches) {
+      return {
+        word: categoryMatches[0],
+        index: categoryMatches.index,
+        isCategoryWord: false,
+        category,
+      };
+    }
+    for (const word of category.words) {
+      const categoryWord = [
+        ...message.matchAll(new RegExp(word, "gi")),
+      ].shift();
+      if (categoryWord) {
+        return {
+          word: categoryWord[0],
+          index: categoryWord.index,
+          isCategoryWord: true,
+          category,
+        };
+      }
+    }
+  }
+  return null;
+};
+
+const getMoney = (message: string) => {
   const lastNumber = getLastNumber(message);
   if (!lastNumber) {
     throw new ParserError(
@@ -21,25 +55,56 @@ export const parseMessageComponents = (message: string): MessageComponents => {
       ParserErrorKind.NoMoney,
     );
   }
-  const numberAtStart = lastNumber.index === 0;
-  const numberAtEnd =
-    message.length === lastNumber.index + lastNumber.lastNumber.length;
-  let messageWithTrimmedRelevantNumber: string;
-  if (numberAtStart) {
-    messageWithTrimmedRelevantNumber = message.slice(
-      lastNumber.lastNumber.length,
-    );
-  } else if (numberAtEnd) {
-    messageWithTrimmedRelevantNumber = message.slice(0, lastNumber.index - 1);
-  } else {
-    messageWithTrimmedRelevantNumber = message;
-  }
-  messageWithTrimmedRelevantNumber =
-    messageWithTrimmedRelevantNumber.length === 0
-      ? message
-      : messageWithTrimmedRelevantNumber;
   return {
-    moneyExpent: foundNumber,
-    description: messageWithTrimmedRelevantNumber,
+    money: foundNumber,
+    index: lastNumber.index,
+    length: lastNumber.lastNumber.length,
+  };
+};
+
+const trimWord = (message: string, index: number, length: number) => {
+  const wordAtStart = index === 0;
+  const wordAtEnd = message.length === index + length;
+  let messageWithTrimmedWord: string;
+  if (wordAtStart) {
+    messageWithTrimmedWord = message.slice(length);
+  } else if (wordAtEnd) {
+    messageWithTrimmedWord = message.slice(0, index);
+  } else {
+    messageWithTrimmedWord = message;
+  }
+  messageWithTrimmedWord =
+    messageWithTrimmedWord.length === 0 ? message : messageWithTrimmedWord;
+  return messageWithTrimmedWord.trim();
+};
+export const parseMessageComponents = (message: string): MessageComponents => {
+  const moneyFirstPass = getMoney(message);
+  let trimmedMessage = trimWord(
+    message,
+    moneyFirstPass.index,
+    moneyFirstPass.length,
+  );
+  const moneyRemoved = message !== trimmedMessage;
+  const categoryInfo = getCategory(trimmedMessage);
+
+  if (categoryInfo && !categoryInfo.isCategoryWord) {
+    trimmedMessage = trimWord(
+      trimmedMessage,
+      categoryInfo.index,
+      categoryInfo.word.length,
+    );
+    if (!moneyRemoved) {
+      const moneySecondPass = getMoney(trimmedMessage);
+      trimmedMessage = trimWord(
+        trimmedMessage,
+        moneySecondPass.index,
+        moneySecondPass.length,
+      );
+    }
+  }
+  return {
+    moneyExpent: moneyFirstPass.money,
+    description: trimmedMessage,
+    category: categoryInfo?.category,
   };
 };
