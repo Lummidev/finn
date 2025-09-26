@@ -1,10 +1,9 @@
-import dayjs from "dayjs";
 import { Entry } from "../Entities/Entry";
 import { parseMessageComponents } from "./Parser/parser";
 import { ParserError } from "./Parser/ParserError";
 import type { Message } from "../Entities/Message";
-import { SystemMessage } from "../Entities/SystemMessage";
-import { MessageKind } from "../Entities/MessageKind";
+import { ErrorMessage } from "../Entities/ErrorMessage";
+import { SuccessMessage } from "../Entities/SuccessMessage";
 
 export const handleMessage = (text: string): Message => {
   let components;
@@ -12,10 +11,9 @@ export const handleMessage = (text: string): Message => {
     components = parseMessageComponents(text);
   } catch (e) {
     if (e instanceof ParserError) {
-      return new SystemMessage(e.message, MessageKind.Error);
+      return new ErrorMessage(e.message);
     } else {
-      console.error(e);
-      return new SystemMessage(JSON.stringify(e, null, " "), MessageKind.Error);
+      return new ErrorMessage(JSON.stringify(e, null, " "));
     }
   }
   const entry = new Entry(
@@ -24,11 +22,6 @@ export const handleMessage = (text: string): Message => {
     components.category,
   );
   // TODO: Save entry here
-  const content =
-    `Gasto Registrado!\n` +
-    `${entry.description}\n` +
-    `R$${entry.moneyExpent.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}\n` +
-    `${entry.category ? entry.category.name : "Outros"}\n` +
-    `Data: ${dayjs(entry.createdAtTimestampMiliseconds).format("L HH:mm")}`;
-  return new SystemMessage(content);
+
+  return new SuccessMessage(entry);
 };

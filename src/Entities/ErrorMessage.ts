@@ -1,6 +1,6 @@
-import { Message } from "./Message";
+import { SystemMessage } from "./SystemMessage";
 
-export class UserMessage extends Message {
+export class ErrorMessage extends SystemMessage {
   content: string;
   constructor(content: string) {
     super();

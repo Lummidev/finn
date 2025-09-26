@@ -17,3 +17,13 @@
   background-color: var(--theme-red);
   color: var(--theme-crust);
 }
+.chat-bubble__display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.chat-bubble__display-row {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
