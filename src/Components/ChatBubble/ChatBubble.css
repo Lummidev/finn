@@ -4,6 +4,14 @@
   max-width: 60%;
   word-break: break-word;
   white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.chat-bubble__date {
+  font-size: 0.8rem;
+  align-self: end;
+  color: var(--theme-subtext0);
 }
 .chat-bubble--user {
   align-self: end;

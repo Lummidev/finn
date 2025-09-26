@@ -46,7 +46,7 @@ export const ChatBubble = (props: ChatBubbleProps) => {
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faCalendar} />
-            {dayjs(message.createdAtTimestampMiliseconds).format("L HH:mm")}
+            {dayjs(message.createdAtTimestampMiliseconds).format("L")}
           </div>
         </div>
       );
@@ -61,12 +61,15 @@ export const ChatBubble = (props: ChatBubbleProps) => {
     }
   };
   return (
-    <p
+    <div
       className={`chat-bubble
         chat-bubble--${messageSender}
         ${error ? "chat-bubble--error" : ""}`}
     >
-      {messageDisplay(props.message)}
-    </p>
+      <div>{messageDisplay(props.message)}</div>
+      <div className="chat-bubble__date">
+        {dayjs(props.message.createdAtTimestampMiliseconds).format("HH:mm")}
+      </div>
+    </div>
   );
 };
