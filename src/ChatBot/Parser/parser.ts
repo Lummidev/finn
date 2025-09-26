@@ -1,5 +1,4 @@
 import type { Category } from "../../Entities/Category";
-import { getLastNumber } from "../../util";
 import { testCategories } from "../testCategories";
 import { ParserError } from "./ParserError";
 import { ParserErrorKind } from "./ParserErrorKind";
@@ -40,25 +39,48 @@ export const getCategory = (message: string) => {
 };
 
 const getMoney = (message: string) => {
-  const lastNumber = getLastNumber(message);
-  if (!lastNumber) {
+  const commonNumberRegex = /(\d+(?:[.,]\d*)?|\.\d+)/g;
+  const numberRegexWithCurrencySymbol = /R\$(\d+(?:[.,]\d*)?|\.\d+)/g;
+  const numberWithCurrencySymbolMatches = [
+    ...message.matchAll(numberRegexWithCurrencySymbol),
+  ];
+  let numberCandidates;
+  if (numberWithCurrencySymbolMatches.length !== 0) {
+    numberCandidates = numberWithCurrencySymbolMatches;
+  } else {
+    const commonNumberMatches = [...message.matchAll(commonNumberRegex)];
+    if (commonNumberMatches.length === 0) {
+      throw new ParserError(
+        "Não foi detectado valor monetário na mensagem",
+        ParserErrorKind.NoMoney,
+      );
+    }
+    numberCandidates = commonNumberMatches;
+  }
+
+  const numbersWithDecimals = numberCandidates.filter((number) =>
+    /[.,]/.test(number[0]),
+  );
+  const finalNumber = (
+    numbersWithDecimals.length > 0 ? numbersWithDecimals : numberCandidates
+  ).pop();
+  if (!finalNumber) {
     throw new ParserError(
       "Não foi detectado valor monetário na mensagem",
       ParserErrorKind.NoMoney,
     );
   }
-  const foundNumber = parseFloat(lastNumber.lastNumber.replace(",", "."));
-
-  if (isNaN(foundNumber)) {
+  const money = parseFloat(finalNumber[0].replace(",", ".").replace("R$", ""));
+  if (isNaN(money)) {
     throw new ParserError(
       "Foi detectado valor monetário inválido na mensagem",
       ParserErrorKind.NoMoney,
     );
   }
   return {
-    money: foundNumber,
-    index: lastNumber.index,
-    length: lastNumber.lastNumber.length,
+    money,
+    index: finalNumber.index,
+    length: finalNumber[0].length,
   };
 };
 
