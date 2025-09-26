@@ -13,6 +13,9 @@
   align-self: end;
   color: var(--theme-subtext0);
 }
+.chat-bubble__date--error {
+  color: var(--theme-base);
+}
 .chat-bubble--user {
   align-self: end;
   background-color: var(--theme-surface1);

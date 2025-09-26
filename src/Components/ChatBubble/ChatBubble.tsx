@@ -67,7 +67,9 @@ export const ChatBubble = (props: ChatBubbleProps) => {
         ${error ? "chat-bubble--error" : ""}`}
     >
       <div>{messageDisplay(props.message)}</div>
-      <div className="chat-bubble__date">
+      <div
+        className={`chat-bubble__date  ${error ? "chat-bubble__date--error" : ""}`}
+      >
         {dayjs(props.message.createdAtTimestampMiliseconds).format("HH:mm")}
       </div>
     </div>
