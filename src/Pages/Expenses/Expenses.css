@@ -1,0 +1,43 @@
+.expenses {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.expenses__date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.expenses__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.expenses__item {
+  background-color: var(--theme-base);
+  color: inherit;
+  text-decoration: none;
+  padding: 1rem;
+  border-radius: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.expenses__item-category {
+  color: var(--theme-subtext0);
+}
+.expenses__item-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.expenses__item-date-category {
+  color: var(--theme-subtext0);
+}
+.expenses__item-money {
+  font-size: 1.4rem;
+  font-weight: 600;
+}

@@ -3,7 +3,7 @@ import { getDatabase } from "./database";
 
 const getAll = async () => {
   const db = await getDatabase();
-  return await db.getAll("entries");
+  return (await db.getAllFromIndex("entries", "by-creation")).reverse();
 };
 const insert = async (entry: Entry) => {
   const db = await getDatabase();

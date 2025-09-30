@@ -6,6 +6,7 @@ import {
   faComments,
   faGear,
   faLayerGroup,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router";
 export const Navigation = () => {
@@ -15,6 +16,7 @@ export const Navigation = () => {
     dashboard: "/",
     chat: "/chat",
     settings: "/settings",
+    expenses: "/expenses",
   };
   const activeLocationClass = (path: string) =>
     location.pathname.split("/")[1] === path.split("/")[1]
@@ -29,12 +31,20 @@ export const Navigation = () => {
         <FontAwesomeIcon icon={faGear} />
         Configurações
       </Link>
+
       <Link
         to={pathnames.categories}
         className={`navigation__button ${activeLocationClass(pathnames.categories)}`}
       >
         <FontAwesomeIcon icon={faLayerGroup} />
         Categorias
+      </Link>
+      <Link
+        to={pathnames.expenses}
+        className={`navigation__button ${activeLocationClass(pathnames.expenses)}`}
+      >
+        <FontAwesomeIcon icon={faList} />
+        Gastos
       </Link>
       <Link
         to={pathnames.dashboard}

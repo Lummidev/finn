@@ -17,6 +17,7 @@ import { Chat } from "./Pages/Chat/Chat.tsx";
 import { CategoryForm } from "./Pages/CategoryForm/CategoryForm.tsx";
 import { ViewCategory } from "./Pages/Category/ViewCategory.tsx";
 import { Settings } from "./Pages/Settings/Settings.tsx";
+import { Expenses } from "./Pages/Expenses/Expenses.tsx";
 dayjs.extend(localizedFormat);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="categories/new" element={<CategoryForm />} />
           <Route path="categories/:id" element={<ViewCategory />} />
           <Route path="chat" element={<Chat />} />
+          <Route path="expenses" element={<Expenses />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
