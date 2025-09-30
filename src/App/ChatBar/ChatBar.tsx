@@ -14,7 +14,7 @@ export const ChatBar = (props: ChatBarProps) => {
       className="chat-bar"
       onSubmit={(e) => {
         props.onSubmit(text);
-
+        setText("");
         e.preventDefault();
       }}
     >
