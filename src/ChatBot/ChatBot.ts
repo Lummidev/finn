@@ -4,24 +4,30 @@ import { ParserError } from "./Parser/ParserError";
 import type { Message } from "../Entities/Message";
 import { ErrorMessage } from "../Entities/ErrorMessage";
 import { SuccessMessage } from "../Entities/SuccessMessage";
+import { EntryRepository } from "../Database/EntryRepository";
+import { MessageRepository } from "../Database/MessageRepository";
 
-export const handleMessage = (text: string): Message => {
+export const handleMessage = async (text: string): Promise<Message> => {
   let components;
   try {
     components = parseMessageComponents(text);
   } catch (e) {
+    let errorMessage;
     if (e instanceof ParserError) {
-      return new ErrorMessage(e.message);
+      errorMessage = new ErrorMessage(e.message);
     } else {
-      return new ErrorMessage(JSON.stringify(e, null, " "));
+      errorMessage = new ErrorMessage(JSON.stringify(e, null, " "));
     }
+    await MessageRepository.insert(errorMessage);
+    return errorMessage;
   }
   const entry = new Entry(
     components.moneyExpent,
     components.description,
     components.category,
   );
-  // TODO: Save entry here
-
-  return new SuccessMessage(entry);
+  await EntryRepository.insert(entry);
+  const response = new SuccessMessage(entry);
+  await MessageRepository.insert(response);
+  return response;
 };
