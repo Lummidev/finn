@@ -9,5 +9,8 @@ const insert = async (entry: Entry) => {
   const db = await getDatabase();
   await db.add("entries", entry);
 };
-
-export const EntryRepository = { getAll, insert };
+const get = async (id: string) => {
+  const db = await getDatabase();
+  return await db.get("entries", id);
+};
+export const EntryRepository = { getAll, get, insert };
