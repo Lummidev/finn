@@ -23,6 +23,7 @@ export const ChatBar = (props: ChatBarProps) => {
         type="text"
         value={text}
         onFocus={props.onFocus}
+        placeholder="Digite seu gasto aqui"
         onChange={(e) => {
           setText(e.target.value);
         }}

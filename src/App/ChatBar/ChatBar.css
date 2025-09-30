@@ -18,6 +18,9 @@
   padding-right: 0.5rem;
   flex-grow: 1;
 }
+.chat-bar__input::placeholder {
+  color: var(--theme-overlay1);
+}
 .chat-bar__button-area {
   display: flex;
   align-items: center;
