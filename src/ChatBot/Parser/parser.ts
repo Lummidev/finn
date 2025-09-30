@@ -1,5 +1,5 @@
+import { CategoryRepository } from "../../Database/CategoryRepository";
 import type { Category } from "../../Entities/Category";
-import { testCategories } from "../testCategories";
 import { ParserError } from "./ParserError";
 import { ParserErrorKind } from "./ParserErrorKind";
 interface MessageComponents {
@@ -8,8 +8,10 @@ interface MessageComponents {
   category?: Category;
 }
 
-export const getCategory = (message: string) => {
-  for (const category of testCategories) {
+export const getCategory = async (message: string) => {
+  const categories = await CategoryRepository.getAll();
+  console.log(categories);
+  for (const category of categories) {
     const categoryMatches = [
       ...message.matchAll(new RegExp(category.name, "gi")),
     ].shift();
@@ -99,7 +101,9 @@ const trimWord = (message: string, index: number, length: number) => {
     messageWithTrimmedWord.length === 0 ? message : messageWithTrimmedWord;
   return messageWithTrimmedWord.trim();
 };
-export const parseMessageComponents = (message: string): MessageComponents => {
+export const parseMessageComponents = async (
+  message: string,
+): Promise<MessageComponents> => {
   const moneyFirstPass = getMoney(message);
   let trimmedMessage = trimWord(
     message,
@@ -107,7 +111,7 @@ export const parseMessageComponents = (message: string): MessageComponents => {
     moneyFirstPass.length,
   );
   const moneyRemoved = message !== trimmedMessage;
-  const categoryInfo = getCategory(trimmedMessage);
+  const categoryInfo = await getCategory(trimmedMessage);
 
   if (categoryInfo && !categoryInfo.isCategoryWord) {
     trimmedMessage = trimWord(

@@ -10,7 +10,7 @@ import { MessageRepository } from "../Database/MessageRepository";
 export const handleMessage = async (text: string): Promise<Message> => {
   let components;
   try {
-    components = parseMessageComponents(text);
+    components = await parseMessageComponents(text);
   } catch (e) {
     let errorMessage;
     if (e instanceof ParserError) {

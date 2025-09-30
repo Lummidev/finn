@@ -3,7 +3,7 @@ import { getDatabase } from "./database";
 
 const getAll = async () => {
   const db = await getDatabase();
-  return await db.getAll("categories");
+  return await db.getAllFromIndex("categories", "by-precedence");
 };
 const insert = async (category: Category) => {
   const db = await getDatabase();
