@@ -20,6 +20,7 @@
   cursor: pointer;
   text-decoration: none;
   border-radius: 0.5rem;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 .categories__list {
   list-style: none;
@@ -32,7 +33,9 @@
 .categories__list-item {
   display: flex;
   align-items: center;
+  border-radius: 0.5rem;
   font-size: 1.2rem;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 .categories__link {
   color: var(--theme-text);

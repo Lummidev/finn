@@ -15,7 +15,9 @@
 }
 .category-form__input {
   border: none;
-  background-color: var(--theme-surface0);
+  background-color: var(--theme-base);
+  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.3) inset;
+
   padding: 1rem;
   border-radius: 0.3rem;
   color: var(--theme-text);
@@ -31,5 +33,7 @@
   font-weight: 500;
   border-radius: 0.3rem;
   font-size: 1.1rem;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+
   padding: 1rem;
 }
