@@ -1,15 +1,18 @@
+import { use } from "react";
 import { ChatBubble } from "../../Components/ChatBubble/ChatBubble";
-import type { Message } from "../../Entities/Message";
 import "./Chat.css";
-interface ChatProps {
-  messageHistory: Message[];
-}
-export const Chat = (props: ChatProps) => {
+import { MessageContext } from "../../Context/MessageContext";
+
+export const Chat = () => {
+  const messageHistory = use(MessageContext);
   return (
-    <div className="chat">
-      {props.messageHistory.map((message) => (
-        <ChatBubble key={message.id} message={message} />
-      ))}
+    <div className={`chat`}>
+      <h1 className="chat__title">Chat</h1>
+      <div className="chat__box">
+        {messageHistory.map((message) => (
+          <ChatBubble key={message.id} message={message} />
+        ))}
+      </div>
     </div>
   );
 };

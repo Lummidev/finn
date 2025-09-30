@@ -15,6 +15,9 @@ export const getDatabase = async () => {
           db.createObjectStore("entries", {
             keyPath: "id",
           }).createIndex("by-creation", "createdAtTimestampMiliseconds");
+          db.createObjectStore("categories", {
+            keyPath: "id",
+          }).createIndex("by-precedence", "precedence");
       }
     },
   });

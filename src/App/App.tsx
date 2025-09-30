@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { Message } from "../Entities/Message";
 import "./App.css";
-import { Chat } from "../Pages/Chat/Chat";
-import { ChatBar } from "../Components/ChatBar/ChatBar";
+import { ChatBar } from "./ChatBar/ChatBar";
 import { handleMessage } from "../ChatBot/ChatBot";
 import { UserMessage } from "../Entities/UserMessage";
 import { MessageRepository } from "../Database/MessageRepository";
+import { Outlet } from "react-router";
+import { Navigation } from "./Navigation/Navigation";
+import { MessageContext } from "../Context/MessageContext";
+import { useNavigate } from "react-router";
 function App() {
   const [messageHistory, setMessageHistory] = useState<Message[]>([]);
-
+  const navigate = useNavigate();
   const handleUserMessage = async (text: string) => {
     const trimmedText = text.trim();
     const userMessage = new UserMessage(trimmedText);
@@ -45,10 +48,20 @@ function App() {
     }
   }, [messageHistory]);
   return (
-    <div className="app">
-      <Chat messageHistory={messageHistory} />
-      <ChatBar onSubmit={handleUserMessage} />
-    </div>
+    <MessageContext value={messageHistory}>
+      <div className="app">
+        <div className="app__content">
+          <Outlet />
+        </div>
+        <ChatBar
+          onSubmit={handleUserMessage}
+          onFocus={() => {
+            navigate("/chat");
+          }}
+        />
+        <Navigation />
+      </div>
+    </MessageContext>
   );
 }
 

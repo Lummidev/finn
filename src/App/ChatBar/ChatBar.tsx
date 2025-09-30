@@ -4,6 +4,7 @@ import { useState } from "react";
 import "./ChatBar.css";
 export interface ChatBarProps {
   onSubmit: (text: string) => unknown;
+  onFocus: () => unknown;
 }
 
 export const ChatBar = (props: ChatBarProps) => {
@@ -21,6 +22,7 @@ export const ChatBar = (props: ChatBarProps) => {
         className="chat-bar__input"
         type="text"
         value={text}
+        onFocus={props.onFocus}
         onChange={(e) => {
           setText(e.target.value);
         }}

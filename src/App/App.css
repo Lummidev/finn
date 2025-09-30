@@ -3,7 +3,16 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0.5rem 2rem 2rem 2rem;
+  padding: 0.5rem 2rem 0 2rem;
   background-color: var(--theme-mantle);
   color: var(--theme-text);
+}
+.app__content {
+  position: relative;
+  overflow-y: auto;
+  scrollbar-color: var(--theme-surface2) transparent;
+  scrollbar-width: thin;
+  display: flex;
+  padding: 0 2rem;
+  flex: 1;
 }
