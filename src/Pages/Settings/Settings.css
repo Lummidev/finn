@@ -1,0 +1,30 @@
+.options {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 1rem;
+}
+
+.options__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.options__list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--theme-base);
+  padding: 1rem;
+  border-radius: 0.3rem;
+  font-size: 1.2rem;
+}
+.options__select {
+  border: none;
+  background-color: var(--theme-surface0);
+  color: inherit;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+}

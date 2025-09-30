@@ -40,6 +40,15 @@ function App() {
       });
   }, []);
   useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      document.querySelector("body")?.setAttribute("data-theme", savedTheme);
+    } else {
+      document.querySelector("body")?.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+    }
+  }, []);
+  useEffect(() => {
     if (
       messageHistory.length !== 0 &&
       messageHistory[0] instanceof UserMessage

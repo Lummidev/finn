@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import "./reset.css";
 import "./index.css";
 import "./darkTheme.css";
+import "./lightTheme.css";
 import App from "./App/App.tsx";
 import "@fontsource-variable/roboto";
 import dayjs from "dayjs";
@@ -15,6 +16,7 @@ import { Categories } from "./Pages/Categories/Categories.tsx";
 import { Chat } from "./Pages/Chat/Chat.tsx";
 import { CategoryForm } from "./Pages/CategoryForm/CategoryForm.tsx";
 import { ViewCategory } from "./Pages/Category/ViewCategory.tsx";
+import { Settings } from "./Pages/Settings/Settings.tsx";
 dayjs.extend(localizedFormat);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -26,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="categories/new" element={<CategoryForm />} />
           <Route path="categories/:id" element={<ViewCategory />} />
           <Route path="chat" element={<Chat />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>

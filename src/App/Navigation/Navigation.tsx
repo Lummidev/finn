@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartSimple,
   faComments,
+  faGear,
   faLayerGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router";
@@ -13,6 +14,7 @@ export const Navigation = () => {
     categories: "/categories",
     dashboard: "/",
     chat: "/chat",
+    settings: "/settings",
   };
   const activeLocationClass = (path: string) =>
     location.pathname.split("/")[1] === path.split("/")[1]
@@ -20,6 +22,13 @@ export const Navigation = () => {
       : "";
   return (
     <div className="navigation">
+      <Link
+        to={pathnames.settings}
+        className={`navigation__button ${activeLocationClass(pathnames.settings)}`}
+      >
+        <FontAwesomeIcon icon={faGear} />
+        Configurações
+      </Link>
       <Link
         to={pathnames.categories}
         className={`navigation__button ${activeLocationClass(pathnames.categories)}`}
