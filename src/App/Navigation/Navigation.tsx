@@ -29,7 +29,7 @@ export const Navigation = () => {
         className={`navigation__button ${activeLocationClass(pathnames.settings)}`}
       >
         <FontAwesomeIcon icon={faGear} />
-        Configurações
+        Ajustes
       </Link>
 
       <Link

@@ -95,7 +95,7 @@ export const Settings = () => {
   ];
   return (
     <div className="options">
-      <h1>Opções</h1>
+      <h1>Ajustes</h1>
       <ul className="options__list">
         <li className="options__list-item">
           <span className="options__item-title">Tema</span>
