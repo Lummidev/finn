@@ -23,7 +23,10 @@ export const Categories = () => {
     <div className="categories">
       <h1 className="categories__title">Categorias</h1>
       <Link to="/categories/new" className="categories__plus-button">
-        <FontAwesomeIcon icon={faCirclePlus} /> Adicionar categoria
+        <span className="categories__plus-icon">
+          <FontAwesomeIcon icon={faCirclePlus} />
+        </span>
+        Adicionar categoria
       </Link>
 
       <ul className="categories__list">
