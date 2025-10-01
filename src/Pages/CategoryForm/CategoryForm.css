@@ -12,18 +12,74 @@
 }
 .category-form__label {
   font-size: 1.1rem;
+  margin: 0.5rem 0;
 }
 .category-form__input {
   border: none;
   background-color: var(--theme-base);
-  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.3) inset;
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  font-size: 1.1rem;
 
   padding: 1rem;
-  border-radius: 0.3rem;
+  border-radius: 0.5rem;
   color: var(--theme-text);
   outline: none;
 }
 .category-form__input::placeholder {
+  color: var(--theme-overlay0);
+}
+.category-form__word-list {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
+}
+.category-form__word {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+  border: 1px solid var(--theme-accent);
+  color: var(--theme-accent);
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.3rem;
+  background-color: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.category-form__extra-words {
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  background-color: var(--theme-base);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+.category-form__add-words-button {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: inherit;
+  color: var(--theme-accent);
+  border-radius: 0.4rem;
+  border: 1px solid var(--theme-accent);
+  padding: 0.2rem;
+  aspect-ratio: 1/1;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.category-form__words-input {
+  border: none;
+  color: inherit;
+  background-color: inherit;
+  flex-grow: 1;
+  height: 3rem;
+  outline: none;
+  font-size: 1.1rem;
+  margin-left: 0.5rem;
+}
+.category-form__words-input::placeholder {
   color: var(--theme-overlay0);
 }
 .category-form__button {
@@ -31,9 +87,10 @@
   background-color: var(--theme-accent);
   color: var(--theme-crust);
   font-weight: 500;
-  border-radius: 0.3rem;
+  border-radius: 0.5rem;
   font-size: 1.1rem;
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 
   padding: 1rem;
 }
