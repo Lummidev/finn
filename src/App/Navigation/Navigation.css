@@ -20,5 +20,5 @@
 
 .navigation__button--current {
   font-weight: 700;
-  color: var(--theme-blue);
+  color: var(--theme-accent);
 }

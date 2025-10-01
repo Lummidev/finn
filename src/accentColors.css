@@ -1,0 +1,24 @@
+[data-accentcolor="peach"] {
+  --theme-accent: var(--theme-peach);
+}
+[data-accentcolor="teal"] {
+  --theme-accent: var(--theme-teal);
+}
+[data-accentcolor="sky"] {
+  --theme-accent: var(--theme-sky);
+}
+[data-accentcolor="blue"] {
+  --theme-accent: var(--theme-blue);
+}
+[data-accentcolor="flamingo"] {
+  --theme-accent: var(--theme-flamingo);
+}
+[data-accentcolor="pink"] {
+  --theme-accent: var(--theme-pink);
+}
+[data-accentcolor="mauve"] {
+  --theme-accent: var(--theme-mauve);
+}
+[data-accentcolor="maroon"] {
+  --theme-accent: var(--theme-maroon);
+}

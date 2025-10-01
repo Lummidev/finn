@@ -41,11 +41,20 @@ function App() {
   }, []);
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
+    const savedAccentColor = localStorage.getItem("accentColor");
     if (savedTheme) {
       document.querySelector("body")?.setAttribute("data-theme", savedTheme);
     } else {
       document.querySelector("body")?.setAttribute("data-theme", "dark");
       localStorage.setItem("theme", "dark");
+    }
+    if (savedAccentColor) {
+      document
+        .querySelector("body")
+        ?.setAttribute("data-accentcolor", savedAccentColor);
+    } else {
+      document.querySelector("body")?.setAttribute("data-accentcolor", "blue");
+      localStorage.setItem("accentColor", "blue");
     }
   }, []);
   useEffect(() => {

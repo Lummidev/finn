@@ -47,10 +47,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  font-weight: 500;
 }
 .categories__link-words {
-  color: var(--theme-overlay1);
+  color: var(--theme-subtext1);
   font-style: italic;
+  font-weight: 400;
   font-size: 1rem;
 }
 .categories__grip {

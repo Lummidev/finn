@@ -9,28 +9,34 @@
   gap: 0.1rem;
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3);
   background-color: var(--theme-base);
+  font-size: 1.1rem;
 }
 .chat-bubble__date {
   font-size: 0.8rem;
   align-self: end;
-  color: var(--theme-subtext0);
+  color: var(--theme-subtext2);
 }
 .chat-bubble__date--error {
-  color: var(--theme-base);
+  color: var(--theme-crust);
 }
 .chat-bubble--user {
   align-self: end;
   background-color: color-mix(
     in srgb,
     var(--theme-crust) 80%,
-    var(--theme-blue) 20%
+    var(--theme-accent) 20%
   );
 }
 .chat-bubble--system {
   align-self: start;
 }
 .chat-bubble--error {
-  background-color: var(--theme-red);
+  background-color: color-mix(
+    in srgb,
+    var(--theme-red) 80%,
+    var(--theme-text) 20%
+  );
+  font-size: 1.2rem;
   color: var(--theme-crust);
 }
 .chat-bubble__display {

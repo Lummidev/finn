@@ -28,7 +28,7 @@
 }
 .category-form__button {
   border: none;
-  background-color: var(--theme-blue);
+  background-color: var(--theme-accent);
   color: var(--theme-crust);
   font-weight: 500;
   border-radius: 0.3rem;

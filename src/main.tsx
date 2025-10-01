@@ -5,6 +5,7 @@ import "./reset.css";
 import "./index.css";
 import "./darkTheme.css";
 import "./lightTheme.css";
+import "./accentColors.css";
 import App from "./App/App.tsx";
 import "@fontsource-variable/roboto";
 import dayjs from "dayjs";
