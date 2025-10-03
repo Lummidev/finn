@@ -27,10 +27,11 @@
     var(--theme-accent) 20%
   );
 }
-.chat-bubble--system {
+.chat-bubble--success {
   align-self: start;
 }
 .chat-bubble--error {
+  align-self: start;
   background-color: color-mix(
     in srgb,
     var(--theme-red) 80%,

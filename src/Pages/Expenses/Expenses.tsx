@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import "./Expenses.css";
-import type { Entry } from "../../Entities/Entry";
-import { EntryRepository } from "../../Database/EntryRepository";
+import {
+  EntryRepository,
+  type JoinedEntry,
+} from "../../Database/EntryRepository";
 import dayjs from "dayjs";
 import { Link } from "react-router";
 export const Expenses = () => {
   const [dateEntryRecord, setDateEntryRecord] = useState<
-    Record<string, Entry[]>
+    Record<string, JoinedEntry[]>
   >({});
   useEffect(() => {
     EntryRepository.getAll()
       .then((entries) => {
-        const record: Record<string, Entry[]> = {};
+        const record: Record<string, JoinedEntry[]> = {};
         for (const entry of entries) {
           const date = dayjs(entry.createdAtTimestampMiliseconds).format("LL");
           if (record[date]) {

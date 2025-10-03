@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import "./ViewExpense.css";
 import { useParams } from "react-router";
-import { EntryRepository } from "../../Database/EntryRepository";
-import type { Entry } from "../../Entities/Entry";
+import {
+  EntryRepository,
+  type JoinedEntry,
+} from "../../Database/EntryRepository";
 import dayjs from "dayjs";
 export const ViewExpense = () => {
-  const [entry, setEntry] = useState<Entry | undefined>();
+  const [entry, setEntry] = useState<JoinedEntry | undefined>();
   const params = useParams();
   useEffect(() => {
     if (!params.id) return;

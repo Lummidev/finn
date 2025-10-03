@@ -1,24 +1,17 @@
-/* eslint-disable no-fallthrough */
-import { openDB } from "idb";
-import type { FinnDB } from "./schema";
+import Dexie, { type EntityTable } from "dexie";
+import type { Category } from "../Entities/Category";
+import type { Entry } from "../Entities/Entry";
+import type { Message } from "../Entities/Message";
 
-export const getDatabase = async () => {
-  return await openDB<FinnDB>("finn", 1, {
-    upgrade(db, oldVersion) {
-      switch (oldVersion) {
-        case 0:
-
-        case 1:
-          db.createObjectStore("messages", {
-            keyPath: "id",
-          }).createIndex("by-creation", "createdAtTimestampMiliseconds");
-          db.createObjectStore("entries", {
-            keyPath: "id",
-          }).createIndex("by-creation", "createdAtTimestampMiliseconds");
-          db.createObjectStore("categories", {
-            keyPath: "id",
-          }).createIndex("by-precedence", "precedence");
-      }
-    },
-  });
+const database = new Dexie("FinnDB") as Dexie & {
+  categories: EntityTable<Category, "id">;
+  entries: EntityTable<Entry, "id">;
+  messages: EntityTable<Message, "id">;
 };
+database.version(1).stores({
+  categories: "id, precedence",
+  entries: "id, createdAtTimestampMiliseconds",
+  messages: "id, createdAtTimestampMiliseconds",
+});
+
+export { database };

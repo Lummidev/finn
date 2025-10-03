@@ -1,4 +1,4 @@
 import { createContext } from "react";
-import type { Message } from "../Entities/Message";
+import type { JoinedMessage } from "../Database/MessageRepository";
 
-export const MessageContext = createContext<Message[]>([]);
+export const MessageContext = createContext<JoinedMessage[]>([]);

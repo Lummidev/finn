@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import "./ViewCategory.css";
 import { useEffect, useState } from "react";
-import { Category } from "../../Entities/Category";
+import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 export const ViewCategory = () => {
   const [category, setCategory] = useState<Category | undefined>();

@@ -1,37 +1,38 @@
-import { ErrorMessage } from "../Entities/ErrorMessage";
-import { Message } from "../Entities/Message";
-import { SuccessMessage } from "../Entities/SuccessMessage";
-import { UserMessage } from "../Entities/UserMessage";
-import { getDatabase } from "./database";
+import { v4 } from "uuid";
+import type { Message } from "../Entities/Message";
+import { database } from "./database";
+import { EntryRepository, type JoinedEntry } from "./EntryRepository";
 
-const insert = async (message: Message) => {
-  const db = await getDatabase();
-  await db.add("messages", message);
+export interface JoinedMessage extends Message {
+  entry?: JoinedEntry;
+}
+
+const insert = async (
+  props: Omit<Message, "id" | "createdAtTimestampMiliseconds">,
+) => {
+  const message: Message = {
+    ...props,
+    id: v4(),
+    createdAtTimestampMiliseconds: new Date().valueOf(),
+  };
+
+  await database.messages.add(message);
+  return message;
 };
-const getAll = async (): Promise<Message[]> => {
-  const db = await getDatabase();
-  const messages = (await db.getAllFromIndex("messages", "by-creation"))
-    .reverse()
-    .map((message) => {
-      let prototype: Message;
-      switch (message.messageType) {
-        case "UserMessage":
-          prototype = UserMessage.prototype;
-          break;
-        case "SuccessMessage":
-          prototype = SuccessMessage.prototype;
-          break;
-        case "ErrorMessage":
-          prototype = ErrorMessage.prototype;
-          break;
-        default:
-          throw new Error(
-            `Message with invalid prototype saved in database: ${JSON.stringify(message, null, " ")}`,
-          );
+const getAll = async (): Promise<JoinedMessage[]> => {
+  const messages = (
+    (await database.messages
+      .orderBy("createdAtTimestampMiliseconds")
+      .toArray()) as JoinedMessage[]
+  ).reverse();
+  return await Promise.all(
+    messages.map(async (message) => {
+      if (message.messageType === "success" && message.entryID) {
+        message.entry = await EntryRepository.get(message.entryID);
       }
-      return Object.setPrototypeOf(message, prototype) as Message;
-    });
-  return messages;
+      return message;
+    }),
+  );
 };
 
 export const MessageRepository = { insert, getAll };

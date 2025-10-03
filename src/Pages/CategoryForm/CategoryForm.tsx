@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./CategoryForm.css";
 import { CategoryRepository } from "../../Database/CategoryRepository";
-import { Category } from "../../Entities/Category";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +10,7 @@ export const CategoryForm = () => {
   const [newWord, setNewWord] = useState("");
   const navigate = useNavigate();
   const submit = () => {
-    CategoryRepository.insert(new Category(name, words))
+    CategoryRepository.insert({ name, words })
       .then(() => {
         navigate("/categories");
       })

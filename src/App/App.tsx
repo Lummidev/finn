@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react";
-import { Message } from "../Entities/Message";
+import type { Message } from "../Entities/Message";
 import "./App.css";
 import { ChatBar } from "./ChatBar/ChatBar";
 import { handleMessage } from "../ChatBot/ChatBot";
-import { UserMessage } from "../Entities/UserMessage";
-import { MessageRepository } from "../Database/MessageRepository";
+import {
+  MessageRepository,
+  type JoinedMessage,
+} from "../Database/MessageRepository";
 import { Outlet } from "react-router";
 import { Navigation } from "./Navigation/Navigation";
 import { MessageContext } from "../Context/MessageContext";
 import { useNavigate } from "react-router";
 function App() {
-  const [messageHistory, setMessageHistory] = useState<Message[]>([]);
+  const [messageHistory, setMessageHistory] = useState<JoinedMessage[]>([]);
   const navigate = useNavigate();
   const handleUserMessage = async (text: string) => {
     const trimmedText = text.trim();
-    const userMessage = new UserMessage(trimmedText);
-    await MessageRepository.insert(userMessage);
+    const userMessage = await MessageRepository.insert({
+      messageType: "user",
+      content: trimmedText,
+    });
     setMessageHistory([userMessage, ...messageHistory]);
   };
   const handleCurrentMessage = (currentMessage: Message) => {
-    if (currentMessage instanceof UserMessage) {
+    if (currentMessage.messageType === "user" && currentMessage.content) {
       handleMessage(currentMessage.content)
         .then((response) => {
+          console.log(response);
           setMessageHistory([response, ...messageHistory]);
         })
         .catch((e) => {
@@ -60,7 +65,7 @@ function App() {
   useEffect(() => {
     if (
       messageHistory.length !== 0 &&
-      messageHistory[0] instanceof UserMessage
+      messageHistory[0].messageType === "user"
     ) {
       handleCurrentMessage(messageHistory[0]);
     }

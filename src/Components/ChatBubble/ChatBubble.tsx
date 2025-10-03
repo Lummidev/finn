@@ -1,8 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ErrorMessage } from "../../Entities/ErrorMessage";
-import type { Message } from "../../Entities/Message";
-import { SuccessMessage } from "../../Entities/SuccessMessage";
-import { UserMessage } from "../../Entities/UserMessage";
 import "./ChatBubble.css";
 import {
   faCheck,
@@ -12,16 +8,23 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import dayjs from "dayjs";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
+import type { JoinedMessage } from "../../Database/MessageRepository";
 interface ChatBubbleProps {
-  message: Message;
+  message: JoinedMessage;
 }
 
 export const ChatBubble = (props: ChatBubbleProps) => {
-  const messageSender =
-    props.message instanceof UserMessage ? "user" : "system";
-  const error = props.message instanceof ErrorMessage;
-  const messageDisplay = (message: Message) => {
-    if (message instanceof SuccessMessage) {
+  const error = props.message.messageType === "error";
+
+  const messageDisplay = (message: JoinedMessage) => {
+    if (!(message.messageType === "success" && message.entry)) {
+      return (
+        <>
+          {error ? <FontAwesomeIcon icon={faXmark} /> : <></>}
+          {message.content}
+        </>
+      );
+    } else {
       return (
         <div className="chat-bubble__display">
           <div className="chat-bubble__display-row">
@@ -50,20 +53,12 @@ export const ChatBubble = (props: ChatBubbleProps) => {
           </div>
         </div>
       );
-    } else if (message instanceof ErrorMessage) {
-      return (
-        <>
-          <FontAwesomeIcon icon={faXmark} /> {message.toText()}
-        </>
-      );
-    } else {
-      return <>{message.toText()}</>;
     }
   };
   return (
     <div
       className={`chat-bubble
-        chat-bubble--${messageSender}
+        chat-bubble--${props.message.messageType}
         ${error ? "chat-bubble--error" : ""}`}
     >
       <div>{messageDisplay(props.message)}</div>

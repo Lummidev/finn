@@ -1,33 +1,39 @@
-import { Entry } from "../Entities/Entry";
+import type { Entry } from "../Entities/Entry";
 import { parseMessageComponents } from "./Parser/parser";
 import { ParserError } from "./Parser/ParserError";
-import type { Message } from "../Entities/Message";
-import { ErrorMessage } from "../Entities/ErrorMessage";
-import { SuccessMessage } from "../Entities/SuccessMessage";
 import { EntryRepository } from "../Database/EntryRepository";
-import { MessageRepository } from "../Database/MessageRepository";
+import {
+  MessageRepository,
+  type JoinedMessage,
+} from "../Database/MessageRepository";
 
-export const handleMessage = async (text: string): Promise<Message> => {
-  let components;
+export const handleMessage = async (text: string): Promise<JoinedMessage> => {
   try {
-    components = await parseMessageComponents(text);
+    const { moneyExpent, description, category } =
+      await parseMessageComponents(text);
+    const entry: Entry = await EntryRepository.insert({
+      moneyExpent,
+      description,
+      categoryID: category?.id,
+    });
+    return {
+      ...(await MessageRepository.insert({
+        messageType: "success",
+        entryID: entry.id,
+      })),
+      entry: {
+        ...entry,
+        category,
+      },
+    };
   } catch (e) {
-    let errorMessage;
+    let content: string;
     if (e instanceof ParserError) {
-      errorMessage = new ErrorMessage(e.message);
+      content = e.message;
     } else {
-      errorMessage = new ErrorMessage(JSON.stringify(e, null, " "));
+      content = JSON.stringify(e, null, " ");
     }
-    await MessageRepository.insert(errorMessage);
-    return errorMessage;
+
+    return await MessageRepository.insert({ messageType: "error", content });
   }
-  const entry = new Entry(
-    components.moneyExpent,
-    components.description,
-    components.category,
-  );
-  await EntryRepository.insert(entry);
-  const response = new SuccessMessage(entry);
-  await MessageRepository.insert(response);
-  return response;
 };
