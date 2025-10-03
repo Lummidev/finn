@@ -11,18 +11,24 @@ export const handleMessage = async (text: string): Promise<JoinedMessage> => {
   try {
     const { moneyExpent, description, category } =
       await parseMessageComponents(text);
-    const entry: Entry = await EntryRepository.insert({
+    const savedEntry: Entry = await EntryRepository.insert({
       moneyExpent,
       description,
       categoryID: category?.id,
     });
+    const savedMessage = await MessageRepository.insert({
+      messageType: "success",
+      entryID: savedEntry.id,
+      initialEntryInformation: {
+        moneyExpent,
+        description,
+        categoryName: category?.name,
+      },
+    });
     return {
-      ...(await MessageRepository.insert({
-        messageType: "success",
-        entryID: entry.id,
-      })),
+      ...savedMessage,
       entry: {
-        ...entry,
+        ...savedEntry,
         category,
       },
     };

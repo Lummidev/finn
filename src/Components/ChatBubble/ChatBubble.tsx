@@ -17,7 +17,9 @@ export const ChatBubble = (props: ChatBubbleProps) => {
   const error = props.message.messageType === "error";
 
   const messageDisplay = (message: JoinedMessage) => {
-    if (!(message.messageType === "success" && message.entry)) {
+    if (
+      !(message.messageType === "success" && message.initialEntryInformation)
+    ) {
       return (
         <>
           {error ? <FontAwesomeIcon icon={faXmark} /> : <></>}
@@ -32,20 +34,25 @@ export const ChatBubble = (props: ChatBubbleProps) => {
             Gasto Registrado!
           </div>
           <div className="chat-bubble__display-row">
-            "{message.entry.description}"
+            "{message.initialEntryInformation.description}"
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faMoneyBill} />
 
             {"R$" +
-              message.entry.moneyExpent.toLocaleString(undefined, {
-                maximumFractionDigits: 2,
-                minimumFractionDigits: 2,
-              })}
+              message.initialEntryInformation.moneyExpent.toLocaleString(
+                undefined,
+                {
+                  maximumFractionDigits: 2,
+                  minimumFractionDigits: 2,
+                },
+              )}
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faList} />
-            {message.entry.category ? message.entry.category.name : "Outros"}
+            {message.initialEntryInformation.categoryName
+              ? message.initialEntryInformation.categoryName
+              : "Outros"}
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faCalendar} />
