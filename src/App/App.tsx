@@ -7,13 +7,14 @@ import {
   MessageRepository,
   type JoinedMessage,
 } from "../Database/MessageRepository";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { Navigation } from "./Navigation/Navigation";
 import { MessageContext } from "../Context/MessageContext";
 import { useNavigate } from "react-router";
 function App() {
   const [messageHistory, setMessageHistory] = useState<JoinedMessage[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
   const handleUserMessage = async (text: string) => {
     const trimmedText = text.trim();
     const userMessage = await MessageRepository.insert({
@@ -70,18 +71,24 @@ function App() {
       handleCurrentMessage(messageHistory[0]);
     }
   }, [messageHistory]);
+  const defaultPadding = location.pathname !== "/chat" ? "2rem" : undefined;
   return (
     <MessageContext value={messageHistory}>
       <div className="app">
-        <div className="app__content">
+        <div
+          style={{ paddingLeft: defaultPadding, paddingRight: defaultPadding }}
+          className="app__content"
+        >
           <Outlet />
         </div>
-        <ChatBar
-          onSubmit={handleUserMessage}
-          onFocus={() => {
-            navigate("/chat");
-          }}
-        />
+        <div className="app__chat-bar">
+          <ChatBar
+            onSubmit={handleUserMessage}
+            onFocus={() => {
+              navigate("/chat");
+            }}
+          />
+        </div>
         <Navigation />
       </div>
     </MessageContext>
