@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import type { Category } from "../Entities/Category";
 import { database } from "./database";
+import { EntryRepository } from "./EntryRepository";
 
 const getAll = async (): Promise<Category[]> => {
   return await database.categories.orderBy("precedence").toArray();
@@ -19,4 +20,13 @@ const insert = async (props: Omit<Category, "id" | "precedence">) => {
 const get = async (id: string): Promise<Category | undefined> => {
   return await database.categories.get(id);
 };
-export const CategoryRepository = { getAll, get, insert };
+
+const update = async (updatedCategory: Category) => {
+  await database.categories.put(updatedCategory);
+};
+
+const remove = async (id: string) => {
+  await EntryRepository.removeCategoryFromAll(id);
+  await database.categories.delete(id);
+};
+export const CategoryRepository = { getAll, get, insert, update, remove };

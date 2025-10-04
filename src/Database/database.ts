@@ -9,8 +9,8 @@ const database = new Dexie("FinnDB") as Dexie & {
   messages: EntityTable<Message, "id">;
 };
 database.version(1).stores({
-  categories: "id, precedence",
-  entries: "id, createdAtTimestampMiliseconds",
+  categories: "id, &name, precedence",
+  entries: "id, createdAtTimestampMiliseconds, categoryID",
   messages: "id, createdAtTimestampMiliseconds",
 });
 

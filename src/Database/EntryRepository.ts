@@ -45,4 +45,13 @@ const insert = async (
   await database.entries.add(entry);
   return entry;
 };
-export const EntryRepository = { getAll, get, insert };
+const removeCategoryFromAll = async (categoryID: string) => {
+  await Promise.all(
+    (
+      await database.entries.where("categoryID").equals(categoryID).toArray()
+    ).map(async (entry) => {
+      await database.entries.put({ ...entry, categoryID: undefined });
+    }),
+  );
+};
+export const EntryRepository = { getAll, get, insert, removeCategoryFromAll };
