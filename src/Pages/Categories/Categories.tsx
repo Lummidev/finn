@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { faGripVertical } from "@fortawesome/free-solid-svg-icons";
+import { PageHeader } from "../../Components/PageHeader/PageHeader";
 
 export const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -21,7 +22,7 @@ export const Categories = () => {
   }, []);
   return (
     <div className="categories">
-      <h1 className="categories__title">Categorias</h1>
+      <PageHeader title="Categorias" />
       <Link to="/categories/new" className="categories__plus-button">
         <span className="categories__plus-icon">
           <FontAwesomeIcon icon={faCirclePlus} />

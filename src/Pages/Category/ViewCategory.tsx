@@ -12,56 +12,46 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons/faCircleInfo";
+import { PageHeader } from "../../Components/PageHeader/PageHeader";
 export const ViewCategory = () => {
   const [category, setCategory] = useState<Category | undefined>();
-  const [editingName, setEditingName] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [addingWord, setAddingWord] = useState(false);
   const [newWord, setNewWord] = useState("");
   const [editedName, setEditedName] = useState("");
+  const [editedWords, setEditedWords] = useState<string[]>([]);
   const params = useParams();
   const navigate = useNavigate();
-  const startEdit = () => {
+  const startEditing = () => {
     if (!category) return;
     setEditedName(category.name);
-    setEditingName(true);
+    setEditedWords(category.words);
+    setEditing(true);
   };
   const saveEdit = () => {
     if (!category) return;
-    const updatedCategory = { ...category, name: editedName };
+    const updatedCategory = {
+      ...category,
+      name: editedName,
+      words: editedWords,
+    };
     CategoryRepository.update(updatedCategory)
       .then(() => {
         setCategory(updatedCategory);
-        setEditingName(false);
+        setEditing(false);
       })
       .catch((e) => {
         throw e;
       });
+  };
+  const addWord = () => {
+    const updatedWords = [newWord, ...editedWords];
+    setEditedWords(updatedWords);
+    setNewWord("");
   };
   const removeWord = (removedWord: string) => {
-    if (!category) return;
-    const updatedWords = category.words.filter((word) => word !== removedWord);
-    const updatedCategory = { ...category, words: updatedWords };
-    CategoryRepository.update(updatedCategory)
-      .then(() => {
-        setCategory(updatedCategory);
-        setEditingName(false);
-      })
-      .catch((e) => {
-        throw e;
-      });
-  };
-  const saveWord = (savedWord: string) => {
-    if (!category) return;
-    const updatedWords = [savedWord, ...category.words];
-    const updatedCategory = { ...category, words: updatedWords };
-    CategoryRepository.update(updatedCategory)
-      .then(() => {
-        setCategory(updatedCategory);
-        setAddingWord(false);
-      })
-      .catch((e) => {
-        throw e;
-      });
+    const updatedWords = editedWords.filter((word) => word !== removedWord);
+    setEditedWords(updatedWords);
   };
   const removeCategory = () => {
     if (!category) return;
@@ -83,113 +73,111 @@ export const ViewCategory = () => {
         throw e;
       });
   }, [params]);
+  const buttons = editing
+    ? {
+        primary: {
+          name: "Salvar alterações",
+          onAction: () => saveEdit(),
+        },
+        secondary: { name: "Cancelar", onAction: () => setEditing(false) },
+      }
+    : undefined;
+  const subMenu = editing
+    ? undefined
+    : [
+        {
+          name: "Editar Categoria",
+          onAction: () => {
+            startEditing();
+          },
+          icon: faPencil,
+        },
+        {
+          name: "Excluir Categoria",
+          onAction: () => removeCategory(),
+          icon: faTrash,
+          destructive: true,
+        },
+      ];
   return (
     <div className="view-category">
-      <h1>Categoria</h1>
-      {!category ? (
-        <></>
-      ) : (
+      <PageHeader title="Categoria" buttons={buttons} subMenu={subMenu} />
+
+      {!!category && (
         <div className="view-category__content">
           <div className="view-category__header">
-            {editingName ? (
-              <form className="view-category__name-form">
-                <button
-                  onClick={() => {
-                    setEditingName(false);
-                  }}
-                  className="view-category__save-name-button"
-                  type="button"
-                >
-                  <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
-                <div className="view-category__name-form-fields">
-                  <input
-                    className="view-category__name-input"
-                    type="text"
-                    value={editedName}
-                    onChange={(e) => setEditedName(e.target.value)}
-                  />
-                  <button
-                    onClick={() => {
-                      saveEdit();
-                    }}
-                    className="view-category__save-name-button"
-                    type="button"
-                  >
-                    <FontAwesomeIcon icon={faFloppyDisk} />
-                  </button>
-                </div>
-              </form>
+            {editing ? (
+              <div>
+                <label htmlFor="name-input">Nome</label>
+                <input
+                  className="view-category__name-input"
+                  type="text"
+                  id="name-input"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                />
+              </div>
             ) : (
               <div className="view-category__name-container">
                 <h2 className="view-category__name">{category.name}</h2>
-                <button
-                  type="button"
-                  onClick={() => startEdit()}
-                  className="view-category__edit-name-button"
-                >
-                  <FontAwesomeIcon icon={faPencil} />
-                </button>
               </div>
             )}
-
-            <button
-              type="button"
-              className="view-category__delete-category-button"
-              onClick={removeCategory}
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
           </div>
           <span className="view-category__information-text">
             <FontAwesomeIcon icon={faCircleInfo} /> O nome da categoria é
-            considerado como uma das palavras para a deteccção automática de
+            considerado como uma das palavras para a detecção automática de
             categoria
           </span>
           <div className="view-category__words">
-            <div className="view-category__words-header">
-              <h2 className="view-category__subtitle">Palavras</h2>
-              {addingWord ? (
+            <h2 className="view-category__subtitle">Palavras</h2>
+            {editing && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  addWord();
+                }}
+              >
+                <label htmlFor="words-input">Nova Palavra</label>
                 <div className="view-category__save-words">
                   <input
                     className="view-category__save-words-input"
                     type="text"
+                    id="words-input"
                     value={newWord}
                     onChange={(e) => setNewWord(e.target.value)}
                   />
                   <button
-                    onClick={() => saveWord(newWord)}
                     className="view-category__save-words-button"
-                    type="button"
+                    type="submit"
                   >
-                    <FontAwesomeIcon icon={faFloppyDisk} />
+                    <FontAwesomeIcon icon={faPlus} />
                   </button>
                 </div>
-              ) : (
-                <button
-                  onClick={() => setAddingWord(true)}
-                  className="view-category__add-words-button"
-                  type="button"
-                >
-                  <FontAwesomeIcon icon={faPlus} />{" "}
-                </button>
-              )}
-            </div>
+              </form>
+            )}
             <ul className="view-category__word-list">
-              {category.words.map((word) => {
-                return (
-                  <li key={word} className="view-category__word-container">
-                    <div className="view-category__word">{word}</div>
-                    <button
-                      className="view-category__remove-word-button"
-                      type="button"
-                      onClick={() => removeWord(word)}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </li>
-                );
-              })}
+              {editing
+                ? editedWords.map((word) => {
+                    return (
+                      <li key={word} className="view-category__word-container">
+                        <div className="view-category__word">{word}</div>
+                        <button
+                          className="view-category__remove-word-button"
+                          type="button"
+                          onClick={() => removeWord(word)}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </li>
+                    );
+                  })
+                : category.words.map((word) => {
+                    return (
+                      <li key={word} className="view-category__word-container">
+                        <div className="view-category__word">{word}</div>
+                      </li>
+                    );
+                  })}
             </ul>
           </div>
         </div>

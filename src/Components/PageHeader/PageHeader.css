@@ -1,0 +1,95 @@
+.page-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page-header__title {
+  font-size: 2.5rem;
+}
+.page-header__right {
+  display: flex;
+  justify-content: end;
+  flex: 1;
+}
+.page-header__buttons {
+  display: flex;
+  gap: 1rem;
+}
+.page-header__button {
+  border: none;
+  background-color: var(--theme-accent);
+  color: var(--theme-base);
+  border-radius: 3rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.page-header__button--secondary {
+  background-color: inherit;
+  color: var(--theme-accent);
+}
+.page-header__button--secondary:hover {
+  background-color: var(--theme-surface0);
+}
+.page-header__submenu-icon {
+  background-color: inherit;
+  color: var(--theme-text);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  min-width: fit-content;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+.page-header__submenu-icon:hover {
+  background-color: var(--theme-surface0);
+}
+.page-header__submenu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+  background-color: var(--theme-base);
+  border-radius: 0.3rem;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
+}
+.page-header__submenu-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  background-color: var(--theme-base);
+  border: none;
+  color: var(--theme-text);
+  padding: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1.4rem;
+}
+.page-header__submenu-button:first-child {
+  border-radius: 0.3rem 0.3rem 0 0;
+}
+.page-header__submenu-button:last-child {
+  border-radius: 0 0 0.3rem 0.3rem;
+}
+
+.page-header__submenu-button:hover {
+  background-color: var(--theme-surface0);
+}
+.page-header__submenu-button--destructive {
+  color: var(--theme-red);
+}
+.page-header__submenu-page-cover {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+}

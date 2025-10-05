@@ -29,27 +29,37 @@
   gap: 1rem;
   border-radius: 0.3rem;
 }
-.view-category__name-form {
-  border-radius: 0.3rem;
-  display: flex;
-  justify-items: start;
-  gap: 0.5rem;
-}
-.view-category__save-words,
-.view-category__name-form-fields {
+.view-category__save-words {
   display: flex;
   border-bottom: 0.1rem solid var(--theme-overlay0);
 }
-.view-category__save-words:has(:focus),
-.view-category__name-form-fields:has(:focus) {
-  border-bottom: 1px solid var(--theme-subtext1);
+.view-category__save-words:has(:focus) {
+  border-bottom: 1px solid var(--theme-subtext0);
+}
+.view-category__save-words-input {
+  background-color: inherit;
+  color: inherit;
+  border: none;
+  outline: none;
+  padding: 0;
+  width: 100%;
 }
 .view-category__name-input {
-  font-weight: 500;
+  background-color: inherit;
+  color: inherit;
+  border: none;
+  outline: none;
+  padding: 0;
+  width: 100%;
+  font-weight: 700;
   font-size: 2.5rem;
+  display: flex;
+  border-bottom: 0.1rem solid var(--theme-overlay0);
 }
-.view-category__save-words-button,
-.view-category__save-name-button {
+.view-category__name-input:focus {
+  border-bottom: 1px solid var(--theme-subtext0);
+}
+.view-category__save-words-button {
   background-color: inherit;
   aspect-ratio: 1/1;
   color: var(--theme-accent);
@@ -59,44 +69,11 @@
   align-items: center;
   justify-content: center;
   border: none;
-}
-.view-category__save-words-button {
   font-size: 1.4rem;
 }
-.view-category__save-name-button {
-  font-size: 1.7rem;
-  font-weight: 500;
 
-  padding: 0.6rem;
-}
 .view-category__name {
   font-size: 2.5rem;
-}
-.view-category__edit-name-button {
-  background-color: inherit;
-  color: var(--theme-accent);
-  font-size: 1.7rem;
-  aspect-ratio: 1/1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  padding: 0.6rem;
-}
-.view-category__delete-category-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: inherit;
-  border: none;
-  gap: 0.5rem;
-  color: var(--theme-red);
-  font-size: 1.5rem;
-  padding: 1rem;
-  border-radius: 0.3rem;
-  min-width: fit-content;
-  cursor: pointer;
 }
 .view-category__information-text {
   color: var(--theme-subtext0);
@@ -104,36 +81,16 @@
   font-size: 1.1rem;
   padding: 0;
 }
-.view-category__save-words-input,
-.view-category__name-input {
-  background-color: inherit;
-  color: inherit;
-  border: none;
-  outline: none;
-  padding: 0;
-  width: 100%;
-}
+
 .view-category__save-words-input {
   font-size: 1.5rem;
 }
 .view-category__words {
-}
-.view-category__words-header {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 }
-.view-category__add-words-button {
-  background-color: inherit;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--theme-accent);
-  min-width: fit-content;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
+
 .view-category__subtitle {
   font-size: 2rem;
 }
@@ -149,26 +106,23 @@
 .view-category__word-container {
   display: flex;
   align-items: center;
-  border: 1px solid
-    color-mix(in srgb, var(--theme-surface0) 90%, var(--theme-accent) 10%);
-  color: color-mix(in srgb, var(--theme-text) 40%, var(--theme-accent) 60%);
+  border: 1px solid var(--theme-accent);
+  color: var(--theme-text);
   border-radius: 0.3rem;
-  padding: 0.5rem 0.8rem;
-  gap: 1rem;
 }
 .view-category__word {
   font-size: 1.5rem;
+  padding: 0.4rem;
 }
 .view-category__remove-word-button {
-  background-color: inherit;
-  color: inherit;
+  background-color: var(--theme-accent);
+  color: var(--theme-base);
   font-size: 1.2rem;
+  height: 100%;
+  min-width: fit-content;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  padding: 0.4rem;
 }

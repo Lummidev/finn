@@ -5,8 +5,6 @@
   gap: 2rem;
 }
 
-.categories__title {
-}
 .categories__plus-icon {
   color: var(--theme-accent);
   font-size: 1.4rem;

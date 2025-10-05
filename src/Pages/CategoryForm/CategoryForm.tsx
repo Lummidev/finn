@@ -4,6 +4,7 @@ import { CategoryRepository } from "../../Database/CategoryRepository";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { PageHeader } from "../../Components/PageHeader/PageHeader";
 export const CategoryForm = () => {
   const [name, setName] = useState("");
   const [words, setWords] = useState<string[]>([]);
@@ -30,7 +31,7 @@ export const CategoryForm = () => {
   };
   return (
     <div className="category-form">
-      <h1>Nova Categoria</h1>
+      <PageHeader title="Nova Categoria" />
       <div className="category-form__form">
         <div className="category-form__labeled-input">
           <label className="category-form__label" htmlFor="category-name">
