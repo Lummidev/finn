@@ -1,16 +1,16 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Categories.css";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { faGripVertical } from "@fortawesome/free-solid-svg-icons";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
+import { useNavigate } from "react-router";
 
 export const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     CategoryRepository.getAll()
       .then((categories) => {
@@ -22,13 +22,17 @@ export const Categories = () => {
   }, []);
   return (
     <div className="categories">
-      <PageHeader title="Categorias" />
-      <Link to="/categories/new" className="categories__plus-button">
-        <span className="categories__plus-icon">
-          <FontAwesomeIcon icon={faCirclePlus} />
-        </span>
-        Adicionar categoria
-      </Link>
+      <PageHeader
+        title="Categorias"
+        buttons={{
+          secondary: {
+            name: "Nova Categoria",
+            onAction: () => {
+              navigate("/categories/new");
+            },
+          },
+        }}
+      />
 
       <ul className="categories__list">
         {categories.map((category) => {
