@@ -1,17 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./CategoryForm.css";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
+import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
 export const CategoryForm = () => {
   const [name, setName] = useState("");
   const [words, setWords] = useState<string[]>([]);
   const [newWord, setNewWord] = useState("");
+  const [validName, setValidName] = useState(false);
+  const [validWord, setValidWord] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setValidName(name.trim().length > 0);
+    setValidWord(
+      newWord.trim().length > 0 &&
+        words.filter((savedWord) => savedWord === newWord).length === 0,
+    );
+  }, [name, newWord, words]);
   const submit = () => {
-    CategoryRepository.insert({ name, words })
+    CategoryRepository.insert({
+      name: name.trim(),
+      words: words.sort((a, b) => a.localeCompare(b)),
+    })
       .then(() => {
         navigate("/categories");
       })
@@ -31,76 +45,63 @@ export const CategoryForm = () => {
   };
   return (
     <div className="category-form">
-      <PageHeader title="Nova Categoria" />
-      <div className="category-form__form">
-        <div className="category-form__labeled-input">
-          <label className="category-form__label" htmlFor="category-name">
-            Nome
-          </label>
-          <input
-            className="category-form__input"
-            placeholder="Farmácia"
-            id="category-name"
-            type="text"
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-          />
-        </div>
+      <PageHeader
+        buttons={{
+          primary: {
+            name: "Salvar",
+            onAction: submit,
+            disabled: !validName,
+          },
+        }}
+        title="Nova Categoria"
+      />
+      <div className="category-form__fields">
+        <LabeledInput
+          name="Nome"
+          placeholder="Farmácia"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+        />
         <form
           className="category-form__labeled-input"
           onSubmit={(e) => {
-            addWord();
             e.preventDefault();
+            if (validWord) addWord();
           }}
         >
-          <label className="category-form__label" htmlFor="category-words">
-            Palavras extras
-          </label>
-          <div className="category-form__word-list">
-            {words.map((word) => (
-              <button
-                key={word}
-                onClick={() => removeWord(word)}
-                type="button"
-                className="category-form__word"
-              >
-                <span>{word}</span>
-                <FontAwesomeIcon icon={faXmark} />
-              </button>
-            ))}
-          </div>
-          <div className="category-form__extra-words">
-            <input
-              id="category-words"
-              type="text"
-              placeholder="paracetamol"
-              className="category-form__words-input"
-              enterKeyHint="enter"
-              value={newWord}
-              onChange={(e) => {
-                setNewWord(e.target.value);
-              }}
-            />
-            <button
-              className="category-form__add-words-button"
-              aria-label="Adicionar"
-              type="submit"
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-          </div>
+          <LabeledInput
+            name="Palavras Extras"
+            placeholder="paracetamol"
+            value={newWord}
+            button={{
+              icon: faPlus,
+              type: "submit",
+              label: "Adicionar Palavra",
+              disabled: !validWord,
+            }}
+            onChange={(e) => {
+              setNewWord(e.target.value);
+            }}
+          />
+          {words.length > 0 && (
+            <ul className="category-form__word-list">
+              {words.map((word) => (
+                <li className="category-form__word-container" key={word}>
+                  <span className="category-form__word">{word}</span>
+                  <button
+                    onClick={() => removeWord(word)}
+                    type="button"
+                    className="category-form__remove-word-button"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </form>
-
-        <button
-          onClick={() => {
-            submit();
-          }}
-          type="button"
-          className="category-form__button"
-        >
-          Salvar Categoria
-        </button>
       </div>
     </div>
   );

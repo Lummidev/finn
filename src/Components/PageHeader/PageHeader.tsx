@@ -9,6 +9,7 @@ interface Action {
   name: string;
   destructive?: boolean;
   icon?: IconDefinition;
+  disabled?: boolean;
   onAction: () => unknown;
 }
 interface PageHeaderProps {
@@ -16,7 +17,7 @@ interface PageHeaderProps {
   className?: string;
   subMenu?: Action[];
   buttons?: {
-    primary?: Action;
+    primary?: Action & {};
     secondary?: Action;
   };
 }
@@ -33,6 +34,7 @@ export const PageHeader = (props: PageHeaderProps) => {
             {!!props.buttons.secondary && (
               <button
                 type="button"
+                disabled={props.buttons.secondary.disabled}
                 className="page-header__button page-header__button--secondary"
                 onClick={props.buttons.secondary.onAction}
               >
@@ -46,6 +48,7 @@ export const PageHeader = (props: PageHeaderProps) => {
               <button
                 type="button"
                 className="page-header__button"
+                disabled={props.buttons.primary.disabled}
                 onClick={props.buttons.primary.onAction}
               >
                 {!!props.buttons.primary.icon && (

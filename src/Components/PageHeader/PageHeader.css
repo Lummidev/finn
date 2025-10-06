@@ -27,6 +27,10 @@
   font-size: 1.2rem;
   font-weight: 500;
 }
+.page-header__button:disabled {
+  opacity: 0.5;
+  cursor: auto;
+}
 .page-header__button--secondary {
   background-color: inherit;
   color: var(--theme-accent);

@@ -4,28 +4,25 @@ import { useEffect, useState } from "react";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faFloppyDisk,
-  faPencil,
-  faPlus,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons/faCircleInfo";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
+import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
 export const ViewCategory = () => {
   const [category, setCategory] = useState<Category | undefined>();
   const [editing, setEditing] = useState(false);
-  const [addingWord, setAddingWord] = useState(false);
   const [newWord, setNewWord] = useState("");
   const [editedName, setEditedName] = useState("");
   const [editedWords, setEditedWords] = useState<string[]>([]);
+  const [validName, setValidName] = useState(false);
+  const [validWord, setValidWord] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const startEditing = () => {
     if (!category) return;
     setEditedName(category.name);
     setEditedWords(category.words);
+    setNewWord("");
     setEditing(true);
   };
   const saveEdit = () => {
@@ -33,7 +30,7 @@ export const ViewCategory = () => {
     const updatedCategory = {
       ...category,
       name: editedName,
-      words: editedWords,
+      words: editedWords.sort((a, b) => a.localeCompare(b)),
     };
     CategoryRepository.update(updatedCategory)
       .then(() => {
@@ -73,11 +70,19 @@ export const ViewCategory = () => {
         throw e;
       });
   }, [params]);
+  useEffect(() => {
+    setValidName(editedName.trim().length > 0);
+    setValidWord(
+      newWord.trim().length > 0 &&
+        editedWords.filter((savedWord) => savedWord === newWord).length === 0,
+    );
+  }, [editedWords, newWord, editedName]);
   const buttons = editing
     ? {
         primary: {
           name: "Salvar alterações",
           onAction: () => saveEdit(),
+          disabled: !validName,
         },
         secondary: { name: "Cancelar", onAction: () => setEditing(false) },
       }
@@ -101,35 +106,33 @@ export const ViewCategory = () => {
       ];
   return (
     <div className="view-category">
-      <PageHeader title="Categoria" buttons={buttons} subMenu={subMenu} />
+      <PageHeader
+        title={`${editing ? "Editando " : ""}Categoria`}
+        buttons={buttons}
+        subMenu={subMenu}
+      />
 
       {!!category && (
         <div className="view-category__content">
-          <div className="view-category__header">
-            {editing ? (
-              <div>
-                <label htmlFor="name-input">Nome</label>
-                <input
-                  className="view-category__name-input"
-                  type="text"
-                  id="name-input"
-                  value={editedName}
-                  onChange={(e) => setEditedName(e.target.value)}
-                />
-              </div>
-            ) : (
-              <div className="view-category__name-container">
-                <h2 className="view-category__name">{category.name}</h2>
-              </div>
-            )}
-          </div>
-          <span className="view-category__information-text">
-            <FontAwesomeIcon icon={faCircleInfo} /> O nome da categoria é
-            considerado como uma das palavras para a detecção automática de
-            categoria
-          </span>
+          {editing ? (
+            <LabeledInput
+              name="Nome"
+              placeholder={category.name}
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+            />
+          ) : (
+            <>
+              <h2 className="view-category__name">{category.name}</h2>
+              <span className="view-category__information-text">
+                <FontAwesomeIcon icon={faCircleInfo} /> O nome da categoria é
+                considerado como uma das palavras para a detecção automática de
+                categoria
+              </span>
+            </>
+          )}
+
           <div className="view-category__words">
-            <h2 className="view-category__subtitle">Palavras</h2>
             {editing && (
               <form
                 onSubmit={(e) => {
@@ -137,48 +140,60 @@ export const ViewCategory = () => {
                   addWord();
                 }}
               >
-                <label htmlFor="words-input">Nova Palavra</label>
-                <div className="view-category__save-words">
-                  <input
-                    className="view-category__save-words-input"
-                    type="text"
-                    id="words-input"
-                    value={newWord}
-                    onChange={(e) => setNewWord(e.target.value)}
-                  />
-                  <button
-                    className="view-category__save-words-button"
-                    type="submit"
-                  >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </button>
-                </div>
+                <LabeledInput
+                  name="Nova Palavra"
+                  button={{
+                    type: "submit",
+                    icon: faPlus,
+                    label: "Adicionar palavra",
+                    disabled: !validWord,
+                  }}
+                  value={newWord}
+                  onChange={(e) => setNewWord(e.target.value)}
+                />
               </form>
             )}
-            <ul className="view-category__word-list">
-              {editing
-                ? editedWords.map((word) => {
-                    return (
-                      <li key={word} className="view-category__word-container">
-                        <div className="view-category__word">{word}</div>
-                        <button
-                          className="view-category__remove-word-button"
-                          type="button"
-                          onClick={() => removeWord(word)}
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </li>
-                    );
-                  })
-                : category.words.map((word) => {
+            {editing ? (
+              <ul className="view-category__word-list">
+                {editedWords.map((word) => {
+                  return (
+                    <li key={word} className="view-category__word-container">
+                      <div className="view-category__word">{word}</div>
+                      <button
+                        className="view-category__remove-word-button"
+                        type="button"
+                        onClick={() => removeWord(word)}
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : category.words.length > 0 ? (
+              <>
+                <h2 className="view-category__subtitle">Palavras</h2>
+
+                <ul className="view-category__word-list">
+                  {category.words.map((word) => {
                     return (
                       <li key={word} className="view-category__word-container">
                         <div className="view-category__word">{word}</div>
                       </li>
                     );
                   })}
-            </ul>
+                </ul>
+              </>
+            ) : (
+              <>
+                <h2 className="view-category__subtitle">Palavras</h2>
+
+                <span className="view-category__information-text">
+                  <FontAwesomeIcon icon={faCircleInfo} /> Não há palavras nessa
+                  categoria
+                </span>
+              </>
+            )}
           </div>
         </div>
       )}

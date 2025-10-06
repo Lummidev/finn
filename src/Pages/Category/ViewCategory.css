@@ -11,67 +11,8 @@
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  align-items: start;
   gap: 1rem;
 }
-
-.view-category__header {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  width: 100%;
-  gap: 1rem;
-}
-.view-category__name-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 1rem;
-  border-radius: 0.3rem;
-}
-.view-category__save-words {
-  display: flex;
-  border-bottom: 0.1rem solid var(--theme-overlay0);
-}
-.view-category__save-words:has(:focus) {
-  border-bottom: 1px solid var(--theme-subtext0);
-}
-.view-category__save-words-input {
-  background-color: inherit;
-  color: inherit;
-  border: none;
-  outline: none;
-  padding: 0;
-  width: 100%;
-}
-.view-category__name-input {
-  background-color: inherit;
-  color: inherit;
-  border: none;
-  outline: none;
-  padding: 0;
-  width: 100%;
-  font-weight: 700;
-  font-size: 2.5rem;
-  display: flex;
-  border-bottom: 0.1rem solid var(--theme-overlay0);
-}
-.view-category__name-input:focus {
-  border-bottom: 1px solid var(--theme-subtext0);
-}
-.view-category__save-words-button {
-  background-color: inherit;
-  aspect-ratio: 1/1;
-  color: var(--theme-accent);
-  border-radius: 0.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  font-size: 1.4rem;
-}
-
 .view-category__name {
   font-size: 2.5rem;
 }
@@ -82,9 +23,6 @@
   padding: 0;
 }
 
-.view-category__save-words-input {
-  font-size: 1.5rem;
-}
 .view-category__words {
   display: flex;
   flex-direction: column;
@@ -113,6 +51,8 @@
 .view-category__word {
   font-size: 1.5rem;
   padding: 0.4rem;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 .view-category__remove-word-button {
   background-color: var(--theme-accent);

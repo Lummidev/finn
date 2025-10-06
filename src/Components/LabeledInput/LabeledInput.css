@@ -1,0 +1,39 @@
+.labeled-input {
+  display: flex;
+  flex-direction: column;
+}
+.labeled-input__label {
+  color: var(--theme-subtext1);
+  font-size: 1.2rem;
+}
+.labeled-input__input-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 0.1rem solid var(--theme-overlay0);
+}
+.labeled-input__input-row:has(:focus) {
+  border-bottom: 0.1rem solid var(--theme-subtext0);
+}
+.labeled-input__input {
+  border: none;
+  background-color: inherit;
+  color: var(--theme-text);
+  flex: 1;
+  outline: none;
+  padding: 0.5rem 0;
+  font-size: 1.4rem;
+}
+.labeled-input__input::placeholder {
+  color: var(--theme-overlay1);
+}
+.labeled-input__button {
+  border: none;
+  background-color: inherit;
+  font-size: 1.4rem;
+  color: var(--theme-accent);
+  cursor: pointer;
+}
+.labeled-input__button:disabled {
+  opacity: 0.5;
+  cursor: auto;
+}
