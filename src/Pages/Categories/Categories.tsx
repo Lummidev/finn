@@ -42,9 +42,11 @@ export const Categories = () => {
                 to={`/categories/${category.id}`}
               >
                 {category.name}
-                <span className="categories__link-words">
-                  ({category.words.join(", ")})
-                </span>
+                {category.words.length > 0 && (
+                  <span className="categories__link-words">
+                    {`(${category.words.join(", ")})`}
+                  </span>
+                )}
               </Link>
             </li>
           );
