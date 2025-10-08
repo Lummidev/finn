@@ -1,0 +1,49 @@
+.category-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  gap: 2rem;
+}
+.category-chart__empty-info {
+  color: var(--theme-subtext0);
+  text-align: center;
+}
+.category-chart__title {
+  font-size: 2.5rem;
+  text-align: start;
+  align-self: start;
+}
+.category-chart__container {
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+}
+.category-chart__chart {
+  max-width: 100%;
+  max-height: clamp(10dvh, 20rem, 40dvh);
+  aspect-ratio: 1/1;
+}
+.category-chart__legend {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.category-chart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+.category-chart__legend-color {
+  aspect-ratio: 1/1;
+  height: 1.2rem;
+  border-radius: 2px;
+}

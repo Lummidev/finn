@@ -20,6 +20,14 @@ import { ViewCategory } from "./Pages/Category/ViewCategory.tsx";
 import { Settings } from "./Pages/Settings/Settings.tsx";
 import { Expenses } from "./Pages/Expenses/Expenses.tsx";
 import { ViewExpense } from "./Pages/ViewExpense/ViewExpense.tsx";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Colors,
+} from "chart.js";
+ChartJS.register(ArcElement, Tooltip, Legend, Colors);
 dayjs.extend(localizedFormat);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

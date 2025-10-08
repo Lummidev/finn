@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import "./Settings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "../../Context/ThemeContext";
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
   const [accentColor, setAccentColor] = useState("blue");
-
+  const themeContext = use(ThemeContext);
   const saveTheme = (theme: string) => {
     document.querySelector("body")?.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    themeContext.setTheme(theme);
   };
   const saveColor = (accentColor: string) => {
     document
