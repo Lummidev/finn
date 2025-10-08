@@ -5,7 +5,6 @@
   padding: 0.5rem;
   display: flex;
   align-items: center;
-  z-index: 1;
 }
 
 .chat-bar__input {
