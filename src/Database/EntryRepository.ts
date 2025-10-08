@@ -45,6 +45,9 @@ const insert = async (
   await database.entries.add(entry);
   return entry;
 };
+const remove = async (id: string) => {
+  await database.entries.delete(id);
+};
 const removeCategoryFromAll = async (categoryID: string) => {
   await Promise.all(
     (
@@ -54,4 +57,10 @@ const removeCategoryFromAll = async (categoryID: string) => {
     }),
   );
 };
-export const EntryRepository = { getAll, get, insert, removeCategoryFromAll };
+export const EntryRepository = {
+  getAll,
+  get,
+  insert,
+  remove,
+  removeCategoryFromAll,
+};

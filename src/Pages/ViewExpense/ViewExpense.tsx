@@ -6,9 +6,13 @@ import {
   type JoinedEntry,
 } from "../../Database/EntryRepository";
 import dayjs from "dayjs";
+import { PageHeader } from "../../Components/PageHeader/PageHeader";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router";
 export const ViewExpense = () => {
   const [entry, setEntry] = useState<JoinedEntry | undefined>();
   const params = useParams();
+  const navigate = useNavigate();
   useEffect(() => {
     if (!params.id) return;
     EntryRepository.get(params.id)
@@ -19,9 +23,32 @@ export const ViewExpense = () => {
         throw e;
       });
   }, [params]);
+  const removeEntry = () => {
+    if (!entry) {
+      return;
+    }
+    EntryRepository.remove(entry.id)
+      .then(() => {
+        navigate("/expenses");
+      })
+      .catch((e) => {
+        throw e;
+      });
+  };
   return (
     <div className="view-expense">
-      <h1>Gasto</h1>
+      <PageHeader
+        title="Gasto"
+        subMenu={[
+          {
+            name: "Excluir gasto",
+            destructive: true,
+            icon: faTrash,
+            onAction: removeEntry,
+          },
+        ]}
+      />
+
       {!entry ? (
         <></>
       ) : (
