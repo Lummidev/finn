@@ -1,10 +1,10 @@
 import { Doughnut } from "react-chartjs-2";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { SettingsContext } from "../../../Context/SettingsContext";
 import { use, useEffect, useState } from "react";
 import type { Plugin } from "chart.js";
 import { getMoneyExpentByCategory } from "../../../Database/ReportRepository";
 import "./CategoryChart.css";
-const themeColors = {
+const themeColors: Record<string, Record<string, string>> = {
   dark: {
     blue: "#8aadf4",
     green: "#a6da95",
@@ -36,7 +36,8 @@ const ShadowPlugin: Plugin = {
   },
 };
 export const CategoryChart = () => {
-  const { theme } = use(ThemeContext);
+  const { settings } = use(SettingsContext);
+  const theme = settings.theme;
   const [topCategories, setTopCategories] = useState<[string, number][]>();
   const [empty, setEmpty] = useState(false);
   useEffect(() => {
@@ -99,7 +100,7 @@ export const CategoryChart = () => {
         <div className="category-chart__container">
           <ul className="category-chart__legend">
             {topCategories.map((category, i) => {
-              const [name, moneyExpent] = category;
+              const [name] = category;
               const color = colors[i];
               return (
                 <li className="category-chart__legend-item" key={name}>
@@ -116,6 +117,7 @@ export const CategoryChart = () => {
             className="category-chart__chart"
             datasetIdKey="id"
             options={{
+              /*@ts-expect-error "borderWidth" does work but apparently isn't registered in the type of this attribute*/
               borderWidth: 0,
               animation: true,
               color: themeColors[theme].text,

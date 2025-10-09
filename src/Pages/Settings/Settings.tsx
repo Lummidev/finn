@@ -2,31 +2,32 @@ import { use, useEffect, useState } from "react";
 import "./Settings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import { ThemeContext } from "../../Context/ThemeContext";
+import { SettingsContext } from "../../Context/SettingsContext";
+import { Settings as SettingsManager } from "../../settings";
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
   const [accentColor, setAccentColor] = useState("blue");
-  const themeContext = use(ThemeContext);
+  const [alwaysShowChatBar, setAlwaysShowChatBar] = useState(false);
+  const settingsContext = use(SettingsContext);
   const saveTheme = (theme: string) => {
-    document.querySelector("body")?.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-    themeContext.setTheme(theme);
+    SettingsManager.theme = theme;
+    settingsContext.setSettings({ ...settingsContext.settings, theme });
   };
   const saveColor = (accentColor: string) => {
-    document
-      .querySelector("body")
-      ?.setAttribute("data-accentcolor", accentColor);
-    localStorage.setItem("accentColor", accentColor);
+    SettingsManager.accentColor = accentColor;
+  };
+  const saveAlwaysShowChatBar = (value: boolean) => {
+    SettingsManager.alwaysShowChatBar = value;
+    settingsContext.setSettings({
+      ...settingsContext.settings,
+      alwaysShowChatBar: value,
+    });
   };
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const savedAccentColor = localStorage.getItem("accentColor");
-    if (savedTheme) {
-      setTheme(savedTheme);
-    }
-    if (savedAccentColor) {
-      setAccentColor(savedAccentColor);
-    }
+    const { accentColor, alwaysShowChatBar, theme } = SettingsManager.load();
+    setTheme(theme);
+    setAccentColor(accentColor);
+    setAlwaysShowChatBar(alwaysShowChatBar);
   }, []);
 
   const accentColors = [
@@ -161,6 +162,24 @@ export const Settings = () => {
                 />
               );
             })}
+          </div>
+        </li>
+        <li className="options__list-item">
+          <span className="options__item-title">
+            Manter barra de chat visível
+          </span>
+          <div className="options__switch-container">
+            <button
+              type="button"
+              className={`options__switch options__switch--${alwaysShowChatBar ? "on" : "off"}`}
+              onClick={() => {
+                setAlwaysShowChatBar(!alwaysShowChatBar);
+                saveAlwaysShowChatBar(!alwaysShowChatBar);
+              }}
+            >
+              <div className="options__switch-dummy"></div>
+              <div className="options__switch-slider"></div>
+            </button>
           </div>
         </li>
       </ul>

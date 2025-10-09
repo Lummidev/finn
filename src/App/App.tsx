@@ -1,4 +1,4 @@
-import { use, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Message } from "../Entities/Message";
 import "./App.css";
 import { ChatBar } from "./ChatBar/ChatBar";
@@ -11,12 +11,16 @@ import { Outlet, useLocation } from "react-router";
 import { Navigation } from "./Navigation/Navigation";
 import { MessageContext } from "../Context/MessageContext";
 import { useNavigate } from "react-router";
-import { ThemeContext } from "../Context/ThemeContext";
+import { SettingsContext } from "../Context/SettingsContext";
+import { Settings } from "../settings";
 function App() {
   const [messageHistory, setMessageHistory] = useState<JoinedMessage[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const [theme, setTheme] = useState("dark");
+  const [settings, setSettings] = useState({
+    theme: "dark",
+    alwaysShowChatBar: false,
+  });
   const handleUserMessage = async (text: string) => {
     const trimmedText = text.trim();
     const userMessage = await MessageRepository.insert({
@@ -48,17 +52,8 @@ function App() {
       });
   }, []);
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const savedAccentColor = localStorage.getItem("accentColor");
-    document
-      .querySelector("body")
-      ?.setAttribute("data-theme", savedTheme ?? "dark");
-    localStorage.setItem("theme", savedTheme ?? "dark");
-    setTheme(savedTheme ?? "dark");
-    document
-      .querySelector("body")
-      ?.setAttribute("data-accentcolor", savedAccentColor ?? "blue");
-    localStorage.setItem("accentColor", savedAccentColor ?? "blue");
+    const { theme, alwaysShowChatBar } = Settings.load();
+    setSettings({ theme, alwaysShowChatBar });
   }, []);
   useEffect(() => {
     if (
@@ -68,13 +63,14 @@ function App() {
       handleCurrentMessage(messageHistory[0]);
     }
   }, [messageHistory]);
-  const defaultPadding = location.pathname !== "/chat" ? "2rem" : undefined;
-  const themeContext = useMemo(() => {
-    return { theme, setTheme };
-  }, [theme, setTheme]);
+  const atChat = location.pathname === "/chat";
+  const defaultPadding = !atChat ? "2rem" : undefined;
+  const settingsContext = useMemo(() => {
+    return { settings, setSettings };
+  }, [settings, setSettings]);
   return (
     <MessageContext value={messageHistory}>
-      <ThemeContext value={themeContext}>
+      <SettingsContext value={settingsContext}>
         <div className="app">
           <div
             style={{
@@ -85,17 +81,20 @@ function App() {
           >
             <Outlet />
           </div>
-          <div className="app__chat-bar">
-            <ChatBar
-              onSubmit={handleUserMessage}
-              onFocus={() => {
-                navigate("/chat");
-              }}
-            />
-          </div>
+          {(settings.alwaysShowChatBar || atChat) && (
+            <div className="app__chat-bar">
+              <ChatBar
+                onSubmit={handleUserMessage}
+                onFocus={() => {
+                  navigate("/chat");
+                }}
+              />
+            </div>
+          )}
+
           <Navigation />
         </div>
-      </ThemeContext>
+      </SettingsContext>
     </MessageContext>
   );
 }
