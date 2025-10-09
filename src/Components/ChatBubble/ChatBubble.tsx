@@ -5,17 +5,19 @@ import {
   faMoneyBill,
   faList,
   faCalendar,
+  faArrowUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import dayjs from "dayjs";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import type { JoinedMessage } from "../../Database/MessageRepository";
+import { Link } from "react-router";
 interface ChatBubbleProps {
   message: JoinedMessage;
 }
 
 export const ChatBubble = (props: ChatBubbleProps) => {
   const error = props.message.messageType === "error";
-
+  const deleted = !!props.message.entryID && !props.message.entry;
   const messageDisplay = (message: JoinedMessage) => {
     if (
       !(message.messageType === "success" && message.initialEntryInformation)
@@ -38,21 +40,14 @@ export const ChatBubble = (props: ChatBubbleProps) => {
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faMoneyBill} />
-
-            {"R$" +
-              message.initialEntryInformation.moneyExpent.toLocaleString(
-                undefined,
-                {
-                  maximumFractionDigits: 2,
-                  minimumFractionDigits: 2,
-                },
-              )}
+            {new Intl.NumberFormat(undefined, {
+              style: "currency",
+              currency: "BRL",
+            }).format(message.initialEntryInformation.moneyExpent)}
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faList} />
-            {message.initialEntryInformation.categoryName
-              ? message.initialEntryInformation.categoryName
-              : "Outros"}
+            {message.initialEntryInformation.categoryName ?? "Outros"}
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faCalendar} />
@@ -63,17 +58,38 @@ export const ChatBubble = (props: ChatBubbleProps) => {
     }
   };
   return (
-    <div
-      className={`chat-bubble
-        chat-bubble--${props.message.messageType}
-        ${error ? "chat-bubble--error" : ""}`}
-    >
-      <div>{messageDisplay(props.message)}</div>
+    <div className={`chat-bubble chat-bubble--${props.message.messageType}`}>
       <div
-        className={`chat-bubble__date  ${error ? "chat-bubble__date--error" : ""}`}
+        className={`chat-bubble__body
+        chat-bubble__body--${props.message.messageType}
+        ${error ? "chat-bubble__body--error" : ""}`}
       >
-        {dayjs(props.message.createdAtTimestampMiliseconds).format("HH:mm")}
+        <div
+          className={`chat-bubble__content ${deleted ? "chat-bubble__content--deleted" : ""}`}
+        >
+          <div>{messageDisplay(props.message)}</div>
+          <div
+            className={`chat-bubble__date  ${error ? "chat-bubble__date--error" : ""}`}
+          >
+            {dayjs(props.message.createdAtTimestampMiliseconds).format("HH:mm")}
+          </div>
+        </div>
+        {deleted && (
+          <span className="chat-bubble__deleted-notice">
+            Esse gasto foi excluído
+          </span>
+        )}
       </div>
+      {!!props.message.entry && (
+        <div className="chat-bubble__links">
+          <Link
+            className="chat-bubble__expense-link"
+            to={`/expenses/${props.message.entry.id}`}
+          >
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
