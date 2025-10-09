@@ -3,6 +3,7 @@
   flex-direction: column;
   flex: 1;
   gap: 2rem;
+  width: 100%;
 }
 
 .categories__list {
@@ -20,6 +21,7 @@
   font-size: 1.2rem;
   background-color: var(--theme-base);
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  width: 100%;
 }
 .categories__link {
   color: var(--theme-text);
@@ -29,14 +31,28 @@
   flex: 1;
   display: flex;
   align-items: center;
+  justify-items: start;
   gap: 1rem;
   font-weight: 500;
+  min-width: 0;
+  width: 100%;
+}
+.categories__name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 1 auto;
 }
 .categories__link-words {
   color: var(--theme-subtext1);
   font-style: italic;
   font-weight: 400;
   font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 30%;
+  flex: 1;
 }
 .categories__grip {
   color: var(--theme-surface2);

@@ -7,8 +7,13 @@ import {
 } from "../../Database/EntryRepository";
 import dayjs from "dayjs";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowUpRightFromSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
+import { Link } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const ViewExpense = () => {
   const [entry, setEntry] = useState<JoinedEntry | undefined>();
   const params = useParams();
@@ -67,7 +72,7 @@ export const ViewExpense = () => {
             <div className="view-expense__rows">
               <div className="view-expense__row">
                 <h3 className="view-expense__row-title">Data</h3>
-                <div>
+                <div className="view-expense__row-data">
                   {dayjs(entry.createdAtTimestampMiliseconds).format(
                     "dddd, LL",
                   )}
@@ -75,14 +80,28 @@ export const ViewExpense = () => {
               </div>
               <div className="view-expense__row">
                 <h3 className="view-expense__row-title">Horário</h3>
-                <div>
+                <div className="view-expense__row-data">
                   {dayjs(entry.createdAtTimestampMiliseconds).format("HH:mm")}
                 </div>
               </div>
               <div className="view-expense__row">
                 <h3 className="view-expense__row-title">Categoria</h3>
-                <div>
-                  {entry.category ? entry.category.name : "Sem categoria"}
+                <div className="view-expense__row-data">
+                  {entry.category ? (
+                    <Link
+                      className="view-expense__link"
+                      to={`/categories/${entry.category.id}`}
+                    >
+                      <div className="view-expense__link-icon">
+                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                      </div>
+                      <div className="view-expense__link-text">
+                        {entry.category.name}
+                      </div>
+                    </Link>
+                  ) : (
+                    <div>"Sem categoria"</div>
+                  )}
                 </div>
               </div>
             </div>

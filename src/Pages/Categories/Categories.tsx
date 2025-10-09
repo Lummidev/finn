@@ -45,7 +45,7 @@ export const Categories = () => {
                 className="categories__link"
                 to={`/categories/${category.id}`}
               >
-                {category.name}
+                <div className="categories__name">{category.name}</div>
                 {category.words.length > 0 && (
                   <span className="categories__link-words">
                     {`(${category.words.join(", ")})`}
