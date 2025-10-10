@@ -3,48 +3,75 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
   gap: 2rem;
 }
 .category-chart__empty-info {
   color: var(--theme-subtext0);
   text-align: center;
 }
-.category-chart__title {
-  font-size: 2.5rem;
-  text-align: start;
-  align-self: start;
-}
 .category-chart__container {
   display: flex;
   gap: 2rem;
-  flex-direction: column;
+  width: 100%;
 }
 .category-chart__chart {
-  max-width: 100%;
-  max-height: clamp(10dvh, 20rem, 40dvh);
-  aspect-ratio: 1/1;
+  position: relative;
+  flex: 1;
+  min-width: 20%;
 }
 .category-chart__legend {
   list-style: none;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: start;
+  justify-content: end;
   gap: 1rem;
+  min-width: 40%;
+  max-width: 100%;
+
+  flex: 1;
 }
 .category-chart__legend-item {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: end;
+  justify-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: 100%;
+}
+.category-chart__legend-details {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  min-width: 0;
+  max-width: 100%;
+  gap: 0;
+}
+.category-chart__legend-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   font-weight: 500;
-  word-break: break-word;
-  white-space: pre-wrap;
-  font-size: 1.2rem;
+  flex: 1;
+  font-size: 1.1rem;
+  min-width: 5rem;
+  line-height: 1.3rem;
 }
 .category-chart__legend-color {
-  aspect-ratio: 1/1;
   height: 1.2rem;
+  width: 1.2rem;
   border-radius: 2px;
+  flex-shrink: 0;
+  margin-bottom: 0.2rem;
+}
+.category-chart__legend-money {
+  font-size: 0.8rem;
+  line-height: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: var(--theme-subtext0);
 }

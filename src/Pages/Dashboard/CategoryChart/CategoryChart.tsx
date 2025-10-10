@@ -38,7 +38,7 @@ const ShadowPlugin: Plugin = {
 export const CategoryChart = () => {
   const { settings } = use(SettingsContext);
   const theme = settings.theme;
-  const [topCategories, setTopCategories] = useState<[string, number][]>();
+  const [topCategories, setTopCategories] = useState<[string, number][]>([]);
   const [empty, setEmpty] = useState(false);
   useEffect(() => {
     getMoneyExpentByCategory()
@@ -92,15 +92,59 @@ export const CategoryChart = () => {
     <div className="category-chart">
       {empty ? (
         <span className="category-chart__empty-info">
-          Não foi encontrado nenhum gasto agrupado por categoria
+          Registre um gasto em alguma categoria e ele aparecerá aqui!
         </span>
-      ) : !topCategories ? (
-        <></>
       ) : (
         <div className="category-chart__container">
+          <div className="category-chart__chart">
+            <Doughnut
+              datasetIdKey="id"
+              options={{
+                /*@ts-expect-error "borderWidth" does work but apparently isn't registered in the type of this attribute*/
+                borderWidth: 0,
+                animation: false,
+                maintainAspectRatio: false,
+                color: themeColors[theme].text,
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: (context) => {
+                        let label = context.dataset.label ?? "";
+
+                        if (label) {
+                          label += ": ";
+                        }
+                        label += new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(context.parsed);
+                        return label;
+                      },
+                    },
+                  },
+                },
+              }}
+              plugins={[ShadowPlugin]}
+              data={{
+                labels: topCategories.map((category) => category[0]),
+                datasets: [
+                  {
+                    id: 1,
+                    label: "Dinheiro gasto",
+                    data: topCategories.map((category) => category[1]),
+                    offset: topCategories.length > 0 ? 16 : 0,
+                    backgroundColor: colors,
+                  },
+                ],
+              }}
+            />
+          </div>
           <ul className="category-chart__legend">
             {topCategories.map((category, i) => {
-              const [name] = category;
+              const [name, money] = category;
               const color = colors[i];
               return (
                 <li className="category-chart__legend-item" key={name}>
@@ -108,55 +152,19 @@ export const CategoryChart = () => {
                     style={{ backgroundColor: color }}
                     className="category-chart__legend-color"
                   ></div>
-                  {name}
+                  <div className="category-chart__legend-details">
+                    <span className="category-chart__legend-money">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(money)}
+                    </span>
+                    <span className="category-chart__legend-name">{name}</span>
+                  </div>
                 </li>
               );
             })}
           </ul>
-          <Doughnut
-            className="category-chart__chart"
-            datasetIdKey="id"
-            options={{
-              /*@ts-expect-error "borderWidth" does work but apparently isn't registered in the type of this attribute*/
-              borderWidth: 0,
-              animation: true,
-              color: themeColors[theme].text,
-              plugins: {
-                legend: {
-                  display: false,
-                },
-                tooltip: {
-                  callbacks: {
-                    label: (context) => {
-                      let label = context.dataset.label ?? "";
-
-                      if (label) {
-                        label += ": ";
-                      }
-                      label += new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(context.parsed);
-                      return label;
-                    },
-                  },
-                },
-              },
-            }}
-            plugins={[ShadowPlugin]}
-            data={{
-              labels: topCategories.map((category) => category[0]),
-              datasets: [
-                {
-                  id: 1,
-                  label: "Dinheiro gasto",
-                  data: topCategories.map((category) => category[1]),
-                  offset: topCategories.length > 0 ? 16 : 0,
-                  backgroundColor: colors,
-                },
-              ],
-            }}
-          />
         </div>
       )}
     </div>
