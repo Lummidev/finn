@@ -58,28 +58,79 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.view-expense__link {
-  color: var(--theme-accent);
-  text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.view-expense__link-icon {
+.view-expense__choose-category-button {
   min-width: fit-content;
-  aspect-ratio: 1/1;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  color: var(--theme-accent);
+  border: none;
+  padding: 0.5rem 0.8rem;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 10%,
+    transparent 90%
+  );
 }
-.view-expense__link-text {
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.view-expense__word-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.view-expense__word-list {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.view-expense__word-label {
+  border: 0.2rem solid var(--theme-surface0);
+  color: var(--theme-text);
+  padding: 0.3rem 1rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition-property: border, background-color, color;
+  transition-duration: 0.2s;
+}
+
+.view-expense__word-label:has(:checked) {
+  --transparent-accent: color-mix(
+    in srgb,
+    var(--theme-accent) 20%,
+    transparent 80%
+  );
+  border: 0.2rem solid transparent;
+  background-color: var(--transparent-accent);
+  color: var(--theme-accent);
+}
+.view-expense__word-label:has(:focus) {
+  border: 0.2rem solid var(--theme-accent);
+}
+.view-expense__word-check {
+  height: 0;
+  width: 0;
+  outline: 0;
+}
+.view-expense__button {
+  min-width: fit-content;
+  border: none;
+  cursor: pointer;
+  font-size: 1.3rem;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+}
+.view-expense__button--primary {
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  background-color: var(--theme-accent);
+  color: var(--theme-base);
+}
+.view-expense__button--secondary {
+  color: var(--theme-accent);
+  background-color: inherit;
 }
 .view-expense__edit {
   background-color: var(--theme-base);

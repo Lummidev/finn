@@ -23,10 +23,13 @@ export const Modal = (props: PropsWithChildren<ModalProps>) => {
       dialogRef.current.close();
     }
   }, [props.visible]);
+
+  // https://blog.webdevsimplified.com/2023-04/html-dialog/#close-on-outside-click
   const closeIfClickedOutside = (e: MouseEvent<HTMLDialogElement>) => {
     if (!dialogRef.current) return;
     const dialogDimensions = dialogRef.current.getBoundingClientRect();
-
+    //https://stackoverflow.com/a/35034284
+    if (e.screenX === 0 && e.screenY === 0) return;
     if (
       e.clientX < dialogDimensions.left ||
       e.clientX > dialogDimensions.right ||
@@ -42,6 +45,10 @@ export const Modal = (props: PropsWithChildren<ModalProps>) => {
       className="modal"
       onClick={(e) => {
         closeIfClickedOutside(e);
+      }}
+      onCancel={(e) => {
+        e.preventDefault();
+        props.onClose();
       }}
     >
       <div className="modal__header">

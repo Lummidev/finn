@@ -8,28 +8,47 @@ import {
 import dayjs from "dayjs";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import {
-  faArrowUpRightFromSquare,
+  faChevronDown,
   faPencil,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
-import { Link } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
 import type { Entry } from "../../Entities/Entry";
+import type { Category } from "../../Entities/Category";
+import { CategoryRepository } from "../../Database/CategoryRepository";
+import { Modal } from "../../Components/Modal/Modal";
+import { getUniqueWords } from "../../util";
 
 export const ViewExpense = () => {
   const [entry, setEntry] = useState<JoinedEntry | undefined>();
   const [editing, setEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
   const [editedMoney, setEditedMoney] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showCategoryChoice, setShowCategoryChoice] = useState(false);
+  const [showWordChoice, setShowWordChoice] = useState(false);
+  const [targetCategory, setTargetCategory] = useState<Category | undefined>();
+  const [selectedCategoryID, setSelectedCategoryID] = useState<
+    string | undefined
+  >();
+  const [selectedNewWords, setSelectedNewWords] = useState<string[]>([]);
   const params = useParams();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!params.id) return;
     EntryRepository.get(params.id)
       .then((entry) => {
         setEntry(entry);
+      })
+      .catch((e) => {
+        throw e;
+      });
+    CategoryRepository.getAll()
+      .then((categories) => {
+        setCategories(categories);
       })
       .catch((e) => {
         throw e;
@@ -81,6 +100,59 @@ export const ViewExpense = () => {
       });
     setEditing(false);
   };
+  const saveCategory = async () => {
+    if (!entry || !selectedCategoryID) {
+      return;
+    }
+    let newEntry: JoinedEntry;
+    let newCategory: Category | undefined;
+    if (selectedCategoryID === "none") {
+      newEntry = { ...entry, categoryID: undefined };
+    } else {
+      newEntry = {
+        ...entry,
+        categoryID: selectedCategoryID,
+      };
+      newCategory = await CategoryRepository.get(selectedCategoryID);
+    }
+    await EntryRepository.update(newEntry);
+    setEntry({ ...newEntry, category: newCategory });
+    setShowCategoryChoice(false);
+    if (newCategory) {
+      setTargetCategory(newCategory);
+      setShowWordChoice(true);
+    }
+  };
+  const wordIsSelected = (word: string) =>
+    selectedNewWords.filter((selectedNewWord) => selectedNewWord === word)
+      .length > 0;
+  const addWord = (word: string) => {
+    setSelectedNewWords([...selectedNewWords, word]);
+  };
+  const removeWord = (word: string) => {
+    setSelectedNewWords(
+      selectedNewWords.filter((selectedNewWord) => selectedNewWord !== word),
+    );
+  };
+  const saveNewWords = () => {
+    if (!targetCategory) return;
+    const resultWords = [...targetCategory.words];
+    selectedNewWords.forEach((selectedNewWord) => {
+      if (!resultWords.some((resultWord) => resultWord === selectedNewWord)) {
+        resultWords.push(selectedNewWord);
+      }
+    });
+    CategoryRepository.update({
+      ...targetCategory,
+      words: resultWords.sort((a, b) => {
+        return a.localeCompare(b);
+      }),
+    }).catch((e) => {
+      throw e;
+    });
+    setShowWordChoice(false);
+  };
+
   return (
     <div className="view-expense">
       <PageHeader
@@ -155,21 +227,164 @@ export const ViewExpense = () => {
               <div className="view-expense__row">
                 <h3 className="view-expense__row-title">Categoria</h3>
                 <div className="view-expense__row-data">
-                  {entry.category ? (
-                    <Link
-                      className="view-expense__link"
-                      to={`/categories/${entry.category.id}`}
+                  <button
+                    type="button"
+                    className="view-expense__choose-category-button"
+                    onClick={() => {
+                      setSelectedCategoryID(entry.categoryID);
+                      setShowCategoryChoice(true);
+                    }}
+                  >
+                    {entry.category ? (
+                      <>{entry.category.name}</>
+                    ) : (
+                      <div>Sem categoria</div>
+                    )}
+                    <FontAwesomeIcon icon={faChevronDown} />
+                  </button>
+                  <Modal
+                    visible={showCategoryChoice}
+                    onClose={() => {
+                      setShowCategoryChoice(false);
+                      setSelectedCategoryID(undefined);
+                    }}
+                    title="Escolha uma Categoria"
+                  >
+                    <form
+                      className="view-expense__word-choice"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        saveCategory();
+                      }}
                     >
-                      <div className="view-expense__link-icon">
-                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                      <div className="view-expense__word-list">
+                        <label className="view-expense__word-label">
+                          <input
+                            className="view-expense__word-check"
+                            type="radio"
+                            name="category-choice"
+                            value={"none"}
+                            checked={
+                              selectedCategoryID === "none" ||
+                              !selectedCategoryID
+                            }
+                            onChange={(e) => {
+                              setSelectedCategoryID(e.target.value);
+                            }}
+                          />
+                          Sem Categoria
+                        </label>
+                        {categories.map((category) => {
+                          return (
+                            <label
+                              className="view-expense__word-label"
+                              key={category.id}
+                            >
+                              <input
+                                className="view-expense__word-check"
+                                type="radio"
+                                name="category-choice"
+                                value={category.id}
+                                checked={category.id === selectedCategoryID}
+                                onChange={(e) => {
+                                  setSelectedCategoryID(e.target.value);
+                                }}
+                              />
+                              {category.name}
+                            </label>
+                          );
+                        })}
                       </div>
-                      <div className="view-expense__link-text">
-                        {entry.category.name}
+                      <button
+                        type="submit"
+                        className="view-expense__button view-expense__button--primary"
+                      >
+                        Salvar
+                      </button>
+                      <button
+                        type="button"
+                        className="view-expense__button view-expense__button--secondary"
+                        onClick={() => {
+                          setShowCategoryChoice(false);
+                          setSelectedCategoryID(undefined);
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                    </form>
+                  </Modal>
+                  <Modal
+                    title="Escolher palavras"
+                    visible={showWordChoice}
+                    onClose={() => {
+                      setShowWordChoice(false);
+                      setTargetCategory(undefined);
+                      setSelectedNewWords([]);
+                    }}
+                  >
+                    <form
+                      className="view-expense__word-choice"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        saveNewWords();
+                      }}
+                    >
+                      <span className="view-expense__word-choice-description">
+                        Você gostaria de adicionar alguma das palavras da
+                        descrição desse gasto à categoria{" "}
+                        {!!targetCategory && targetCategory.name}?
+                      </span>
+                      <div className="view-expense__word-list">
+                        {!!entry &&
+                          targetCategory &&
+                          getUniqueWords(entry.description)
+                            .filter(
+                              (word) =>
+                                !targetCategory.words.some(
+                                  (categoryWord) => categoryWord === word,
+                                ),
+                            )
+                            .map((word) => (
+                              <label
+                                className="view-expense__word-label"
+                                key={word}
+                              >
+                                <input
+                                  type="checkbox"
+                                  className="view-expense__word-check"
+                                  value={word}
+                                  checked={wordIsSelected(word)}
+                                  onChange={(e) => {
+                                    const checked = e.target.checked;
+                                    if (checked) {
+                                      addWord(word);
+                                    } else {
+                                      removeWord(word);
+                                    }
+                                  }}
+                                />
+                                {word}
+                              </label>
+                            ))}
                       </div>
-                    </Link>
-                  ) : (
-                    <div>"Sem categoria"</div>
-                  )}
+                      <button
+                        type="submit"
+                        className="view-expense__button view-expense__button--primary"
+                      >
+                        Salvar
+                      </button>
+                      <button
+                        type="button"
+                        className="view-expense__button view-expense__button--secondary"
+                        onClick={() => {
+                          setShowWordChoice(false);
+                          setSelectedNewWords([]);
+                        }}
+                      >
+                        Dispensar
+                      </button>
+                    </form>
+                  </Modal>
                 </div>
               </div>
             </div>
@@ -202,7 +417,6 @@ export const ViewExpense = () => {
             step={0.01}
             value={editedMoney}
             onChange={(e) => {
-              console.log(e.target.value);
               setEditedMoney(e.target.value);
             }}
           />
