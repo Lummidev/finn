@@ -283,7 +283,19 @@ export const Expenses = () => {
                           " • " +
                           (entry.category
                             ? entry.category.name
-                            : "Sem categoria")}
+                            : "Sem categoria") +
+                          (entry.updatedAtTimestampMiliseconds
+                            ? ` • Editado ${
+                                dayjs.duration({ days: 1 }).asMilliseconds() <
+                                entry.updatedAtTimestampMiliseconds
+                                  ? dayjs(
+                                      entry.updatedAtTimestampMiliseconds,
+                                    ).fromNow()
+                                  : dayjs(
+                                      entry.updatedAtTimestampMiliseconds,
+                                    ).format("L")
+                              }`
+                            : "")}
                       </div>
                     </div>
                     <div className="expenses__item-money">

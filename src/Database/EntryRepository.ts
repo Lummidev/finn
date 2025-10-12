@@ -45,6 +45,19 @@ const insert = async (
   await database.entries.add(entry);
   return entry;
 };
+const update = async (entry: Entry) => {
+  const { id, moneyExpent, description, categoryID } = entry;
+  const oldEntry = await database.entries.get(id);
+  if (!oldEntry) throw new Error("Tried to update entry that doesn't exist");
+  const newEntry: Entry = {
+    ...oldEntry,
+    moneyExpent,
+    description,
+    categoryID,
+    updatedAtTimestampMiliseconds: new Date().valueOf(),
+  };
+  await database.entries.put(newEntry);
+};
 const remove = async (id: string) => {
   await database.entries.delete(id);
 };
@@ -53,7 +66,11 @@ const removeCategoryFromAll = async (categoryID: string) => {
     (
       await database.entries.where("categoryID").equals(categoryID).toArray()
     ).map(async (entry) => {
-      await database.entries.put({ ...entry, categoryID: undefined });
+      await database.entries.put({
+        ...entry,
+        categoryID: undefined,
+        updatedAtTimestampMiliseconds: new Date().valueOf(),
+      });
     }),
   );
 };
@@ -61,6 +78,7 @@ export const EntryRepository = {
   getAll,
   get,
   insert,
+  update,
   remove,
   removeCategoryFromAll,
 };

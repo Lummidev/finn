@@ -1,4 +1,4 @@
-import type { ChangeEventHandler } from "react";
+import type { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 import "./LabeledInput.css";
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,8 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 interface LabeledInputProps {
   name: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
-  value: string;
+  value: string | number;
   placeholder?: string;
+  type?: HTMLInputTypeAttribute;
+  step?: number;
   button?: {
     icon: IconDefinition;
     label: string;
@@ -23,7 +25,8 @@ export const LabeledInput = (props: LabeledInputProps) => {
       <div className="labeled-input__input-row">
         <input
           className="labeled-input__input"
-          type="text"
+          type={props.type ?? "text"}
+          step={props.step}
           id={`id-${props.name}`}
           onChange={props.onChange}
           value={props.value}

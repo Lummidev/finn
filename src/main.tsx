@@ -10,6 +10,8 @@ import App from "./App/App.tsx";
 import "@fontsource-variable/roboto";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
+import duration from "dayjs/plugin/duration";
 import { BrowserRouter, Route } from "react-router";
 import { Routes } from "react-router";
 import { Dashboard } from "./Pages/Dashboard/Dashboard.tsx";
@@ -29,6 +31,8 @@ import {
 } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend, Colors);
 dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
+dayjs.extend(duration);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>

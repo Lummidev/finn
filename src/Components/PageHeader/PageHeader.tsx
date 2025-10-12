@@ -10,14 +10,14 @@ interface Action {
   destructive?: boolean;
   icon?: IconDefinition;
   disabled?: boolean;
-  onAction: () => unknown;
+  onAction?: () => unknown;
 }
 interface PageHeaderProps {
   title: string;
   className?: string;
   subMenu?: Action[];
   buttons?: {
-    primary?: Action & {};
+    primary?: Action & ({ submit?: false } | { submit: true; formID: string });
     secondary?: Action;
   };
 }
@@ -46,7 +46,12 @@ export const PageHeader = (props: PageHeaderProps) => {
             )}
             {!!props.buttons.primary && (
               <button
-                type="button"
+                type={props.buttons.primary.submit ? "submit" : "button"}
+                form={
+                  props.buttons.primary.submit
+                    ? props.buttons.primary.formID
+                    : undefined
+                }
                 className="page-header__button"
                 disabled={props.buttons.primary.disabled}
                 onClick={props.buttons.primary.onAction}
@@ -74,22 +79,27 @@ export const PageHeader = (props: PageHeaderProps) => {
       {subMenuExists && showSubMenu && (
         <>
           <div className="page-header__submenu">
-            {props.subMenu.map((action) => {
-              return (
-                <button
-                  className={`page-header__submenu-button ${action.destructive ? "page-header__submenu-button--destructive" : ""}`}
-                  type="button"
-                  key={action.name}
-                  onClick={() => {
-                    setShowSubMenu(false);
-                    action.onAction();
-                  }}
-                >
-                  {action.icon ? <FontAwesomeIcon icon={action.icon} /> : <></>}
-                  {action.name}
-                </button>
-              );
-            })}
+            {!!props.subMenu &&
+              props.subMenu.map((action) => {
+                return (
+                  <button
+                    className={`page-header__submenu-button ${action.destructive ? "page-header__submenu-button--destructive" : ""}`}
+                    type="button"
+                    key={action.name}
+                    onClick={() => {
+                      setShowSubMenu(false);
+                      if (action.onAction) action.onAction();
+                    }}
+                  >
+                    {action.icon ? (
+                      <FontAwesomeIcon icon={action.icon} />
+                    ) : (
+                      <></>
+                    )}
+                    {action.name}
+                  </button>
+                );
+              })}
           </div>
           <div
             onClick={() => setShowSubMenu(false)}

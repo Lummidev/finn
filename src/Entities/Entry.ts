@@ -3,5 +3,6 @@ export interface Entry {
   moneyExpent: number;
   description: string;
   createdAtTimestampMiliseconds: number;
+  updatedAtTimestampMiliseconds?: number;
   categoryID?: string;
 }
