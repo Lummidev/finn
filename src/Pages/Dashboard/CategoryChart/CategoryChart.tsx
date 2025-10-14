@@ -4,6 +4,11 @@ import { use, useEffect, useState } from "react";
 import type { Plugin } from "chart.js";
 import { getMoneyExpentByCategory } from "../../../Database/ReportRepository";
 import "./CategoryChart.css";
+import type { Category } from "../../../Entities/Category";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
+import { faEllipsisH, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { categoryIcons } from "../../../categoryIcons";
 const themeColors: Record<string, Record<string, string>> = {
   dark: {
     blue: "#8aadf4",
@@ -38,15 +43,17 @@ const ShadowPlugin: Plugin = {
 export const CategoryChart = () => {
   const { settings } = use(SettingsContext);
   const theme = settings.theme;
-  const [topCategories, setTopCategories] = useState<[string, number][]>([]);
+  const [topCategories, setTopCategories] = useState<
+    [string, number, Category][]
+  >([]);
   const [empty, setEmpty] = useState(false);
   useEffect(() => {
     getMoneyExpentByCategory()
       .then((data) => {
         const dataArray = Object.keys(data.moneyExpentByCategory).map(
-          (key): [string, number] => {
-            const { id, money } = data.moneyExpentByCategory[key];
-            return [key, money];
+          (key): [string, number, Category] => {
+            const { category, money } = data.moneyExpentByCategory[key];
+            return [key, money, category];
           },
         );
         if (dataArray.length === 0) {
@@ -54,7 +61,7 @@ export const CategoryChart = () => {
           return;
         }
         const sorted = dataArray.sort(
-          (a: [string, number], b: [string, number]) => {
+          (a: [string, number, Category], b: [string, number, Category]) => {
             const [, moneyA] = a;
             const [, moneyB] = b;
             return moneyB - moneyA;
@@ -71,7 +78,20 @@ export const CategoryChart = () => {
             0,
           );
         if (other > 0) {
-          setTopCategories([...top5, ["Outras", other]]);
+          setTopCategories([
+            ...top5,
+            [
+              "Outras",
+              other,
+              {
+                id: "",
+                name: "Outras",
+                precedence: 0,
+                words: [],
+                iconName: "ellipsis",
+              },
+            ],
+          ]);
         } else {
           setTopCategories(top5);
         }
@@ -143,8 +163,8 @@ export const CategoryChart = () => {
             />
           </div>
           <ul className="category-chart__legend">
-            {topCategories.map((category, i) => {
-              const [name, money] = category;
+            {topCategories.map((topCategory, i) => {
+              const [name, money, category] = topCategory;
               const color = colors[i];
               return (
                 <li className="category-chart__legend-item" key={name}>
@@ -159,7 +179,23 @@ export const CategoryChart = () => {
                         currency: "BRL",
                       }).format(money)}
                     </span>
-                    <span className="category-chart__legend-name">{name}</span>
+                    <span className="category-chart__legend-name">
+                      {category.iconName && (
+                        <FontAwesomeIcon
+                          icon={(() => {
+                            if (category.iconName === "ellipsis") {
+                              return faEllipsisH;
+                            } else {
+                              return (
+                                categoryIcons[category.iconName]?.icon ??
+                                faQuestion
+                              );
+                            }
+                          })()}
+                        />
+                      )}
+                      {name}
+                    </span>
                   </div>
                 </li>
               );

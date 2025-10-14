@@ -9,7 +9,9 @@ import dayjs from "dayjs";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import {
   faChevronDown,
+  faMoneyBill,
   faPencil,
+  faQuestion,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
@@ -20,6 +22,7 @@ import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { Modal } from "../../Components/Modal/Modal";
 import { getUniqueWords } from "../../util";
+import { categoryIcons } from "../../categoryIcons";
 
 export const ViewExpense = () => {
   const [entry, setEntry] = useState<JoinedEntry | undefined>();
@@ -152,7 +155,10 @@ export const ViewExpense = () => {
     });
     setShowWordChoice(false);
   };
-
+  const showIcon = (iconName?: string) => {
+    if (!iconName) return faMoneyBill;
+    else return categoryIcons[iconName]?.icon ?? faQuestion;
+  };
   return (
     <div className="view-expense">
       <PageHeader
@@ -198,6 +204,9 @@ export const ViewExpense = () => {
         <></>
       ) : !editing ? (
         <div className="view-expense__information">
+          <div className="view-expense__icon">
+            <FontAwesomeIcon icon={showIcon(entry.category?.iconName)} />
+          </div>
           <div className="view-expense__money">
             R$
             {entry.moneyExpent.toLocaleString(undefined, {

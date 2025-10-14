@@ -4,10 +4,10 @@ import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
-import { faGripVertical } from "@fortawesome/free-solid-svg-icons";
+import { faGripVertical, faTag } from "@fortawesome/free-solid-svg-icons";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { useNavigate } from "react-router";
-
+import { categoryIcons } from "../../categoryIcons";
 export const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
@@ -40,6 +40,15 @@ export const Categories = () => {
             <li className="categories__list-item" key={category.id}>
               <div className="categories__grip">
                 <FontAwesomeIcon icon={faGripVertical} />
+              </div>
+              <div className="categories__icon">
+                {category.iconName ? (
+                  <FontAwesomeIcon
+                    icon={categoryIcons[category.iconName]?.icon ?? faTag}
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTag} />
+                )}
               </div>
               <Link
                 className="categories__link"

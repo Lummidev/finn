@@ -22,7 +22,10 @@ export const handleMessage = async (text: string): Promise<JoinedMessage> => {
       initialEntryInformation: {
         moneyExpent,
         description,
-        categoryName: category?.name,
+        category: category && {
+          name: category.name,
+          iconName: category.iconName,
+        },
       },
     });
     return {

@@ -90,7 +90,10 @@
   font-weight: 500;
   cursor: pointer;
   transition-property: border, background-color, color;
-  transition-duration: 0.2s;
+  transition-duration: 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .expenses__category-label:has(:checked) {
@@ -105,6 +108,9 @@
 }
 .expenses__category-label:has(:focus) {
   border: 0.2rem solid var(--theme-accent);
+}
+.expenses__category-icon {
+  margin-right: 0.3rem;
 }
 .expenses__category-checkbox {
   height: 0;
@@ -192,7 +198,31 @@
   border-radius: 0.3rem;
   width: 100%;
 }
+.expenses__item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.expenses__item-icon {
+  justify-self: flex-start;
+  font-size: 1.5rem;
+  aspect-ratio: 1/1;
+  min-width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0.5rem;
+  background-color: color-mix(
+    in srgb,
+    var(--theme-surface0) 40%,
+    transparent 50%
+  );
+  color: var(--theme-subtext1);
+}
 .expenses__item-details {
+  justify-self: flex-start;
   min-width: 0;
 }
 .expenses__item-title {
@@ -207,7 +237,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  gap: 0.3rem;
 }
+
 .expenses__item-money {
   font-size: 1.4rem;
   font-weight: 600;

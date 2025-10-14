@@ -49,6 +49,9 @@
   gap: 0;
 }
 .category-chart__legend-name {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

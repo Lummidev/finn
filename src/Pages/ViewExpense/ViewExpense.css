@@ -8,11 +8,23 @@
 .view-expense__information {
   background-color: var(--theme-base);
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
-
   border-radius: 0.3rem;
   padding: 2rem;
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
+}
+.view-expense__icon {
+  font-size: 4rem;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: fit-content;
+  aspect-ratio: 1/1;
+  background-color: var(--theme-surface0);
+  padding: 1.5rem;
+  border-radius: 50%;
 }
 .view-expense__money {
   font-size: 2rem;

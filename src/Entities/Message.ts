@@ -5,7 +5,10 @@ export interface Message {
   content?: string;
   entryID?: string;
   initialEntryInformation?: {
-    categoryName?: string;
+    category?: {
+      name: string;
+      iconName?: string;
+    };
     moneyExpent: number;
     description: string;
   };

@@ -10,12 +10,19 @@ import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
+  faEllipsis,
+  faEllipsisH,
+  faEllipsisV,
   faFilterCircleXmark,
   faMagnifyingGlass,
+  faMoneyBill,
+  faQuestion,
+  faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { Modal } from "../../Components/Modal/Modal";
+import { categoryIcons } from "../../categoryIcons";
 export const Expenses = () => {
   const [dateEntryRecord, setDateEntryRecord] = useState<
     Record<string, JoinedEntry[]>
@@ -130,6 +137,10 @@ export const Expenses = () => {
     searchParams.delete("categoryID");
     setSearchParams(searchParams);
   };
+  const showIcon = (iconName?: string) => {
+    if (!iconName) return faMoneyBill;
+    else return categoryIcons[iconName]?.icon ?? faQuestion;
+  };
   return (
     <div className="expenses">
       <PageHeader title="Gastos" />
@@ -153,9 +164,14 @@ export const Expenses = () => {
             onChange={(e) => {
               setSearchText(e.target.value);
             }}
-            style={{
-              color: searchText === search ? "var(--theme-accent)" : undefined,
-            }}
+            style={
+              searchText === search
+                ? {
+                    color: "var(--theme-accent)",
+                    fontWeight: 500,
+                  }
+                : undefined
+            }
           />
           <button type="submit" className="expenses__search-button">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
@@ -201,9 +217,13 @@ export const Expenses = () => {
             >
               <div className="expenses__category-options">
                 {[
-                  { id: "none", name: "Sem Categoria" },
+                  { id: "none", name: "Sem Categoria", iconName: undefined },
                   ...categories.map((category) => {
-                    return { id: category.id, name: category.name };
+                    return {
+                      id: category.id,
+                      name: category.name,
+                      iconName: category.iconName,
+                    };
                   }),
                 ].map((category) => {
                   return (
@@ -222,6 +242,12 @@ export const Expenses = () => {
                           else removeCategory(category.id);
                         }}
                       />
+                      {category.iconName && (
+                        <FontAwesomeIcon
+                          className="expenses__category-icon"
+                          icon={showIcon(category.iconName)}
+                        />
+                      )}
                       {category.name}
                     </label>
                   );
@@ -272,30 +298,44 @@ export const Expenses = () => {
               {entries.map((entry) => (
                 <li key={entry.id}>
                   <Link className="expenses__item" to={`/expenses/${entry.id}`}>
-                    <div className="expenses__item-details">
-                      <h3 className="expenses__item-title">
-                        {entry.description}
-                      </h3>
-                      <div className="expenses__item-date-category">
-                        {dayjs(entry.createdAtTimestampMiliseconds).format(
-                          "HH:mm",
-                        ) +
-                          " • " +
-                          (entry.category
-                            ? entry.category.name
-                            : "Sem categoria") +
-                          (entry.updatedAtTimestampMiliseconds
-                            ? ` • Editado ${
-                                dayjs.duration({ days: 1 }).asMilliseconds() <
-                                entry.updatedAtTimestampMiliseconds
-                                  ? dayjs(
-                                      entry.updatedAtTimestampMiliseconds,
-                                    ).fromNow()
-                                  : dayjs(
-                                      entry.updatedAtTimestampMiliseconds,
-                                    ).format("L")
-                              }`
-                            : "")}
+                    <div className="expenses__item-left">
+                      <span className="expenses__item-icon">
+                        <FontAwesomeIcon
+                          icon={showIcon(entry.category?.iconName)}
+                        />
+                      </span>
+
+                      <div className="expenses__item-details">
+                        <h3 className="expenses__item-title">
+                          {entry.description}
+                        </h3>
+                        <div className="expenses__item-date-category">
+                          <span>
+                            {dayjs(entry.createdAtTimestampMiliseconds).format(
+                              "HH:mm",
+                            )}
+                          </span>
+                          <span>•</span>
+                          {entry.category ? (
+                            <span>{entry.category.name}</span>
+                          ) : (
+                            <span>Sem categoria</span>
+                          )}
+                          {entry.updatedAtTimestampMiliseconds && (
+                            <>
+                              <span>•</span>
+                              Editado{" "}
+                              {dayjs.duration({ days: 1 }).asMilliseconds() <
+                              entry.updatedAtTimestampMiliseconds
+                                ? dayjs(
+                                    entry.updatedAtTimestampMiliseconds,
+                                  ).fromNow()
+                                : dayjs(
+                                    entry.updatedAtTimestampMiliseconds,
+                                  ).format("L")}
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div className="expenses__item-money">

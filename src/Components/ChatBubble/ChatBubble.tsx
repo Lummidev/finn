@@ -6,11 +6,16 @@ import {
   faList,
   faCalendar,
   faArrowUpRightFromSquare,
+  type IconDefinition,
+  faTag,
+  faQuestion,
+  faEllipsisH,
 } from "@fortawesome/free-solid-svg-icons";
 import dayjs from "dayjs";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import type { JoinedMessage } from "../../Database/MessageRepository";
 import { Link } from "react-router";
+import { categoryIcons } from "../../categoryIcons";
 interface ChatBubbleProps {
   message: JoinedMessage;
 }
@@ -18,6 +23,12 @@ interface ChatBubbleProps {
 export const ChatBubble = (props: ChatBubbleProps) => {
   const error = props.message.messageType === "error";
   const deleted = !!props.message.entryID && !props.message.entry;
+  const showIcon = (iconName?: string): IconDefinition => {
+    console.log(iconName);
+    if (!iconName) return faTag;
+    const icon = categoryIcons[iconName]?.icon;
+    return icon ? icon : faQuestion;
+  };
   const messageDisplay = (message: JoinedMessage) => {
     if (
       !(message.messageType === "success" && message.initialEntryInformation)
@@ -46,8 +57,21 @@ export const ChatBubble = (props: ChatBubbleProps) => {
             }).format(message.initialEntryInformation.moneyExpent)}
           </div>
           <div className="chat-bubble__display-row">
-            <FontAwesomeIcon icon={faList} />
-            {message.initialEntryInformation.categoryName ?? "Outros"}
+            {message.initialEntryInformation.category ? (
+              <>
+                <FontAwesomeIcon
+                  icon={showIcon(
+                    message.initialEntryInformation.category?.iconName,
+                  )}
+                />
+                {message.initialEntryInformation.category.name}
+              </>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faEllipsisH} />
+                Sem Categoria
+              </>
+            )}
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faCalendar} />
