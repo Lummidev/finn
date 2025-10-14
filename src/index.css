@@ -7,6 +7,11 @@ body {
   margin: 0;
   font-family: "Roboto Variable", sans-serif;
 }
+* {
+  transition-property: background-color, color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
 :root {
   @media (width <= 350px) {
     font-size: 6.5pt;
