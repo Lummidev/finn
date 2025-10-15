@@ -7,59 +7,62 @@ import {
   faGear,
   faLayerGroup,
   faList,
+  type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router";
 export const Navigation = () => {
   const location = useLocation();
-  const pathnames = {
-    categories: "/categories",
-    dashboard: "/",
-    chat: "/chat",
-    settings: "/settings",
-    expenses: "/expenses",
-  };
-  const activeLocationClass = (path: string) =>
-    location.pathname.split("/")[1] === path.split("/")[1]
-      ? "navigation__button--current"
-      : "";
-  return (
-    <div className="navigation">
-      <Link
-        to={pathnames.settings}
-        className={`navigation__button ${activeLocationClass(pathnames.settings)}`}
-      >
-        <FontAwesomeIcon icon={faGear} />
-        Ajustes
-      </Link>
 
-      <Link
-        to={pathnames.categories}
-        className={`navigation__button ${activeLocationClass(pathnames.categories)}`}
-      >
-        <FontAwesomeIcon icon={faLayerGroup} />
-        Categorias
-      </Link>
-      <Link
-        to={pathnames.expenses}
-        className={`navigation__button ${activeLocationClass(pathnames.expenses)}`}
-      >
-        <FontAwesomeIcon icon={faList} />
-        Gastos
-      </Link>
-      <Link
-        to={pathnames.dashboard}
-        className={`navigation__button ${activeLocationClass(pathnames.dashboard)}`}
-      >
-        <FontAwesomeIcon icon={faChartSimple} />
-        Resumo
-      </Link>
-      <Link
-        to={pathnames.chat}
-        className={`navigation__button ${activeLocationClass(pathnames.chat)}`}
-      >
-        <FontAwesomeIcon icon={faComments} />
-        Chat
-      </Link>
-    </div>
+  const activeLocationClass = (path: string) => {
+    const active = location.pathname.split("/")[1] === path.split("/")[1];
+    return {
+      link: active ? "navigation__button--current" : "",
+      icon: active ? "navigation__icon--current" : "",
+    };
+  };
+  const links: { name: string; pathName: string; icon: IconDefinition }[] = [
+    {
+      name: "Ajustes",
+      pathName: "/settings",
+      icon: faGear,
+    },
+    {
+      name: "Categorias",
+      pathName: "/categories",
+      icon: faLayerGroup,
+    },
+    {
+      name: "Gastos",
+      pathName: "/expenses",
+      icon: faList,
+    },
+    {
+      name: "Resumo",
+      pathName: "/",
+      icon: faChartSimple,
+    },
+    {
+      name: "Chat",
+      pathName: "/chat",
+      icon: faComments,
+    },
+  ];
+  return (
+    <nav className="navigation">
+      {links.map((link) => (
+        <Link
+          key={link.name}
+          to={link.pathName}
+          className={`navigation__button ${activeLocationClass(link.pathName).link}`}
+        >
+          <div
+            className={`navigation__icon ${activeLocationClass(link.pathName).icon}`}
+          >
+            <FontAwesomeIcon icon={link.icon} />
+          </div>
+          {link.name}
+        </Link>
+      ))}
+    </nav>
   );
 };

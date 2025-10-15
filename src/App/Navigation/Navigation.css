@@ -20,5 +20,45 @@
 
 .navigation__button--current {
   font-weight: 700;
-  color: var(--theme-accent);
+}
+
+.navigation__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2rem;
+  min-width: fit-content;
+  height: 2.5rem;
+  width: 5rem;
+}
+
+.navigation__icon--current {
+  color: color-mix(in srgb, var(--theme-accent) 10%, var(--theme-text) 90%);
+}
+.navigation__icon--current::before {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  border-radius: 4rem;
+  height: 2.5rem;
+  width: 5rem;
+  content: "";
+  background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 15%,
+    transparent 85%
+  );
+  animation: 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) grow-background;
+}
+@keyframes grow-background {
+  from {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+  to {
+    height: 2.5rem;
+    width: 5rem;
+  }
 }
