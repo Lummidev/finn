@@ -3,15 +3,25 @@ import "./CategoryForm.css";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faQuestion,
+  faTag,
+  faTrash,
+  type IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
+import { ChooseIconModal } from "../../Components/ChooseIconModal/ChooseIconModal";
+import { categoryIcons } from "../../categoryIcons";
 export const CategoryForm = () => {
   const [name, setName] = useState("");
   const [words, setWords] = useState<string[]>([]);
   const [newWord, setNewWord] = useState("");
   const [validName, setValidName] = useState(false);
   const [validWord, setValidWord] = useState(false);
+  const [showIconChoice, setShowIconChoice] = useState(false);
+  const [newIconName, setNewIconName] = useState<string | undefined>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +35,7 @@ export const CategoryForm = () => {
     CategoryRepository.insert({
       name: name.trim(),
       words: words.sort((a, b) => a.localeCompare(b)),
+      iconName: newIconName,
     })
       .then(() => {
         navigate("/categories");
@@ -43,34 +54,56 @@ export const CategoryForm = () => {
     const filteredWords = words.filter((savedWord) => savedWord !== word);
     setWords(filteredWords);
   };
+  const showIcon = (iconName?: string): IconDefinition => {
+    if (!iconName) return faTag;
+    const icon = categoryIcons[iconName]?.icon;
+    return icon ? icon : faQuestion;
+  };
   return (
     <div className="category-form">
       <PageHeader
         buttons={{
           primary: {
             name: "Salvar",
-            onAction: submit,
             disabled: !validName,
+            submit: true,
+            formID: "new-category-form",
           },
         }}
         title="Nova Categoria"
       />
-      <div className="category-form__fields">
-        <LabeledInput
-          name="Nome"
-          placeholder="Farmácia"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
-        <form
-          className="category-form__labeled-input"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (validWord) addWord();
-          }}
-        >
+      <form
+        id="new-category-form"
+        className="category-form__fields"
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <div className="category-form__name-row">
+          <button
+            id="edit-icon-button"
+            className="category-form__edit-icon-button"
+            type="button"
+            aria-label="Mudar Ícone"
+            onClick={() => {
+              setShowIconChoice(true);
+            }}
+          >
+            <FontAwesomeIcon icon={showIcon(newIconName)} />
+          </button>
+
+          <LabeledInput
+            className="category-form__edit-name"
+            name="Nome"
+            placeholder="Farmácia"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          />
+        </div>
+        <div className="category-form__labeled-input">
           <LabeledInput
             name="Palavras Extras"
             placeholder="paracetamol"
@@ -83,6 +116,12 @@ export const CategoryForm = () => {
             }}
             onChange={(e) => {
               setNewWord(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                if (validWord) addWord();
+              }
             }}
           />
           {words.length > 0 && (
@@ -101,8 +140,18 @@ export const CategoryForm = () => {
               ))}
             </ul>
           )}
-        </form>
-      </div>
+        </div>
+      </form>
+      <ChooseIconModal
+        visible={showIconChoice}
+        close={() => {
+          setShowIconChoice(false);
+        }}
+        onChoice={(iconName) => {
+          setNewIconName(iconName);
+        }}
+        initialIconName={newIconName}
+      />
     </div>
   );
 };

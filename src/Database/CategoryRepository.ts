@@ -7,12 +7,13 @@ const getAll = async (): Promise<Category[]> => {
   return await database.categories.orderBy("precedence").toArray();
 };
 const insert = async (props: Omit<Category, "id" | "precedence">) => {
-  const { name, words } = props;
+  const { name, words, iconName } = props;
   const category: Category = {
     id: v4(),
     precedence: 0,
     name,
     words,
+    iconName,
   };
   await database.categories.add(category);
   return category;

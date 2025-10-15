@@ -16,7 +16,7 @@ import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
 import { categoryIcons } from "../../categoryIcons";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons/faQuestion";
-import { Modal } from "../../Components/Modal/Modal";
+import { ChooseIconModal } from "../../Components/ChooseIconModal/ChooseIconModal";
 export const ViewCategory = () => {
   const [category, setCategory] = useState<Category | undefined>();
   const [editing, setEditing] = useState(false);
@@ -26,9 +26,7 @@ export const ViewCategory = () => {
   const [validName, setValidName] = useState(false);
   const [validWord, setValidWord] = useState(false);
   const [newIconName, setNewIconName] = useState<string | undefined>();
-  const [selectedNewIconName, setSelectedNewIconName] = useState<
-    string | undefined
-  >();
+
   const [showIconChoice, setShowIconChoice] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
@@ -121,14 +119,12 @@ export const ViewCategory = () => {
         },
       ];
   const showIcon = (iconName?: string): IconDefinition => {
-    console.log(faTag.iconName);
     if (!iconName) return faTag;
     const icon = categoryIcons[iconName]?.icon;
     return icon ? icon : faQuestion;
   };
   const openIconEditModal = () => {
     if (!category) return;
-    setSelectedNewIconName(newIconName ?? category.iconName);
     setShowIconChoice(true);
   };
   return (
@@ -214,64 +210,16 @@ export const ViewCategory = () => {
                   </ul>
                 </div>
               </form>
-              <Modal
-                title="Escolha um ícone"
+              <ChooseIconModal
                 visible={showIconChoice}
-                onClose={() => {
-                  setSelectedNewIconName(undefined);
+                close={() => {
                   setShowIconChoice(false);
                 }}
-              >
-                <form
-                  className="view-category__icon-form"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setNewIconName(selectedNewIconName);
-                    setShowIconChoice(false);
-                  }}
-                >
-                  <div className="view-category__icon-choice">
-                    {Object.values(categoryIcons).map((categoryIcon) => {
-                      return (
-                        <label
-                          key={categoryIcon.icon.iconName}
-                          aria-label={categoryIcon.displayName}
-                          className="view-category__icon-label"
-                        >
-                          <input
-                            className="view-category__icon-radio"
-                            type="radio"
-                            name="category-icon-option"
-                            value={categoryIcon.icon.iconName}
-                            checked={
-                              selectedNewIconName === categoryIcon.icon.iconName
-                            }
-                            onChange={(e) => {
-                              setSelectedNewIconName(e.target.value);
-                            }}
-                          />
-                          <FontAwesomeIcon icon={categoryIcon.icon} />
-                        </label>
-                      );
-                    })}
-                  </div>
-                  <button
-                    type="submit"
-                    className="view-category__button view-category__button--primary"
-                  >
-                    Salvar
-                  </button>
-                  <button
-                    type="button"
-                    className="view-category__button view-category__button--secondary"
-                    onClick={() => {
-                      setShowIconChoice(false);
-                    }}
-                  >
-                    Cancelar
-                  </button>
-                </form>
-              </Modal>
+                onChoice={(iconName) => {
+                  setNewIconName(iconName);
+                }}
+                initialIconName={newIconName ?? category.iconName}
+              />
             </>
           ) : (
             <div className="view-category__content">
