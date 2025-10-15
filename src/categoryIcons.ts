@@ -6,19 +6,19 @@ import {
   faCar,
   faComputer,
   faDumbbell,
+  faFutbol,
+  faGamepad,
   faGift,
   faGraduationCap,
+  faHouse,
   faMobileScreen,
   faPaw,
   faPills,
-  faSoccerBall,
   faStore,
   faTag,
   faUtensils,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import { faGamepad } from "@fortawesome/free-solid-svg-icons/faGamepad";
-import { faHouse } from "@fortawesome/free-solid-svg-icons/faHouse";
 
 export const categoryIcons: Record<
   string,
@@ -38,7 +38,7 @@ export const categoryIcons: Record<
   bus: { icon: faBus, displayName: "Ônibus" },
   bag: { icon: faBagShopping, displayName: "Sacola" },
   dumbbell: { icon: faDumbbell, displayName: "Haltere" },
-  soccer: { icon: faSoccerBall, displayName: "Bola de Futebol" },
+  futbol: { icon: faFutbol, displayName: "Bola de Futebol" },
   pills: { icon: faPills, displayName: "Pílulas" },
   gift: { icon: faGift, displayName: "Presente" },
   store: { icon: faStore, displayName: "Loja" },
