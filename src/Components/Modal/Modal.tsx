@@ -41,6 +41,8 @@ export const Modal = (props: PropsWithChildren<ModalProps>) => {
   };
   return (
     <dialog
+      role="dialog"
+      aria-labelledby="modal-title"
       ref={dialogRef}
       className="modal"
       onClick={(e) => {
@@ -52,11 +54,12 @@ export const Modal = (props: PropsWithChildren<ModalProps>) => {
       }}
     >
       <div className="modal__header">
-        <h2>{props.title}</h2>
+        <h2 id="modal-title">{props.title}</h2>
         <button
           type="button"
           className="modal__close-button"
           onClick={props.onClose}
+          aria-label="Fechar"
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>
