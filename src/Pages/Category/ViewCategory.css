@@ -43,10 +43,17 @@
   cursor: pointer;
   background-color: color-mix(
     in srgb,
-    var(--theme-accent) 20%,
-    transparent 80%
+    var(--theme-accent) 15%,
+    transparent 85%
   );
   color: var(--theme-accent);
+}
+.view-category__edit-icon-button:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 25%,
+    transparent 75%
+  );
 }
 .view-category__icon {
   min-width: fit-content;
@@ -156,10 +163,31 @@
 }
 .view-category__word-container {
   display: flex;
+  font-weight: 500;
   align-items: center;
-  border: 1px solid var(--theme-accent);
+  background-color: color-mix(
+    in srgb,
+    var(--theme-surface0) 50%,
+    transparent 50%
+  );
   color: var(--theme-text);
   border-radius: 0.3rem;
+}
+
+.view-category__word-container--editing {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 15%,
+    transparent 85%
+  );
+  color: var(--theme-accent);
+}
+.view-category__word-container--editing:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 25%,
+    transparent 75%
+  );
 }
 .view-category__word {
   font-size: 1.5rem;
@@ -168,9 +196,14 @@
   white-space: pre-wrap;
 }
 .view-category__remove-word-button {
-  background-color: var(--theme-accent);
-  color: var(--theme-base);
-  font-size: 1.2rem;
+  background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 20%,
+    transparent 80%
+  );
+  color: var(--theme-accent);
+  border-radius: 0 0.3rem 0.3rem 0;
+  font-size: 1.3rem;
   height: 100%;
   min-width: fit-content;
   cursor: pointer;

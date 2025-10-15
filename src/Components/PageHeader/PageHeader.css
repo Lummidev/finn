@@ -5,7 +5,8 @@
   justify-content: space-between;
 }
 .page-header__title {
-  font-size: 2.5rem;
+  font-size: 2rem;
+  min-width: fit-content;
 }
 .page-header__right {
   display: flex;
@@ -18,14 +19,20 @@
 }
 .page-header__button {
   border: none;
-  background-color: var(--theme-accent);
-  color: var(--theme-base);
   border-radius: 3rem;
   padding: 0.5rem 1rem;
   transition: background-color 0.2s;
   cursor: pointer;
+  min-width: fit-content;
   font-size: 1.2rem;
   font-weight: 500;
+}
+.page-header__button--primary {
+  background-color: var(--theme-accent);
+  color: var(--theme-base);
+}
+.page-header__button--primary:hover {
+  background-color: color-mix(in srgb, var(--theme-accent) 90%, black 10%);
 }
 .page-header__button:disabled {
   opacity: 0.5;

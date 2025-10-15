@@ -52,7 +52,7 @@ export const PageHeader = (props: PageHeaderProps) => {
                     ? props.buttons.primary.formID
                     : undefined
                 }
-                className="page-header__button"
+                className="page-header__button page-header__button--primary"
                 disabled={props.buttons.primary.disabled}
                 onClick={props.buttons.primary.onAction}
               >

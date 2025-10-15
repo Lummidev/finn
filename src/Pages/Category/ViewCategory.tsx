@@ -95,7 +95,7 @@ export const ViewCategory = () => {
   const buttons = editing
     ? {
         primary: {
-          name: "Salvar alterações",
+          name: "Salvar",
           disabled: !validName,
           submit: true,
           formID: "edit-category",
@@ -198,7 +198,7 @@ export const ViewCategory = () => {
                       return (
                         <li
                           key={word}
-                          className="view-category__word-container"
+                          className="view-category__word-container view-category__word-container--editing"
                         >
                           <div className="view-category__word">{word}</div>
                           <button
