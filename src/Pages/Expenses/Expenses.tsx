@@ -10,19 +10,15 @@ import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
-  faEllipsis,
-  faEllipsisH,
-  faEllipsisV,
   faFilterCircleXmark,
   faMagnifyingGlass,
   faMoneyBill,
   faQuestion,
-  faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
-import { Modal } from "../../Components/Modal/Modal";
 import { categoryIcons } from "../../categoryIcons";
+import { ChooseCategoryModal } from "../../Components/ChooseCategoryModal/ChooseCategoryModal";
 export const Expenses = () => {
   const [dateEntryRecord, setDateEntryRecord] = useState<
     Record<string, JoinedEntry[]>
@@ -31,7 +27,6 @@ export const Expenses = () => {
   const [search, setSearch] = useState<string | null>();
   const [categoryIDs, setCategoryIDs] = useState<string[] | null>();
   const [searchText, setSearchText] = useState("");
-  const [selectedCategoryIDs, setSelectedCategoryIDs] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const filterByCategory = categoryIDs && categoryIDs.length > 0;
@@ -80,7 +75,7 @@ export const Expenses = () => {
       .catch((e) => {
         throw e;
       });
-  }, [categoryIDs, search]);
+  }, [categoryIDs, search, filterByCategory]);
   useEffect(() => {
     const search = searchParams.get("search");
     setSearch(search);
@@ -92,7 +87,6 @@ export const Expenses = () => {
   }, [searchParams]);
   const clearFilter = () => {
     setSearchParams({});
-    setSelectedCategoryIDs([]);
     setSearchText("");
   };
   const selectedCategoryName = () => {
@@ -112,21 +106,8 @@ export const Expenses = () => {
       return `${categoryIDs.length} Categorias`;
     }
   };
-  const categoryIsSelected = (searchID: string): boolean => {
-    return (
-      selectedCategoryIDs.filter((categoryID) => categoryID === searchID)
-        .length > 0
-    );
-  };
-  const addCategory = (id: string) => {
-    setSelectedCategoryIDs([...selectedCategoryIDs, id]);
-  };
-  const removeCategory = (id: string) => {
-    setSelectedCategoryIDs(
-      selectedCategoryIDs.filter((selected) => selected !== id),
-    );
-  };
-  const startCategorySearch = () => {
+
+  const startCategorySearch = (selectedCategoryIDs: string[]) => {
     searchParams.delete("categoryID");
     for (const id of selectedCategoryIDs) {
       searchParams.append("categoryID", id);
@@ -199,81 +180,21 @@ export const Expenses = () => {
               <FontAwesomeIcon icon={faChevronDown} />
             </span>
           </button>
-          <Modal
-            title="Escolha uma Categoria"
-            visible={showCategoryMenu}
-            onClose={() => {
-              setSelectedCategoryIDs(categoryIDs ?? []);
+          <ChooseCategoryModal
+            close={() => {
               setShowCategoryMenu(false);
             }}
-          >
-            <form
-              className="expenses__category-selection"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setShowCategoryMenu(false);
-                startCategorySearch();
-              }}
-            >
-              <div className="expenses__category-options">
-                {[
-                  { id: "none", name: "Sem Categoria", iconName: undefined },
-                  ...categories.map((category) => {
-                    return {
-                      id: category.id,
-                      name: category.name,
-                      iconName: category.iconName,
-                    };
-                  }),
-                ].map((category) => {
-                  return (
-                    <label
-                      className="expenses__category-label"
-                      key={category.id}
-                      htmlFor={`category-option-${category.id}`}
-                    >
-                      <input
-                        id={`category-option-${category.id}`}
-                        type="checkbox"
-                        className="expenses__category-checkbox"
-                        checked={categoryIsSelected(category.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) addCategory(category.id);
-                          else removeCategory(category.id);
-                        }}
-                      />
-                      {category.iconName && (
-                        <FontAwesomeIcon
-                          className="expenses__category-icon"
-                          icon={showIcon(category.iconName)}
-                        />
-                      )}
-                      {category.name}
-                    </label>
-                  );
-                })}
-              </div>
-              <div className="expenses__category-form-buttons">
-                <button
-                  type="submit"
-                  className="expenses__button expenses__button--primary"
-                >
-                  Filtrar
-                </button>
-                <button
-                  type="button"
-                  className="expenses__button expenses__button--secondary"
-                  onClick={() => {
-                    clearCategorySearch();
-                    setSelectedCategoryIDs([]);
-                    setShowCategoryMenu(false);
-                  }}
-                >
-                  Limpar filtro
-                </button>
-              </div>
-            </form>
-          </Modal>
+            initialCategoryIDs={categoryIDs ?? []}
+            onChoice={(selectedCategoryIDs) => {
+              startCategorySearch(selectedCategoryIDs);
+            }}
+            visible={showCategoryMenu}
+            secondaryButtonAction={() => {
+              clearCategorySearch();
+            }}
+            includeNoneOption
+            many
+          />
         </div>
         <div className="expenses__filter-clear">
           <button

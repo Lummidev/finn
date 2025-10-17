@@ -8,6 +8,7 @@ interface FormModalProps {
   onSubmit: () => unknown;
   primaryButtonLabel?: string;
   secondaryButtonLabel?: string;
+  secondaryButtonAction?: () => unknown;
 }
 export const FormModal = (props: PropsWithChildren<FormModalProps>) => {
   return (
@@ -30,6 +31,9 @@ export const FormModal = (props: PropsWithChildren<FormModalProps>) => {
           type="button"
           className="form-modal__button form-modal__button--secondary"
           onClick={() => {
+            if (props.secondaryButtonAction) {
+              props.secondaryButtonAction();
+            }
             props.close();
           }}
         >

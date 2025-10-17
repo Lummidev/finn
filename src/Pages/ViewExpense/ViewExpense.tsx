@@ -20,22 +20,19 @@ import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
 import type { Entry } from "../../Entities/Entry";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
-import { Modal } from "../../Components/Modal/Modal";
 import { getUniqueWords } from "../../util";
 import { categoryIcons } from "../../categoryIcons";
+import { ChooseCategoryModal } from "../../Components/ChooseCategoryModal/ChooseCategoryModal";
+import { FormModal } from "../../Components/FormModal/FormModal";
 
 export const ViewExpense = () => {
   const [entry, setEntry] = useState<JoinedEntry | undefined>();
   const [editing, setEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
   const [editedMoney, setEditedMoney] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
   const [showCategoryChoice, setShowCategoryChoice] = useState(false);
   const [showWordChoice, setShowWordChoice] = useState(false);
   const [targetCategory, setTargetCategory] = useState<Category | undefined>();
-  const [selectedCategoryID, setSelectedCategoryID] = useState<
-    string | undefined
-  >();
   const [selectedNewWords, setSelectedNewWords] = useState<string[]>([]);
   const params = useParams();
   const navigate = useNavigate();
@@ -45,13 +42,6 @@ export const ViewExpense = () => {
     EntryRepository.get(params.id)
       .then((entry) => {
         setEntry(entry);
-      })
-      .catch((e) => {
-        throw e;
-      });
-    CategoryRepository.getAll()
-      .then((categories) => {
-        setCategories(categories);
       })
       .catch((e) => {
         throw e;
@@ -103,8 +93,8 @@ export const ViewExpense = () => {
       });
     setEditing(false);
   };
-  const saveCategory = async () => {
-    if (!entry || !selectedCategoryID) {
+  const saveCategory = async (selectedCategoryID: string) => {
+    if (!entry) {
       return;
     }
     let newEntry: JoinedEntry;
@@ -240,7 +230,6 @@ export const ViewExpense = () => {
                     type="button"
                     className="view-expense__choose-category-button"
                     onClick={() => {
-                      setSelectedCategoryID(entry.categoryID);
                       setShowCategoryChoice(true);
                     }}
                   >
@@ -251,149 +240,73 @@ export const ViewExpense = () => {
                     )}
                     <FontAwesomeIcon icon={faChevronDown} />
                   </button>
-                  <Modal
+                  <ChooseCategoryModal
+                    many={false}
+                    includeNoneOption
                     visible={showCategoryChoice}
-                    onClose={() => {
+                    close={() => {
                       setShowCategoryChoice(false);
-                      setSelectedCategoryID(undefined);
                     }}
-                    title="Escolha uma Categoria"
-                  >
-                    <form
-                      className="view-expense__word-choice"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        saveCategory();
-                      }}
-                    >
-                      <div className="view-expense__word-list">
-                        <label className="view-expense__word-label">
-                          <input
-                            className="view-expense__word-check"
-                            type="radio"
-                            name="category-choice"
-                            value={"none"}
-                            checked={
-                              selectedCategoryID === "none" ||
-                              !selectedCategoryID
-                            }
-                            onChange={(e) => {
-                              setSelectedCategoryID(e.target.value);
-                            }}
-                          />
-                          Sem Categoria
-                        </label>
-                        {categories.map((category) => {
-                          return (
-                            <label
-                              className="view-expense__word-label"
-                              key={category.id}
-                            >
-                              <input
-                                className="view-expense__word-check"
-                                type="radio"
-                                name="category-choice"
-                                value={category.id}
-                                checked={category.id === selectedCategoryID}
-                                onChange={(e) => {
-                                  setSelectedCategoryID(e.target.value);
-                                }}
-                              />
-                              {category.name}
-                            </label>
-                          );
-                        })}
-                      </div>
-                      <button
-                        type="submit"
-                        className="view-expense__button view-expense__button--primary"
-                      >
-                        Salvar
-                      </button>
-                      <button
-                        type="button"
-                        className="view-expense__button view-expense__button--secondary"
-                        onClick={() => {
-                          setShowCategoryChoice(false);
-                          setSelectedCategoryID(undefined);
-                        }}
-                      >
-                        Cancelar
-                      </button>
-                    </form>
-                  </Modal>
-                  <Modal
-                    title="Escolher palavras"
+                    initialCategoryID={entry.category?.id}
+                    onChoice={(categoryID) => {
+                      saveCategory(categoryID);
+                    }}
+                  />
+                  <FormModal
+                    title="Escolher Palavras"
                     visible={showWordChoice}
-                    onClose={() => {
+                    close={() => {
                       setShowWordChoice(false);
                       setTargetCategory(undefined);
                       setSelectedNewWords([]);
                     }}
+                    onSubmit={() => {
+                      saveNewWords();
+                    }}
+                    secondaryButtonAction={() => {
+                      setSelectedNewWords([]);
+                    }}
+                    secondaryButtonLabel="Dispensar"
                   >
-                    <form
-                      className="view-expense__word-choice"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        saveNewWords();
-                      }}
-                    >
-                      <span className="view-expense__word-choice-description">
-                        Você gostaria de adicionar alguma das palavras da
-                        descrição desse gasto à categoria{" "}
-                        {!!targetCategory && targetCategory.name}?
-                      </span>
-                      <div className="view-expense__word-list">
-                        {!!entry &&
-                          targetCategory &&
-                          getUniqueWords(entry.description)
-                            .filter(
-                              (word) =>
-                                !targetCategory.words.some(
-                                  (categoryWord) => categoryWord === word,
-                                ),
-                            )
-                            .map((word) => (
-                              <label
-                                className="view-expense__word-label"
-                                key={word}
-                              >
-                                <input
-                                  type="checkbox"
-                                  className="view-expense__word-check"
-                                  value={word}
-                                  checked={wordIsSelected(word)}
-                                  onChange={(e) => {
-                                    const checked = e.target.checked;
-                                    if (checked) {
-                                      addWord(word);
-                                    } else {
-                                      removeWord(word);
-                                    }
-                                  }}
-                                />
-                                {word}
-                              </label>
-                            ))}
-                      </div>
-                      <button
-                        type="submit"
-                        className="view-expense__button view-expense__button--primary"
-                      >
-                        Salvar
-                      </button>
-                      <button
-                        type="button"
-                        className="view-expense__button view-expense__button--secondary"
-                        onClick={() => {
-                          setShowWordChoice(false);
-                          setSelectedNewWords([]);
-                        }}
-                      >
-                        Dispensar
-                      </button>
-                    </form>
-                  </Modal>
+                    <span className="view-expense__word-choice-description">
+                      Você gostaria de adicionar alguma das palavras da
+                      descrição desse gasto à categoria{" "}
+                      {!!targetCategory && targetCategory.name}?
+                    </span>
+                    <div className="view-expense__word-list">
+                      {!!entry &&
+                        targetCategory &&
+                        getUniqueWords(entry.description)
+                          .filter(
+                            (word) =>
+                              !targetCategory.words.some(
+                                (categoryWord) => categoryWord === word,
+                              ),
+                          )
+                          .map((word) => (
+                            <label
+                              className="view-expense__word-label"
+                              key={word}
+                            >
+                              <input
+                                type="checkbox"
+                                className="view-expense__word-check"
+                                value={word}
+                                checked={wordIsSelected(word)}
+                                onChange={(e) => {
+                                  const checked = e.target.checked;
+                                  if (checked) {
+                                    addWord(word);
+                                  } else {
+                                    removeWord(word);
+                                  }
+                                }}
+                              />
+                              {word}
+                            </label>
+                          ))}
+                    </div>
+                  </FormModal>
                 </div>
               </div>
             </div>

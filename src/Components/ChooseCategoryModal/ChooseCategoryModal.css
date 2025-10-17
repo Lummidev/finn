@@ -1,0 +1,42 @@
+.category-modal__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 1.2rem;
+}
+.category-modal__label {
+  position: relative;
+  border: 0.2rem solid var(--theme-surface0);
+  color: var(--theme-text);
+  padding: 0.3rem 1rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition-property: border, background-color, color;
+  transition-duration: 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-modal__label:has(:checked) {
+  --transparent-accent: color-mix(
+    in srgb,
+    var(--theme-accent) 20%,
+    transparent 80%
+  );
+  border: 0.2rem solid transparent;
+  background-color: var(--transparent-accent);
+  color: var(--theme-accent);
+}
+.category-modal__label:has(:focus) {
+  border: 0.2rem solid var(--theme-accent);
+}
+.category-modal__checkbox {
+  height: 0;
+  width: 0;
+  outline: 0;
+}
+.category-modal__icon {
+  margin-right: 0.3rem;
+}
