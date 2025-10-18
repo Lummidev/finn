@@ -6,6 +6,7 @@
   padding-top: 1.5rem;
   background-color: var(--theme-mantle);
   color: var(--theme-text);
+  transition: height 0.1s;
 }
 .app__content {
   position: relative;

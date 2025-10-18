@@ -6,6 +6,7 @@ body {
   height: 100dvh;
   margin: 0;
   font-family: "Roboto Variable", sans-serif;
+  background-color: var(--theme-mantle);
 }
 * {
   transition-property: background-color, color;
