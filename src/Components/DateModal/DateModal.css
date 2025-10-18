@@ -1,0 +1,39 @@
+.date-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.date-modal__suggestions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  overflow: scroll;
+  scrollbar-width: none;
+}
+.date-modal__suggestions::-webkit-scrollbar {
+  background: transparent;
+  width: 0px;
+}
+.date-modal__suggestion-button {
+  min-width: fit-content;
+  background-color: var(--theme-surface0);
+  color: inherit;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1.3rem;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+.date-modal__suggestion-button--active {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 20%,
+    transparent 80%
+  );
+  color: var(--theme-accent);
+}
+.date-modal__input {
+  width: 100%;
+}

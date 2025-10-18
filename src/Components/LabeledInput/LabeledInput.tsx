@@ -16,6 +16,8 @@ interface LabeledInputProps {
   type?: HTMLInputTypeAttribute;
   step?: number;
   className?: string;
+  min?: string;
+  max?: string;
   button?: {
     icon: IconDefinition;
     label: string;
@@ -38,6 +40,8 @@ export const LabeledInput = (props: LabeledInputProps) => {
           value={props.value}
           placeholder={props.placeholder}
           onKeyDown={props.onKeyDown}
+          min={props.min}
+          max={props.max}
         />
         {!!props.button && (
           <button

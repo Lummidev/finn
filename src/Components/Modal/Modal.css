@@ -9,7 +9,9 @@
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
   color: var(--theme-text);
   padding: 1rem 1.5rem;
+  width: clamp(500px, 70%, 1000px);
 }
+
 .modal:open {
   display: flex;
   flex-direction: column;

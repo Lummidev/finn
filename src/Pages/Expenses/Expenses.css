@@ -9,6 +9,7 @@
   align-self: center;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 1.4rem;
 }
@@ -18,6 +19,7 @@
   border-bottom: 1px solid var(--theme-overlay2);
   flex: 1;
   min-width: fit-content;
+  width: clamp(30rem, 90%, 60rem);
 }
 .expenses__search:has(:focus) {
   border-bottom: 1px solid var(--theme-subtext1);
@@ -47,12 +49,18 @@
   border: none;
   cursor: pointer;
 }
-.expenses__category-filter {
+.expenses__filter-sections {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+.expenses__filter-section {
   min-width: fit-content;
   position: relative;
   font-weight: 500;
 }
-.expenses__category-filter-button {
+.expenses__filter-button {
   background-color: var(--theme-base);
   border: none;
   display: flex;
@@ -67,7 +75,7 @@
   font-size: 1.2rem;
 }
 
-.expenses__selected-category-icon {
+.expenses__selected-filter-icon {
   min-width: fit-content;
 }
 

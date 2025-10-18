@@ -12,6 +12,9 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import duration from "dayjs/plugin/duration";
+import isBetween from "dayjs/plugin/isBetween";
+import minMax from "dayjs/plugin/minMax";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { BrowserRouter, Route } from "react-router";
 import { Routes } from "react-router";
 import { Dashboard } from "./Pages/Dashboard/Dashboard.tsx";
@@ -33,6 +36,9 @@ ChartJS.register(ArcElement, Tooltip, Legend, Colors);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
+dayjs.extend(isBetween);
+dayjs.extend(minMax);
+dayjs.extend(isSameOrAfter);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>

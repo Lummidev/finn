@@ -102,8 +102,8 @@ export const ChooseCategoryModal = (props: ChooseCategoryModalProps) => {
         }
         props.close();
       }}
-      primaryButtonLabel="Filtrar"
-      secondaryButtonLabel="Limpar Filtro"
+      primaryButtonLabel={props.primaryButtonLabel}
+      secondaryButtonLabel={props.secondaryButtonLabel}
       secondaryButtonAction={props.secondaryButtonAction}
     >
       <div className="category-modal__options">

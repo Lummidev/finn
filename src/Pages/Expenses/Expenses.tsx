@@ -19,6 +19,7 @@ import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { categoryIcons } from "../../categoryIcons";
 import { ChooseCategoryModal } from "../../Components/ChooseCategoryModal/ChooseCategoryModal";
+import { DateModal } from "../../Components/DateModal/DateModal";
 export const Expenses = () => {
   const [dateEntryRecord, setDateEntryRecord] = useState<
     Record<string, JoinedEntry[]>
@@ -26,10 +27,18 @@ export const Expenses = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState<string | null>();
   const [categoryIDs, setCategoryIDs] = useState<string[] | null>();
+  const [dateFilter, setDateFilter] = useState<
+    { fromDate: string; toDate: string } | undefined
+  >();
+  const [showDateModal, setShowDateModal] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const filterByCategory = categoryIDs && categoryIDs.length > 0;
+  const [oldestTimestampMiliseconds, setOldestTimestampMiliseconds] = useState(
+    Date.now().valueOf(),
+  );
+
   useEffect(() => {
     CategoryRepository.getAll()
       .then((categories) => {
@@ -40,7 +49,26 @@ export const Expenses = () => {
       });
     EntryRepository.getAll()
       .then((entries) => {
+        const record: Record<string, JoinedEntry[]> = {};
+        if (entries.length === 0) {
+          setDateEntryRecord(record);
+          return;
+        }
+        const oldestTimestampMiliseconds = [...entries].pop()
+          ?.createdAtTimestampMiliseconds;
+        setOldestTimestampMiliseconds(
+          oldestTimestampMiliseconds ?? Date.now().valueOf(),
+        );
         let filteredEntries = entries;
+        if (dateFilter) {
+          const { fromDate, toDate } = dateFilter;
+          const from = dayjs(fromDate).startOf("day");
+          const to = dayjs(toDate).endOf("day");
+          filteredEntries = entries.filter((entry) => {
+            const createdDate = dayjs(entry.createdAtTimestampMiliseconds);
+            return createdDate.isBetween(from, to);
+          });
+        }
         if (filterByCategory) {
           filteredEntries = filteredEntries.filter((entry) => {
             for (const id of categoryIDs) {
@@ -61,7 +89,6 @@ export const Expenses = () => {
               (entry.category && regex.test(entry.category.name)),
           );
         }
-        const record: Record<string, JoinedEntry[]> = {};
         for (const entry of filteredEntries) {
           const date = dayjs(entry.createdAtTimestampMiliseconds).format("LL");
           if (record[date]) {
@@ -75,7 +102,7 @@ export const Expenses = () => {
       .catch((e) => {
         throw e;
       });
-  }, [categoryIDs, search, filterByCategory]);
+  }, [categoryIDs, search, filterByCategory, dateFilter]);
   useEffect(() => {
     const search = searchParams.get("search");
     setSearch(search);
@@ -84,6 +111,18 @@ export const Expenses = () => {
     }
     const categoryIDs = searchParams.getAll("categoryID");
     setCategoryIDs(categoryIDs);
+    const { from, to } = {
+      from: searchParams.get("fromDate"),
+      to: searchParams.get("toDate"),
+    };
+    if (from && to) {
+      setDateFilter({
+        fromDate: from,
+        toDate: to,
+      });
+    } else {
+      setDateFilter(undefined);
+    }
   }, [searchParams]);
   const clearFilter = () => {
     setSearchParams({});
@@ -122,9 +161,19 @@ export const Expenses = () => {
     if (!iconName) return faMoneyBill;
     else return categoryIcons[iconName]?.icon ?? faQuestion;
   };
+  const currentDateFilter = () => {
+    if (!dateFilter) return "Data inválida";
+    const { fromDate, toDate } = dateFilter;
+    const from = dayjs(fromDate);
+    const to = dayjs(toDate);
+    const toIsToday = dayjs().isSame(to, "day");
+    const fromIsYesterday = dayjs().subtract(1, "day").isSame(from, "day");
+    return `${fromIsYesterday ? "Ontem" : from.format("L")} - ${toIsToday ? "Hoje" : to.format("L")}`;
+  };
   return (
     <div className="expenses">
       <PageHeader title="Gastos" />
+
       <div className="expenses__filter">
         <form
           className="expenses__search"
@@ -158,56 +207,102 @@ export const Expenses = () => {
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
         </form>
-        <div className="expenses__category-filter">
-          <button
-            type="button"
-            className="expenses__category-filter-button"
-            onClick={() => {
-              setShowCategoryMenu(true);
-            }}
-            style={{
-              color: filterByCategory ? "var(--theme-accent)" : undefined,
-            }}
-          >
-            {filterByCategory ? (
-              <span className="expenses__selected-category">
-                {selectedCategoryName()}
+        <div className="expenses__filter-sections">
+          <div className="expenses__filter-section">
+            <button
+              type="button"
+              className="expenses__filter-button"
+              onClick={() => {
+                setShowCategoryMenu(true);
+              }}
+              style={{
+                color: filterByCategory ? "var(--theme-accent)" : undefined,
+              }}
+            >
+              {filterByCategory ? (
+                <span className="expenses__selected-filter">
+                  {selectedCategoryName()}
+                </span>
+              ) : (
+                "Categoria"
+              )}
+              <span className="expenses__selected-filter-icon">
+                <FontAwesomeIcon icon={faChevronDown} />
               </span>
-            ) : (
-              "Categoria"
-            )}
-            <span className="expenses__selected-category-icon">
-              <FontAwesomeIcon icon={faChevronDown} />
-            </span>
-          </button>
-          <ChooseCategoryModal
-            close={() => {
-              setShowCategoryMenu(false);
-            }}
-            initialCategoryIDs={categoryIDs ?? []}
-            onChoice={(selectedCategoryIDs) => {
-              startCategorySearch(selectedCategoryIDs);
-            }}
-            visible={showCategoryMenu}
-            secondaryButtonAction={() => {
-              clearCategorySearch();
-            }}
-            includeNoneOption
-            many
-          />
-        </div>
-        <div className="expenses__filter-clear">
-          <button
-            type="button"
-            className="expenses__filter-clear-button"
-            disabled={Array.from(searchParams.entries()).length === 0}
-            onClick={() => {
-              clearFilter();
-            }}
-          >
-            <FontAwesomeIcon icon={faFilterCircleXmark} />
-            Limpar
-          </button>
+            </button>
+            <ChooseCategoryModal
+              close={() => {
+                setShowCategoryMenu(false);
+              }}
+              initialCategoryIDs={categoryIDs ?? []}
+              onChoice={(selectedCategoryIDs) => {
+                startCategorySearch(selectedCategoryIDs);
+              }}
+              visible={showCategoryMenu}
+              primaryButtonLabel="Filtrar"
+              secondaryButtonLabel="Limpar Filtro"
+              secondaryButtonAction={() => {
+                clearCategorySearch();
+              }}
+              includeNoneOption
+              many
+            />
+          </div>
+          <div className="expenses__filter-section">
+            <button
+              type="button"
+              className="expenses__filter-button"
+              onClick={() => {
+                setShowDateModal(true);
+              }}
+              style={{
+                color: dateFilter ? "var(--theme-accent)" : undefined,
+              }}
+            >
+              {dateFilter ? (
+                <span className="expenses__selected-filter">
+                  {currentDateFilter()}
+                </span>
+              ) : (
+                "Período"
+              )}
+              <span className="expenses__selected-filter-icon">
+                <FontAwesomeIcon icon={faChevronDown} />
+              </span>
+            </button>
+            <DateModal
+              visible={showDateModal}
+              close={() => {
+                setShowDateModal(false);
+              }}
+              oldestPossibleTimestampMiliseconds={oldestTimestampMiliseconds}
+              onSubmit={(from, to) => {
+                searchParams.set("fromDate", from);
+                searchParams.set("toDate", to);
+                setSearchParams(searchParams);
+              }}
+              primaryButtonLabel="Filtrar"
+              secondaryButtonLabel="Limpar Filtro"
+              secondaryButtonAction={() => {
+                searchParams.delete("fromDate");
+                searchParams.delete("toDate");
+                setSearchParams(searchParams);
+              }}
+            />
+          </div>
+          <div className="expenses__filter-clear">
+            <button
+              type="button"
+              className="expenses__filter-clear-button"
+              disabled={Array.from(searchParams.entries()).length === 0}
+              onClick={() => {
+                clearFilter();
+              }}
+            >
+              <FontAwesomeIcon icon={faFilterCircleXmark} />
+              Limpar
+            </button>
+          </div>
         </div>
       </div>
 
