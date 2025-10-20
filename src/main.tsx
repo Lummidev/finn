@@ -21,7 +21,7 @@ import { Dashboard } from "./Pages/Dashboard/Dashboard.tsx";
 import { Categories } from "./Pages/Categories/Categories.tsx";
 import { Chat } from "./Pages/Chat/Chat.tsx";
 import { CategoryForm } from "./Pages/CategoryForm/CategoryForm.tsx";
-import { ViewCategory } from "./Pages/Category/ViewCategory.tsx";
+import { ViewCategory } from "./Pages/ViewCategory/ViewCategory.tsx";
 import { Settings } from "./Pages/Settings/Settings.tsx";
 import { Expenses } from "./Pages/Expenses/Expenses.tsx";
 import { ViewExpense } from "./Pages/ViewExpense/ViewExpense.tsx";
