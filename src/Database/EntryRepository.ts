@@ -29,7 +29,13 @@ const get = async (id: string): Promise<JoinedEntry | undefined> => {
   }
   return entry;
 };
-
+const getByCategory = async (categoryID: string) => {
+  const entries = await database.entries
+    .where("categoryID")
+    .equals(categoryID)
+    .toArray();
+  return entries;
+};
 const insert = async (
   props: Omit<Entry, "id" | "createdAtTimestampMiliseconds">,
 ) => {
@@ -77,6 +83,7 @@ const removeCategoryFromAll = async (categoryID: string) => {
 export const EntryRepository = {
   getAll,
   get,
+  getByCategory,
   insert,
   update,
   remove,

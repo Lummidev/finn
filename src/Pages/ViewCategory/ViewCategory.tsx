@@ -5,6 +5,7 @@ import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faChevronDown,
   faPencil,
   faPlus,
   faTag,
@@ -17,6 +18,14 @@ import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
 import { categoryIcons } from "../../categoryIcons";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons/faQuestion";
 import { ChooseIconModal } from "../../Components/ChooseIconModal/ChooseIconModal";
+import type { ManipulateType } from "dayjs";
+import { FormModal } from "../../Components/FormModal/FormModal";
+import { getTotalExpensesOfCategory } from "../../Database/ReportRepository";
+interface PeriodPair {
+  count: number;
+  type: ManipulateType;
+}
+
 export const ViewCategory = () => {
   const [category, setCategory] = useState<Category | undefined>();
   const [editing, setEditing] = useState(false);
@@ -26,10 +35,31 @@ export const ViewCategory = () => {
   const [validName, setValidName] = useState(false);
   const [validWord, setValidWord] = useState(false);
   const [newIconName, setNewIconName] = useState<string | undefined>();
-
+  const [showPeriodModal, setShowPeriodModal] = useState(false);
+  const [periodKey, setPeriodKey] = useState<string>("month");
+  const [selectedPeriodKey, setSelectedPeriodKey] = useState<string>("month");
   const [showIconChoice, setShowIconChoice] = useState(false);
+  const [moneyExpent, setMoneyExpent] = useState(0);
   const params = useParams();
   const navigate = useNavigate();
+  const periodOptions: Record<
+    string,
+    { label: string; period: PeriodPair | null }
+  > = {
+    month: {
+      label: "Neste mês",
+      period: { count: 1, type: "month" },
+    },
+    threeMonths: {
+      label: "Nos últimos 3 meses",
+      period: { count: 3, type: "months" },
+    },
+    year: {
+      label: "Neste ano",
+      period: { count: 1, type: "year" },
+    },
+    all: { label: "Desde o início", period: null },
+  };
   const startEditing = () => {
     if (!category) return;
     setEditedName(category.name);
@@ -82,7 +112,21 @@ export const ViewCategory = () => {
       .catch((e) => {
         throw e;
       });
-  }, [params]);
+    const period = periodOptions[periodKey];
+
+    getTotalExpensesOfCategory(
+      params.id,
+      period.period
+        ? { count: period.period.count, type: period.period.type }
+        : undefined,
+    )
+      .then((moneyExpent) => {
+        setMoneyExpent(moneyExpent);
+      })
+      .catch((e) => {
+        throw e;
+      });
+  }, [params, periodKey]);
   useEffect(() => {
     setValidName(editedName.trim().length > 0);
     setValidWord(
@@ -127,6 +171,11 @@ export const ViewCategory = () => {
     if (!category) return;
     setShowIconChoice(true);
   };
+  const confirmPeriod = () => {
+    if (!selectedPeriodKey) return;
+    setPeriodKey(selectedPeriodKey);
+  };
+
   return (
     <div className="view-category">
       <PageHeader
@@ -235,10 +284,10 @@ export const ViewCategory = () => {
                 categoria
               </span>
               <div className="view-category__words">
+                <h2 className="view-category__subtitle">Palavras</h2>
+
                 {category.words.length > 0 ? (
                   <>
-                    <h2 className="view-category__subtitle">Palavras</h2>
-
                     <ul className="view-category__word-list">
                       {category.words.map((word) => {
                         return (
@@ -254,8 +303,6 @@ export const ViewCategory = () => {
                   </>
                 ) : (
                   <>
-                    <h2 className="view-category__subtitle">Palavras</h2>
-
                     <span className="view-category__information-text">
                       <FontAwesomeIcon icon={faCircleInfo} /> Não há palavras
                       nessa categoria
@@ -263,8 +310,70 @@ export const ViewCategory = () => {
                   </>
                 )}
               </div>
+              <div className="view-category__details">
+                <h2 className="view-category__subtitle">Detalhes</h2>
+                <div className="view-category__details-row">
+                  <div className="view-category__row-title">
+                    Dinheiro gasto
+                    <button
+                      className="view-category__select-period-button"
+                      type="button"
+                      onClick={() => {
+                        setShowPeriodModal(true);
+                      }}
+                    >
+                      {periodOptions[periodKey].label || "Período"}
+                      <FontAwesomeIcon icon={faChevronDown} />
+                    </button>
+                  </div>
+                  <div className="view-category__row-data view-category__row-data--money">
+                    {moneyExpent.toLocaleString(undefined, {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
+          <FormModal
+            title={"Selecione um Período"}
+            close={() => {
+              setShowPeriodModal(false);
+            }}
+            visible={showPeriodModal}
+            onSubmit={() => {
+              confirmPeriod();
+              setShowPeriodModal(false);
+            }}
+            primaryButtonLabel="Selecionar"
+            secondaryButtonAction={() => {
+              setSelectedPeriodKey(periodKey);
+            }}
+          >
+            {Object.keys(periodOptions).map((periodOptionKey) => {
+              const currentOption = periodOptions[periodOptionKey];
+              return (
+                <label
+                  className="view-category__period-label"
+                  key={periodOptionKey}
+                >
+                  <input
+                    type="radio"
+                    className="view-category__period-radio"
+                    value={periodOptionKey}
+                    name="category-period-filter"
+                    checked={selectedPeriodKey === periodOptionKey}
+                    onChange={(e) => {
+                      setSelectedPeriodKey(e.target.value);
+                    }}
+                  />
+                  <span className="view-category__period-radio-indicator" />
+                  {currentOption.label}
+                </label>
+              );
+            })}
+          </FormModal>
         </>
       )}
     </div>

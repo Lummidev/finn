@@ -1,5 +1,7 @@
+import type { ManipulateType } from "dayjs";
 import type { Category } from "../Entities/Category";
 import { EntryRepository } from "./EntryRepository";
+import dayjs from "dayjs";
 
 export const getMoneyExpentByCategory = async () => {
   const entries = await EntryRepository.getAll();
@@ -24,4 +26,24 @@ export const getMoneyExpentByCategory = async () => {
     }
   }
   return { moneyExpentByCategory, moneyWithNoCategory };
+};
+
+export const getTotalExpensesOfCategory = async (
+  categoryID: string,
+  period?: { count: number; type: ManipulateType },
+): Promise<number> => {
+  let entries = await EntryRepository.getByCategory(categoryID);
+  if (period) {
+    const targetDate = dayjs().subtract(period.count, period.type);
+    entries = entries.filter((entry) =>
+      dayjs(entry.createdAtTimestampMiliseconds).isSameOrAfter(
+        targetDate,
+        period.type,
+      ),
+    );
+  }
+  return entries.reduce(
+    (accumulator, currentEntry) => accumulator + currentEntry.moneyExpent,
+    0,
+  );
 };
