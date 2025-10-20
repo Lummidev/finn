@@ -58,7 +58,10 @@ export const Navigation = () => {
           <div
             className={`navigation__icon ${activeLocationClass(link.pathName).icon}`}
           >
-            <FontAwesomeIcon icon={link.icon} />
+            <FontAwesomeIcon
+              className="navigation__icon-element"
+              icon={link.icon}
+            />
           </div>
           {link.name}
         </Link>
