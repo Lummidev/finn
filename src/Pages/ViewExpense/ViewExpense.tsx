@@ -111,9 +111,15 @@ export const ViewExpense = () => {
     await EntryRepository.update(newEntry);
     setEntry({ ...newEntry, category: newCategory });
     setShowCategoryChoice(false);
-    if (newCategory) {
-      setTargetCategory(newCategory);
-      setShowWordChoice(true);
+    if (newCategory && entry.categoryID !== newCategory.id) {
+      const suggestedWords = getUniqueWords(entry.description).filter(
+        (word) =>
+          !newCategory.words.some((categoryWord) => categoryWord === word),
+      );
+      if (suggestedWords.length > 0) {
+        setTargetCategory(newCategory);
+        setShowWordChoice(true);
+      }
     }
   };
   const wordIsSelected = (word: string) =>
@@ -275,7 +281,7 @@ export const ViewExpense = () => {
                     </span>
                     <div className="view-expense__word-list">
                       {!!entry &&
-                        targetCategory &&
+                        !!targetCategory &&
                         getUniqueWords(entry.description)
                           .filter(
                             (word) =>
