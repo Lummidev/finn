@@ -1,6 +1,6 @@
 import type { ManipulateType } from "dayjs";
 import type { Category } from "../Entities/Category";
-import { EntryRepository } from "./EntryRepository";
+import { EntryRepository, type JoinedEntry } from "./EntryRepository";
 import dayjs from "dayjs";
 
 export const getMoneyExpentByCategory = async () => {
@@ -46,4 +46,32 @@ export const getTotalExpensesOfCategory = async (
     (accumulator, currentEntry) => accumulator + currentEntry.moneyExpent,
     0,
   );
+};
+export const getMoneyExpentByCategoryAndMonthDay = async () => {
+  const now = dayjs();
+
+  const entries = await EntryRepository.getAll();
+  const entriesInMonth = entries.filter((entry) =>
+    now.isSameOrAfter(dayjs(entry.createdAtTimestampMiliseconds, "month")),
+  );
+  const moneyExpentByCategoryAndMonthDay: Record<
+    string,
+    Record<number, number>
+  > = {};
+  entriesInMonth.forEach((entry) => {
+    const day = dayjs(entry.createdAtTimestampMiliseconds).date();
+    const categoryName = entry.category ? entry.category.name : "Sem Categoria";
+    const moneyExpent = entry.moneyExpent;
+    if (moneyExpentByCategoryAndMonthDay[categoryName]) {
+      if (moneyExpentByCategoryAndMonthDay[categoryName][day]) {
+        moneyExpentByCategoryAndMonthDay[categoryName][day] += moneyExpent;
+      } else {
+        moneyExpentByCategoryAndMonthDay[categoryName][day] = moneyExpent;
+      }
+    } else {
+      moneyExpentByCategoryAndMonthDay[categoryName] = {};
+      moneyExpentByCategoryAndMonthDay[categoryName][day] = moneyExpent;
+    }
+  });
+  return moneyExpentByCategoryAndMonthDay;
 };

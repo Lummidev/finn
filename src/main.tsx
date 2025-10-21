@@ -31,8 +31,22 @@ import {
   Tooltip,
   Legend,
   Colors,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LogarithmicScale,
 } from "chart.js";
-ChartJS.register(ArcElement, Tooltip, Legend, Colors);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  Colors,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LogarithmicScale,
+);
+ChartJS.defaults.font.family = "'Roboto Variable', serif";
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
