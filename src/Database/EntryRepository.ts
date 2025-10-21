@@ -52,7 +52,7 @@ const insert = async (
   return entry;
 };
 const update = async (entry: Entry) => {
-  const { id, moneyExpent, description, categoryID } = entry;
+  const { id, moneyExpent, description, categoryID, note } = entry;
   const oldEntry = await database.entries.get(id);
   if (!oldEntry) throw new Error("Tried to update entry that doesn't exist");
   const newEntry: Entry = {
@@ -60,6 +60,7 @@ const update = async (entry: Entry) => {
     moneyExpent,
     description,
     categoryID,
+    note,
     updatedAtTimestampMiliseconds: new Date().valueOf(),
   };
   await database.entries.put(newEntry);

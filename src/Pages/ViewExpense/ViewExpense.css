@@ -45,7 +45,7 @@
   gap: 1rem;
 }
 .view-expense__about-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
 }
 .view-expense__rows {
@@ -57,16 +57,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: 1.2rem;
   gap: 2rem;
 }
 .view-expense__row-title {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
+  align-self: flex-start;
 }
 .view-expense__row-data {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: pre-wrap;
 }
 .view-expense__choose-category-button {
   min-width: fit-content;
@@ -135,4 +136,8 @@
   display: flex;
   gap: 2rem;
   flex-direction: column;
+}
+.view-expense__no-note {
+  font-style: italic;
+  color: var(--theme-subtext0);
 }

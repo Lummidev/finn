@@ -4,5 +4,6 @@ export interface Entry {
   description: string;
   createdAtTimestampMiliseconds: number;
   updatedAtTimestampMiliseconds?: number;
+  note?: string;
   categoryID?: string;
 }

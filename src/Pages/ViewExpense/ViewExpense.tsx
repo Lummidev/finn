@@ -30,6 +30,7 @@ export const ViewExpense = () => {
   const [editing, setEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
   const [editedMoney, setEditedMoney] = useState("");
+  const [editedNote, setEditedNote] = useState("");
   const [showCategoryChoice, setShowCategoryChoice] = useState(false);
   const [showWordChoice, setShowWordChoice] = useState(false);
   const [targetCategory, setTargetCategory] = useState<Category | undefined>();
@@ -61,6 +62,7 @@ export const ViewExpense = () => {
   };
   const startEdit = () => {
     if (!entry) return;
+    console.log(entry);
     setEditing(true);
     setEditedDescription(entry.description);
     setEditedMoney(
@@ -69,6 +71,7 @@ export const ViewExpense = () => {
         maximumFractionDigits: 2,
       }),
     );
+    setEditedNote(entry.note ?? "");
   };
 
   const validName = editedDescription.trim().length > 0;
@@ -78,11 +81,13 @@ export const ViewExpense = () => {
   const saveEdit = () => {
     if (!entry || !(validName && validMoney)) return;
     const newDescription = editedDescription.trim();
+    const newNote = editedNote.trim();
     const newMoneyExpent = Math.trunc(Number(editedMoney.trim()) * 100) / 100;
     const newEntry: Entry = {
       ...entry,
       description: newDescription,
       moneyExpent: newMoneyExpent,
+      note: newNote,
     };
     EntryRepository.update(newEntry)
       .then(() => {
@@ -315,6 +320,18 @@ export const ViewExpense = () => {
                   </FormModal>
                 </div>
               </div>
+              <div className="view-expense__row">
+                <h3 className="view-expense__row-title">Observação</h3>
+                <div className="view-expense__row-data">
+                  {entry.note && entry.note.length > 0 ? (
+                    entry.note
+                  ) : (
+                    <span className="view-expense__no-note">
+                      Nenhuma observação
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -346,6 +363,15 @@ export const ViewExpense = () => {
             value={editedMoney}
             onChange={(e) => {
               setEditedMoney(e.target.value);
+            }}
+          />
+          <LabeledInput
+            name="Observação"
+            type="text"
+            placeholder="Escreva uma observação sobre o gasto aqui"
+            value={editedNote}
+            onChange={(e) => {
+              setEditedNote(e.target.value);
             }}
           />
         </form>
