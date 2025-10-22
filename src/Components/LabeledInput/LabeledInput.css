@@ -23,6 +23,14 @@
   padding: 0.5rem 0;
   font-size: 1.4rem;
 }
+.labeled-input__input::-webkit-outer-spin-button,
+.labeled-input__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.labeled-input__input[type="number"] {
+  -moz-appearance: textfield;
+}
 .labeled-input__input::placeholder {
   color: var(--theme-overlay1);
 }
