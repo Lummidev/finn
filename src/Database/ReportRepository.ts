@@ -56,21 +56,42 @@ export const getMoneyExpentByCategoryAndMonthDay = async () => {
   );
   const moneyExpentByCategoryAndMonthDay: Record<
     string,
-    Record<number, number>
+    {
+      id?: string;
+      iconName?: string;
+      moneyExpentPerDay: Record<number, number>;
+    }
   > = {};
   entriesInMonth.forEach((entry) => {
     const day = dayjs(entry.createdAtTimestampMiliseconds).date();
-    const categoryName = entry.category ? entry.category.name : "Sem Categoria";
+    let id: string | undefined;
+    let iconName: string | undefined;
+    let categoryName = "Sem Categoria";
+    const category = entry.category;
+    if (category) {
+      id = category.id;
+      iconName = category.iconName;
+      categoryName = category.name;
+    }
     const moneyExpent = entry.moneyExpent;
     if (moneyExpentByCategoryAndMonthDay[categoryName]) {
-      if (moneyExpentByCategoryAndMonthDay[categoryName][day]) {
-        moneyExpentByCategoryAndMonthDay[categoryName][day] += moneyExpent;
+      if (
+        moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day]
+      ) {
+        moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day] +=
+          moneyExpent;
       } else {
-        moneyExpentByCategoryAndMonthDay[categoryName][day] = moneyExpent;
+        moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day] =
+          moneyExpent;
       }
     } else {
-      moneyExpentByCategoryAndMonthDay[categoryName] = {};
-      moneyExpentByCategoryAndMonthDay[categoryName][day] = moneyExpent;
+      moneyExpentByCategoryAndMonthDay[categoryName] = {
+        id,
+        iconName,
+        moneyExpentPerDay: {},
+      };
+      moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day] =
+        moneyExpent;
     }
   });
   return moneyExpentByCategoryAndMonthDay;

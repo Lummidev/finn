@@ -1,4 +1,41 @@
 .month-chart {
+}
+.month-chart__container {
   position: relative;
   min-height: 30rem;
+}
+.month-chart__legend {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.month-chart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.month-chart__legend-name {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  font-weight: 500;
+  flex: 1;
+  font-size: 1.2rem;
+}
+.month-chart__legend-color {
+  height: 1.2rem;
+  width: 1.2rem;
+  border-radius: 0.2rem;
+  flex-shrink: 0;
 }

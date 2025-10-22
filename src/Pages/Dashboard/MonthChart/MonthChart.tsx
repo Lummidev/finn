@@ -1,10 +1,13 @@
 import { use, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { getMoneyExpentByCategoryAndMonthDay } from "../../../Database/ReportRepository";
-import { type ChartDataset } from "chart.js";
 import dayjs from "dayjs";
 import { SettingsContext } from "../../../Context/SettingsContext";
 import "./MonthChart.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { categoryIcons } from "../../../categoryIcons";
+import { faQuestion, faTag } from "@fortawesome/free-solid-svg-icons";
+import type { ChartDataset } from "chart.js";
 const themeColors: Record<string, Record<string, string>> = {
   dark: {
     blue: "#8aadf4",
@@ -39,7 +42,10 @@ const themeColors: Record<string, Record<string, string>> = {
 };
 export const MonthChart = () => {
   const [datasets, setDatasets] = useState<
-    ChartDataset<"bar", (number | [number, number] | null)[]>[]
+    ({
+      categoryID: string;
+      iconName: string;
+    } & ChartDataset<"bar", number[]>)[]
   >([]);
   const [labels, setLabels] = useState<string[]>([]);
   const { settings } = use(SettingsContext);
@@ -68,10 +74,10 @@ export const MonthChart = () => {
         for (let day = 1; day <= daysInMonth; day++) {
           labels.push(day.toString());
         }
-        const datasets: ChartDataset<
-          "bar",
-          (number | [number, number] | null)[]
-        >[] = [];
+        const datasets: ({
+          categoryID: string;
+          iconName: string;
+        } & ChartDataset<"bar", number[]>)[] = [];
         Object.keys(result)
           .sort((a, b) => {
             if (a === "Sem Categoria") {
@@ -85,15 +91,17 @@ export const MonthChart = () => {
           })
           .forEach((categoryName) => {
             const label = categoryName;
-            const amountExpentByDay = result[categoryName];
+            const { id, iconName, moneyExpentPerDay } = result[categoryName];
             const data = [];
             for (let day = 1; day <= daysInMonth; day++) {
-              const amount = amountExpentByDay[day];
+              const amount = moneyExpentPerDay[day];
               data.push(amount ?? 0);
             }
             datasets.push({
-              id: label,
+              categoryID: id ?? "none",
+              iconName: iconName ?? "faTag",
               label,
+              borderRadius: 2,
               data,
               backgroundColor: colors[nextColorIndex],
             });
@@ -145,78 +153,118 @@ export const MonthChart = () => {
   }, [theme]);
   return (
     <div className="month-chart">
-      <Bar
-        datasetIdKey="id"
-        data={{
-          labels,
-          datasets,
-        }}
-        options={{
-          maintainAspectRatio: false,
-          responsive: true,
+      <ul className="month-chart__legend">
+        {datasets.map((topCategory) => {
+          const {
+            label: name,
+            iconName,
+            backgroundColor: color,
+            categoryID,
+          } = topCategory;
+          return (
+            <li className="month-chart__legend-item" key={categoryID}>
+              <div
+                style={{
+                  backgroundColor:
+                    typeof color === "string" ? color : undefined,
+                }}
+                className="month-chart__legend-color"
+              ></div>
+              <span className="month-chart__legend-name">
+                {iconName && (
+                  <FontAwesomeIcon
+                    icon={(() => {
+                      if (iconName === "faTag") {
+                        return faTag;
+                      } else {
+                        return categoryIcons[iconName]?.icon ?? faQuestion;
+                      }
+                    })()}
+                  />
+                )}
+                {name}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="month-chart__container">
+        <Bar
+          datasetIdKey="categoryID"
+          data={{
+            labels,
+            datasets,
+          }}
+          options={{
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+              x: {
+                stacked: true,
+                ticks: {
+                  color: themeColors[theme].text,
+                  callback: (value, index) => {
+                    return `${labels[index]}/${dayjs().format("MMM")}`;
+                  },
+                  font: () => {
+                    return { weight: "bold" };
+                  },
+                },
+                grid: {
+                  color: themeColors[theme].surface0,
+                },
+              },
+              y: {
+                stacked: true,
+                ticks: {
+                  color: themeColors[theme].text,
+                  font: () => {
+                    return { weight: "bold" };
+                  },
+                  callback: (label) =>
+                    typeof label === "number"
+                      ? label.toLocaleString(undefined, {
+                          style: "currency",
+                          currency: "BRL",
+                        })
+                      : label,
+                },
+                grid: {
+                  color: themeColors[theme].surface0,
+                },
+              },
+            },
+            color: themeColors[theme].text,
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                mode: "x",
+                filter: (item) => item.raw !== 0,
+                callbacks: {
+                  label: (context) => {
+                    let label = context.dataset.label ?? "";
 
-          scales: {
-            x: {
-              stacked: true,
-              ticks: {
-                color: themeColors[theme].text,
-                callback: (value, index) => {
-                  return `${labels[index]}/${dayjs().format("MMM")}`;
-                },
-              },
-              grid: {
-                color: themeColors[theme].surface0,
-              },
-            },
-            y: {
-              stacked: true,
-              ticks: {
-                color: themeColors[theme].text,
-                callback: (label) =>
-                  typeof label === "number"
-                    ? label.toLocaleString(undefined, {
-                        style: "currency",
-                        currency: "BRL",
-                      })
-                    : label,
-              },
-              grid: {
-                color: themeColors[theme].surface0,
-              },
-            },
-          },
-          color: themeColors[theme].text,
-          plugins: {
-            legend: {
-              labels: {
-                color: themeColors[theme].text,
-              },
-            },
-            tooltip: {
-              mode: "x",
-              filter: (item) => item.raw !== 0,
-              callbacks: {
-                label: (context) => {
-                  let label = context.dataset.label ?? "";
-
-                  if (label) {
-                    label += ": ";
-                  }
-                  label += new Intl.NumberFormat(undefined, {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(context.parsed.y);
-                  return label;
-                },
-                title: (context) => {
-                  const title = context[0].label;
-                  return `${title}/${dayjs().format("MMM")}`;
+                    if (label) {
+                      label += ": ";
+                    }
+                    label += new Intl.NumberFormat(undefined, {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(context.parsed.y);
+                    return label;
+                  },
+                  title: (context) => {
+                    const title = context[0].label;
+                    return `${title}/${dayjs().format("MMM")}`;
+                  },
                 },
               },
             },
-          },
-        }}
-      />
+          }}
+        />
+      </div>
     </div>
   );
 };
