@@ -66,7 +66,7 @@ export const ViewExpense = () => {
     setEditing(true);
     setEditedDescription(entry.description);
     setEditedMoney(
-      entry.moneyExpent.toLocaleString(undefined, {
+      entry.moneyExpent.toLocaleString("en", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }),
