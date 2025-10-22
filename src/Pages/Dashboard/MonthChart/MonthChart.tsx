@@ -4,6 +4,7 @@ import { getMoneyExpentByCategoryAndMonthDay } from "../../../Database/ReportRep
 import { type ChartDataset } from "chart.js";
 import dayjs from "dayjs";
 import { SettingsContext } from "../../../Context/SettingsContext";
+import "./MonthChart.css";
 const themeColors: Record<string, Record<string, string>> = {
   dark: {
     blue: "#8aadf4",
@@ -151,6 +152,9 @@ export const MonthChart = () => {
           datasets,
         }}
         options={{
+          maintainAspectRatio: false,
+          responsive: true,
+
           scales: {
             x: {
               stacked: true,
@@ -189,6 +193,8 @@ export const MonthChart = () => {
               },
             },
             tooltip: {
+              mode: "x",
+              filter: (item) => item.raw !== 0,
               callbacks: {
                 label: (context) => {
                   let label = context.dataset.label ?? "";
@@ -201,6 +207,10 @@ export const MonthChart = () => {
                     currency: "BRL",
                   }).format(context.parsed.y);
                   return label;
+                },
+                title: (context) => {
+                  const title = context[0].label;
+                  return `${title}/${dayjs().format("MMM")}`;
                 },
               },
             },

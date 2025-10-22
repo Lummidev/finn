@@ -18,6 +18,7 @@
   position: relative;
   flex: 1;
   min-width: 20%;
+  min-height: 20rem;
 }
 .category-chart__legend {
   list-style: none;
