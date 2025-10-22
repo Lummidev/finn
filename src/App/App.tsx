@@ -23,6 +23,7 @@ function App() {
   });
   const handleUserMessage = async (text: string) => {
     const trimmedText = text.trim();
+    if (trimmedText.length === 0) return;
     const userMessage = await MessageRepository.insert({
       messageType: "user",
       content: trimmedText,
@@ -33,7 +34,6 @@ function App() {
     if (currentMessage.messageType === "user" && currentMessage.content) {
       handleMessage(currentMessage.content)
         .then((response) => {
-          console.log(response);
           setMessageHistory([response, ...messageHistory]);
         })
         .catch((e) => {

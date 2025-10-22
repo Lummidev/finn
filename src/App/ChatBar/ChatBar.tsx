@@ -9,13 +9,15 @@ export interface ChatBarProps {
 
 export const ChatBar = (props: ChatBarProps) => {
   const [text, setText] = useState("");
+  const disabled = text.trim().length === 0;
   return (
     <form
       className="chat-bar"
       onSubmit={(e) => {
-        props.onSubmit(text);
-        setText("");
         e.preventDefault();
+        if (disabled) return;
+        props.onSubmit(text.trim());
+        setText("");
       }}
     >
       <input
@@ -29,7 +31,7 @@ export const ChatBar = (props: ChatBarProps) => {
         }}
       />
       <div className="chat-bar__button-area">
-        <button className="chat-bar__button" type="submit">
+        <button className="chat-bar__button" disabled={disabled} type="submit">
           <FontAwesomeIcon icon={faPaperPlane} />
         </button>
       </div>
