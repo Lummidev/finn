@@ -110,7 +110,10 @@ export const CategoryForm = () => {
             value={newWord}
             button={{
               icon: faPlus,
-              type: "submit",
+              type: "button",
+              onClick: () => {
+                if (validWord) addWord();
+              },
               label: "Adicionar Palavra",
               disabled: !validWord,
             }}

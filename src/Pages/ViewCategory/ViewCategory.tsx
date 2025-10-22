@@ -223,7 +223,10 @@ export const ViewCategory = () => {
                     <LabeledInput
                       name="Nova Palavra"
                       button={{
-                        type: "submit",
+                        type: "button",
+                        onClick: () => {
+                          if (validWord) addWord();
+                        },
                         icon: faPlus,
                         label: "Adicionar palavra",
                         disabled: !validWord,
@@ -233,7 +236,7 @@ export const ViewCategory = () => {
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
-                          addWord();
+                          if (validWord) addWord();
                         }
                       }}
                     />
