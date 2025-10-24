@@ -1,33 +1,82 @@
-import { use, useEffect, useState } from "react";
+import {
+  use,
+  useEffect,
+  useId,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import "./Settings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { SettingsContext } from "../../Context/SettingsContext";
 import { Settings as SettingsManager } from "../../settings";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
+import { AutoResizeInput } from "../../Components/AutoResizeInput/AutoResizeInput";
+const formatNumberWithoutSeparators = (num: number) => {
+  const formatter = Intl.NumberFormat(undefined, {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  });
+  const parts = formatter.formatToParts(num);
+  parts
+    .filter((part) => part.type === "group")
+    .forEach((part) => (part.value = ""));
+  const formatted = parts.map((part) => part.value).join("");
+  return formatted;
+};
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
   const [accentColor, setAccentColor] = useState("blue");
   const [alwaysShowChatBar, setAlwaysShowChatBar] = useState(false);
   const [changed, setChanged] = useState(false);
+  const [dailyExpense, setDailyExpense] = useState("");
+  const [weeklyExpense, setWeeklyExpense] = useState("");
+  const [monthlyExpense, setMonthlyExpense] = useState("");
   const settingsContext = use(SettingsContext);
   const saveSettings = () => {
+    const [daily, weekly, monthly] = [
+      dailyExpense,
+      weeklyExpense,
+      monthlyExpense,
+    ].map((e) => {
+      const num = Number(e.replace(",", "."));
+      return !isNaN(num) ? num : 0;
+    });
+    SettingsManager.dailyObjective = daily;
+    SettingsManager.weeklyObjective = weekly;
+    SettingsManager.monthlyObjective = monthly;
     SettingsManager.theme = theme;
     SettingsManager.accentColor = accentColor;
     SettingsManager.alwaysShowChatBar = alwaysShowChatBar;
+
     settingsContext.setSettings({
       ...settingsContext.settings,
       alwaysShowChatBar,
       theme,
+      objectives: {
+        daily,
+        weekly,
+        monthly,
+      },
     });
     setChanged(false);
   };
 
   useEffect(() => {
-    const { accentColor, alwaysShowChatBar, theme } = SettingsManager.load();
+    const {
+      accentColor,
+      alwaysShowChatBar,
+      theme,
+      objectives: { daily, weekly, monthly },
+    } = SettingsManager.load();
     setTheme(theme);
     setAccentColor(accentColor);
     setAlwaysShowChatBar(alwaysShowChatBar);
+
+    setDailyExpense(formatNumberWithoutSeparators(daily));
+    setWeeklyExpense(formatNumberWithoutSeparators(weekly));
+    setMonthlyExpense(formatNumberWithoutSeparators(monthly));
   }, []);
 
   const accentColors = [
@@ -56,14 +105,6 @@ export const Settings = () => {
       },
     },
     {
-      name: "Castanho",
-      value: "maroon",
-      code: {
-        light: "#e64553",
-        dark: "#ee99a0",
-      },
-    },
-    {
       name: "Pêssego",
       value: "peach",
       code: {
@@ -88,6 +129,35 @@ export const Settings = () => {
       },
     },
   ];
+  const dailyExpenseId = useId();
+  const weeklyExpenseId = useId();
+  const monthlyExpenseId = useId();
+  const objectives: {
+    label: string;
+    id: string;
+    state: string;
+    setState: Dispatch<SetStateAction<string>>;
+  }[] = [
+    {
+      label: "Meta de gasto diário máximo",
+      id: dailyExpenseId,
+      state: dailyExpense,
+      setState: setDailyExpense,
+    },
+    {
+      label: "Meta de gasto semanal máximo",
+      id: weeklyExpenseId,
+      state: weeklyExpense,
+      setState: setWeeklyExpense,
+    },
+    {
+      label: "Meta de gasto mensal máximo",
+      id: monthlyExpenseId,
+      state: monthlyExpense,
+      setState: setMonthlyExpense,
+    },
+  ];
+  const numberRegex = "[0-9]+([\\.,][0-9]{1,2})?";
   return (
     <div className="settings">
       <PageHeader
@@ -179,6 +249,7 @@ export const Settings = () => {
                       aria-label={name}
                       onChange={() => {
                         setAccentColor(value);
+                        setChanged(true);
                       }}
                       style={{ backgroundColor: code, color: code }}
                       className="settings__color-button"
@@ -216,6 +287,62 @@ export const Settings = () => {
                 </div>
               </label>
             </div>
+          </div>
+        </fieldset>
+        <fieldset className="settings__group">
+          <legend className="settings__group-legend">Metas</legend>
+          <div className="settings__group-container">
+            {objectives.map((objective) => {
+              return (
+                <div className="settings__sub-group" key={objective.id}>
+                  <label
+                    htmlFor={objective.id}
+                    className="settings__list-label"
+                  >
+                    {objective.label}
+                  </label>
+
+                  <div className="settings__money-input-container">
+                    <span className="settings__money-input-unit">R$</span>
+                    <AutoResizeInput
+                      id={objective.id}
+                      type="text"
+                      pattern={numberRegex}
+                      className="settings__money-input"
+                      value={objective.state}
+                      inputMode="numeric"
+                      enterKeyHint="done"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                          return;
+                        }
+                      }}
+                      onChange={(e) => {
+                        objective.setState(e.target.value);
+                        setChanged(true);
+                      }}
+                      onFocus={(e) => {
+                        setTimeout(() => {
+                          e.target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          });
+                        }, 300);
+                      }}
+                      onBlur={(e) => {
+                        const num = Number(e.target.value.replace(",", "."));
+
+                        if (!isNaN(num)) {
+                          formatNumberWithoutSeparators(num);
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </fieldset>
       </form>

@@ -2,6 +2,9 @@ const defaults = {
   theme: "dark",
   accentColor: "blue",
   alwaysShowChatBar: false,
+  dailyObjective: 0,
+  weeklyObjective: 0,
+  monthlyObjective: 0,
 };
 
 export class Settings {
@@ -48,13 +51,46 @@ export class Settings {
   public static set alwaysShowChatBar(value: boolean) {
     Settings.setSetting("alwaysShowChatBar", value);
   }
+  public static get dailyObjective(): number | null {
+    const daily = Settings.getSetting("dailyObjective");
+    return daily ? Number(daily) : null;
+  }
+  public static set dailyObjective(value: number) {
+    Settings.setSetting("dailyObjective", value);
+  }
+  public static get weeklyObjective(): number | null {
+    const weekly = Settings.getSetting("weeklyObjective");
+    return weekly ? Number(weekly) : null;
+  }
+  public static set weeklyObjective(value: number) {
+    Settings.setSetting("weeklyObjective", value);
+  }
+  public static get monthlyObjective(): number | null {
+    const monthly = Settings.getSetting("monthlyObjective");
+    return monthly ? Number(monthly) : null;
+  }
+  public static set monthlyObjective(value: number) {
+    Settings.setSetting("monthlyObjective", value);
+  }
   public static load() {
     const theme = Settings.theme ?? defaults.theme;
     const accentColor = Settings.accentColor ?? defaults.accentColor;
     const alwaysShowChatBar =
       Settings.alwaysShowChatBar ?? defaults.alwaysShowChatBar;
+    const daily = Settings.dailyObjective ?? defaults.dailyObjective;
+    const weekly = Settings.weeklyObjective ?? defaults.weeklyObjective;
+    const monthly = Settings.monthlyObjective ?? defaults.monthlyObjective;
     this.setDataAttribute("theme", theme);
     this.setDataAttribute("accentcolor", accentColor);
-    return { theme, accentColor, alwaysShowChatBar };
+    return {
+      theme,
+      accentColor,
+      alwaysShowChatBar,
+      objectives: {
+        daily,
+        weekly,
+        monthly,
+      },
+    };
   }
 }
