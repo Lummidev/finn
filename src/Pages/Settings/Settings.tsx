@@ -4,25 +4,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { SettingsContext } from "../../Context/SettingsContext";
 import { Settings as SettingsManager } from "../../settings";
+import { PageHeader } from "../../Components/PageHeader/PageHeader";
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
   const [accentColor, setAccentColor] = useState("blue");
   const [alwaysShowChatBar, setAlwaysShowChatBar] = useState(false);
+  const [changed, setChanged] = useState(false);
   const settingsContext = use(SettingsContext);
-  const saveTheme = (theme: string) => {
+  const saveSettings = () => {
     SettingsManager.theme = theme;
-    settingsContext.setSettings({ ...settingsContext.settings, theme });
-  };
-  const saveColor = (accentColor: string) => {
     SettingsManager.accentColor = accentColor;
-  };
-  const saveAlwaysShowChatBar = (value: boolean) => {
-    SettingsManager.alwaysShowChatBar = value;
+    SettingsManager.alwaysShowChatBar = alwaysShowChatBar;
     settingsContext.setSettings({
       ...settingsContext.settings,
-      alwaysShowChatBar: value,
+      alwaysShowChatBar,
+      theme,
     });
+    setChanged(false);
   };
+
   useEffect(() => {
     const { accentColor, alwaysShowChatBar, theme } = SettingsManager.load();
     setTheme(theme);
@@ -80,14 +80,6 @@ export const Settings = () => {
       },
     },
     {
-      name: "Céu",
-      value: "sky",
-      code: {
-        light: "#04a5e5",
-        dark: "#91d7e3",
-      },
-    },
-    {
       name: "Azul",
       value: "blue",
       code: {
@@ -97,92 +89,136 @@ export const Settings = () => {
     },
   ];
   return (
-    <div className="options">
-      <h1>Ajustes</h1>
-      <ul className="options__list">
-        <li className="options__list-item">
-          <span className="options__item-title">Tema</span>
-          <div className="options__theme-buttons">
-            <button
-              onClick={() => {
-                setTheme("light");
-                saveTheme("light");
-              }}
-              type="button"
-              className={`options__theme-button ${theme === "light" ? "options__theme-button--selected" : ""}`}
-            >
-              <FontAwesomeIcon icon={faSun} />
-              Latte
-            </button>
-            <button
-              onClick={() => {
-                setTheme("dark");
-                saveTheme("dark");
-              }}
-              type="button"
-              className={`options__theme-button ${theme === "dark" ? "options__theme-button--selected" : ""}`}
-            >
-              <FontAwesomeIcon icon={faMoon} />
-              Machiatto
-            </button>
-          </div>
-        </li>
-        <li className="options__list-item">
-          <span className="options__item-title">Cor de Destaque</span>
-          <div className="options__color-select">
-            {accentColors.map((color) => {
-              const { name, value } = color;
-              let code;
-              switch (theme) {
-                case "light": {
-                  code = color.code.light;
-                  break;
-                }
-                case "dark": {
-                  code = color.code.dark;
-                  break;
-                }
-                default: {
-                  code = color.code.dark;
-                }
+    <div className="settings">
+      <PageHeader
+        title="Ajustes"
+        buttons={
+          changed
+            ? {
+                primary: {
+                  submit: true,
+                  formID: "settings-form",
+                  name: "Salvar Alterações",
+                },
               }
-              return (
-                <input
-                  key={value}
-                  type="radio"
-                  name="accent-color"
-                  aria-label={name}
-                  onChange={() => {
-                    setAccentColor(value);
-                    saveColor(value);
-                  }}
-                  style={{ backgroundColor: code, color: code }}
-                  className="options__color-button"
-                  checked={accentColor === value}
-                />
-              );
-            })}
+            : undefined
+        }
+      />
+      <form
+        id="settings-form"
+        className="settings__form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          saveSettings();
+        }}
+      >
+        <fieldset className="settings__group">
+          <legend className="settings__group-legend">Geral</legend>
+          <div className="settings__group-container">
+            <fieldset className="settings__sub-group">
+              <legend className="settings__sub-group-legend">Tema</legend>
+              <div className="settings__theme-buttons">
+                <label className="settings__theme-label">
+                  <input
+                    name="theme-options"
+                    className="settings__theme-radio"
+                    type="radio"
+                    value="light"
+                    checked={theme === "light"}
+                    onChange={(e) => {
+                      setTheme(e.target.value);
+                      setChanged(true);
+                    }}
+                  />
+                  <FontAwesomeIcon icon={faSun} />
+                  Latte
+                </label>
+                <label className="settings__theme-label">
+                  <input
+                    name="theme-options"
+                    type="radio"
+                    className="settings__theme-radio"
+                    value="dark"
+                    checked={theme === "dark"}
+                    onChange={(e) => {
+                      setTheme(e.target.value);
+                      setChanged(true);
+                    }}
+                  />
+                  <FontAwesomeIcon icon={faMoon} />
+                  Machiatto
+                </label>
+              </div>
+            </fieldset>
+            <fieldset className="settings__sub-group">
+              <legend className="settings__sub-group-legend">
+                Cor de Destaque
+              </legend>
+              <div className="settings__color-select">
+                {accentColors.map((color) => {
+                  const { name, value } = color;
+                  let code;
+                  switch (settingsContext.settings.theme) {
+                    case "light": {
+                      code = color.code.light;
+                      break;
+                    }
+                    case "dark": {
+                      code = color.code.dark;
+                      break;
+                    }
+                    default: {
+                      code = color.code.dark;
+                    }
+                  }
+                  return (
+                    <input
+                      key={value}
+                      type="radio"
+                      name="accent-color"
+                      aria-label={name}
+                      onChange={() => {
+                        setAccentColor(value);
+                      }}
+                      style={{ backgroundColor: code, color: code }}
+                      className="settings__color-button"
+                      checked={accentColor === value}
+                    />
+                  );
+                })}
+              </div>
+            </fieldset>
+            <div className="settings__sub-group">
+              <label
+                htmlFor="always-show-chat-bar"
+                className="settings__list-label"
+              >
+                <span className="settings__sub-group-legend">
+                  Manter barra de chat visível
+                </span>
+                <div className="settings__switch-container">
+                  <input
+                    id="always-show-chat-bar"
+                    type="checkbox"
+                    className="settings__checkbox"
+                    checked={alwaysShowChatBar}
+                    onChange={(e) => {
+                      setAlwaysShowChatBar(e.target.checked);
+                      setChanged(true);
+                    }}
+                  />
+                  <div
+                    className={`settings__switch settings__switch--${alwaysShowChatBar ? "on" : "off"}`}
+                  >
+                    <div className="settings__switch-dummy"></div>
+                    <div className="settings__switch-slider"></div>
+                  </div>
+                </div>
+              </label>
+            </div>
           </div>
-        </li>
-        <li className="options__list-item">
-          <span className="options__item-title">
-            Manter barra de chat visível
-          </span>
-          <div className="options__switch-container">
-            <button
-              type="button"
-              className={`options__switch options__switch--${alwaysShowChatBar ? "on" : "off"}`}
-              onClick={() => {
-                setAlwaysShowChatBar(!alwaysShowChatBar);
-                saveAlwaysShowChatBar(!alwaysShowChatBar);
-              }}
-            >
-              <div className="options__switch-dummy"></div>
-              <div className="options__switch-slider"></div>
-            </button>
-          </div>
-        </li>
-      </ul>
+        </fieldset>
+      </form>
     </div>
   );
 };
