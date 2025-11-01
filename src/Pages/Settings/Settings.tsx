@@ -13,18 +13,8 @@ import { SettingsContext } from "../../Context/SettingsContext";
 import { Settings as SettingsManager } from "../../settings";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { AutoResizeInput } from "../../Components/AutoResizeInput/AutoResizeInput";
-const formatNumberWithoutSeparators = (num: number) => {
-  const formatter = Intl.NumberFormat(undefined, {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  });
-  const parts = formatter.formatToParts(num);
-  parts
-    .filter((part) => part.type === "group")
-    .forEach((part) => (part.value = ""));
-  const formatted = parts.map((part) => part.value).join("");
-  return formatted;
-};
+import { formatNumberWithoutSeparators } from "../../util";
+
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
   const [accentColor, setAccentColor] = useState("blue");
@@ -333,9 +323,10 @@ export const Settings = () => {
                       }}
                       onBlur={(e) => {
                         const num = Number(e.target.value.replace(",", "."));
-
                         if (!isNaN(num)) {
-                          formatNumberWithoutSeparators(num);
+                          objective.setState(
+                            formatNumberWithoutSeparators(num),
+                          );
                         }
                       }}
                     />

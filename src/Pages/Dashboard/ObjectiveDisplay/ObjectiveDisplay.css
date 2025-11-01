@@ -1,0 +1,27 @@
+.objective-display {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 0.2rem;
+}
+.objective-display__title {
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+.objective-display__main {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+.objective-display__main--caution {
+  color: var(--theme-yellow);
+}
+.objective-display__main--warning {
+  color: var(--theme-red);
+}
+.objective-display__goal-container {
+  font-size: 1rem;
+  justify-self: flex-end;
+  display: flex;
+  gap: 0.2rem;
+  color: var(--theme-subtext1);
+}

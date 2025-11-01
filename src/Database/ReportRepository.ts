@@ -2,6 +2,7 @@ import type { ManipulateType } from "dayjs";
 import type { Category } from "../Entities/Category";
 import { EntryRepository, type JoinedEntry } from "./EntryRepository";
 import dayjs from "dayjs";
+import type { Entry } from "../Entities/Entry";
 
 export const getMoneyExpentByCategory = async () => {
   const entries = await EntryRepository.getAll();
@@ -95,4 +96,16 @@ export const getMoneyExpentByCategoryAndMonthDay = async () => {
     }
   });
   return moneyExpentByCategoryAndMonthDay;
+};
+export const getMoneyExpentByPeriod = async () => {
+  const periodFilter = (period: ManipulateType) => {
+    return (entry: Entry) =>
+      dayjs(entry.createdAtTimestampMiliseconds).isSameOrAfter(dayjs(), period);
+  };
+  const reducer = (sum: number, current: Entry) => sum + current.moneyExpent;
+  const entries = await EntryRepository.getAll();
+  const day = entries.filter(periodFilter("day")).reduce(reducer, 0);
+  const week = entries.filter(periodFilter("week")).reduce(reducer, 0);
+  const month = entries.filter(periodFilter("month")).reduce(reducer, 0);
+  return { day, week, month };
 };

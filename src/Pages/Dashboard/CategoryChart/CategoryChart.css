@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   gap: 2rem;
+  width: 100%;
 }
 .category-chart__empty-info {
   color: var(--theme-subtext0);
@@ -28,10 +29,7 @@
   align-items: start;
   justify-content: end;
   gap: 1rem;
-  min-width: 40%;
-  max-width: 100%;
-
-  flex: 1;
+  width: 40%;
 }
 .category-chart__legend-item {
   display: flex;
