@@ -23,7 +23,6 @@ export const ChatBubble = (props: ChatBubbleProps) => {
   const error = props.message.messageType === "error";
   const deleted = !!props.message.entryID && !props.message.entry;
   const showIcon = (iconName?: string): IconDefinition => {
-    console.log(iconName);
     if (!iconName) return faTag;
     const icon = categoryIcons[iconName]?.icon;
     return icon ? icon : faQuestion;

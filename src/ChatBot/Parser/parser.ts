@@ -9,7 +9,6 @@ interface MessageComponents {
 
 export const getCategory = async (message: string) => {
   const categories = await CategoryRepository.getAll();
-  console.log(categories);
   for (const category of categories) {
     const categoryMatches = [
       ...message.matchAll(new RegExp(category.name, "gi")),

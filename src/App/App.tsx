@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Message } from "../Entities/Message";
 import "./App.css";
 import { ChatBar } from "./ChatBar/ChatBar";
 import { handleMessage } from "../ChatBot/ChatBot";
@@ -13,63 +12,52 @@ import { MessageContext } from "../Context/MessageContext";
 import { useNavigate } from "react-router";
 import { SettingsContext } from "../Context/SettingsContext";
 import { Settings } from "../settings";
+import { useLiveQuery } from "dexie-react-hooks";
 function App() {
-  const [messageHistory, setMessageHistory] = useState<JoinedMessage[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
   const [settings, setSettings] = useState({
     theme: "dark",
     alwaysShowChatBar: false,
   });
+  const messages = useLiveQuery<JoinedMessage[], JoinedMessage[]>(
+    () => MessageRepository.getAll(),
+    [],
+    [],
+  );
+
   const handleUserMessage = async (text: string) => {
     const trimmedText = text.trim();
     if (trimmedText.length === 0) return;
-    const userMessage = await MessageRepository.insert({
+    await MessageRepository.insert({
       messageType: "user",
       content: trimmedText,
     });
-    setMessageHistory([userMessage, ...messageHistory]);
   };
-  const handleCurrentMessage = (currentMessage: Message) => {
-    if (currentMessage.messageType === "user" && currentMessage.content) {
-      handleMessage(currentMessage.content)
-        .then((response) => {
-          setMessageHistory([response, ...messageHistory]);
-        })
-        .catch((e) => {
-          console.error(e);
-          throw e;
-        });
-    }
-  };
-  useEffect(() => {
-    MessageRepository.getAll()
-      .then((messages) => {
-        setMessageHistory(messages);
-      })
-      .catch((e) => {
-        throw e;
-      });
-  }, []);
+
   useEffect(() => {
     const { theme, alwaysShowChatBar } = Settings.load();
     setSettings({ theme, alwaysShowChatBar });
   }, []);
   useEffect(() => {
-    if (
-      messageHistory.length !== 0 &&
-      messageHistory[0].messageType === "user"
-    ) {
-      handleCurrentMessage(messageHistory[0]);
+    const lastMessage = [...messages].shift();
+    if (messages.length !== 0 && lastMessage) {
+      const { messageType, content } = lastMessage;
+      if (messageType === "user" && content) {
+        handleMessage(content).catch((e) => {
+          console.error(e);
+          throw e;
+        });
+      }
     }
-  }, [messageHistory]);
+  }, [messages]);
   const atChat = location.pathname === "/chat";
   const defaultPadding = !atChat ? "2rem" : undefined;
   const settingsContext = useMemo(() => {
     return { settings, setSettings };
   }, [settings, setSettings]);
   return (
-    <MessageContext value={messageHistory}>
+    <MessageContext value={messages}>
       <SettingsContext value={settingsContext}>
         <div className="app">
           <div
