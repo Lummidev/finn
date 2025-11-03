@@ -15,6 +15,7 @@ import duration from "dayjs/plugin/duration";
 import isBetween from "dayjs/plugin/isBetween";
 import minMax from "dayjs/plugin/minMax";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import "dayjs/locale/pt-br";
 import { BrowserRouter, Route } from "react-router";
 import { Routes } from "react-router";
 import { Dashboard } from "./Pages/Dashboard/Dashboard.tsx";
@@ -53,6 +54,7 @@ dayjs.extend(duration);
 dayjs.extend(isBetween);
 dayjs.extend(minMax);
 dayjs.extend(isSameOrAfter);
+dayjs.locale("pt-br");
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
