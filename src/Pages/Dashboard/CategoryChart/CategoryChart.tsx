@@ -1,8 +1,8 @@
 import { Doughnut } from "react-chartjs-2";
 import { SettingsContext } from "../../../Context/SettingsContext";
 import { use, useEffect, useState } from "react";
-import type { Plugin } from "chart.js";
-import { getMoneyExpentByCategory } from "../../../Database/ReportRepository";
+import type { ChartDataset, Plugin } from "chart.js";
+import { getMoneyExpentByCategoryToday } from "../../../Database/ReportRepository";
 import "./CategoryChart.css";
 import type { Category } from "../../../Entities/Category";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,20 +11,34 @@ import { categoryIcons } from "../../../categoryIcons";
 const themeColors: Record<string, Record<string, string>> = {
   dark: {
     blue: "#8aadf4",
-    green: "#a6da95",
-    mauve: "#c6a0f6",
+    red: "#ed8796",
+    maroon: "#ee99a0",
+    teal: "#8bd5ca",
     peach: "#f5a97f",
+    mauve: "#c6a0f6",
+    yellow: "#eed49f",
     pink: "#f5bde6",
+    green: "#a6da95",
+    flamingo: "#f0c6c6",
     overlay: "#5b6078",
+    surface0: "#363a4f",
+    surface2: "#585b70",
     text: "#cad3f5",
   },
   light: {
     blue: "#1e66f5",
-    green: "#40a02b",
-    mauve: "#8839ef",
+    red: "#d20f39",
+    maroon: "#e64553",
+    teal: "#179299",
     peach: "#fe640b",
+    mauve: "#8839ef",
+    yellow: "#df8e1d",
     pink: "#ea76cb",
+    green: "#40a02b",
+    flamingo: "#dd7878",
     overlay: "#acb0be",
+    surface0: "#ccd0da",
+    surface2: "#acb0be",
     text: "#4c4f69",
   },
 };
@@ -42,19 +56,55 @@ const ShadowPlugin: Plugin = {
 export const CategoryChart = () => {
   const { settings } = use(SettingsContext);
   const theme = settings.theme;
-  const [topCategories, setTopCategories] = useState<
-    [string, number, Category][]
-  >([]);
+  const [data, setData] = useState<{
+    labels: string[];
+    datasets: ChartDataset<"doughnut", number[]>[];
+    plain: [string, number, Category][];
+    colors: string[];
+  }>({
+    labels: [],
+    datasets: [],
+    plain: [],
+    colors: [],
+  });
   const [empty, setEmpty] = useState(false);
   useEffect(() => {
-    getMoneyExpentByCategory()
+    getMoneyExpentByCategoryToday()
       .then((data) => {
-        const dataArray = Object.keys(data.moneyExpentByCategory).map(
-          (key): [string, number, Category] => {
-            const { category, money } = data.moneyExpentByCategory[key];
-            return [key, money, category];
-          },
-        );
+        const { blue, red, teal, peach, mauve, yellow, pink, green, flamingo } =
+          themeColors[theme];
+
+        const colors = [
+          blue,
+          red,
+          teal,
+          peach,
+          mauve,
+          yellow,
+          pink,
+          green,
+          flamingo,
+        ];
+        const dataArray: [string, number, Category][] = [
+          ...Object.keys(data.moneyExpentByCategory).map(
+            (key): [string, number, Category] => {
+              const { category, money } = data.moneyExpentByCategory[key];
+              return [key, money, category];
+            },
+          ),
+        ];
+        if (data.moneyWithNoCategory > 0) {
+          dataArray.push([
+            "Sem Categoria",
+            data.moneyWithNoCategory,
+            {
+              id: "none",
+              name: "Sem Categoria",
+              precedence: 0,
+              words: [],
+            },
+          ]);
+        }
         if (dataArray.length === 0) {
           setEmpty(true);
           return;
@@ -67,51 +117,71 @@ export const CategoryChart = () => {
           },
         );
         const top5 = sorted.slice(0, 5);
+        const backgroundColorArray = [];
+        let currentColorIndex = 0;
+        for (const data of top5) {
+          const [, , category] = data;
+          if (category.id === "none") {
+            backgroundColorArray.push(themeColors[theme].surface2);
+          } else {
+            backgroundColorArray.push(colors[currentColorIndex]);
+
+            currentColorIndex++;
+            if (currentColorIndex >= colors.length) {
+              currentColorIndex = 0;
+            }
+          }
+        }
         const rest = sorted.slice(5);
-        console.log(top5, rest);
         const other = rest
           .map((category) => category[1])
-          .reduce(
-            (accumulator, current) => accumulator + current,
-
-            0,
-          );
+          .reduce((accumulator, current) => accumulator + current, 0);
+        let result: [string, number, Category][];
         if (other > 0) {
-          setTopCategories([
+          result = [
             ...top5,
             [
               "Outras",
               other,
               {
-                id: "",
+                id: "other",
                 name: "Outras",
                 precedence: 0,
                 words: [],
                 iconName: "ellipsis",
               },
             ],
-          ]);
+          ];
+          backgroundColorArray.push(themeColors[theme].surface0);
         } else {
-          setTopCategories(top5);
+          result = top5;
         }
+        const datasets: ChartDataset<"doughnut", number[]>[] = [
+          {
+            /*@ts-expect-error id property specified by datasetIdKey is needed for react-chartjs-2 reactivity */
+            id: 1,
+            label: "Dinheiro gasto",
+            data: result.map((category) => category[1]),
+            offset: result.length > 0 ? 16 : 0,
+            backgroundColor: backgroundColorArray,
+          },
+        ];
+        setData({
+          datasets,
+          labels: result.map((data) => data[0]),
+          plain: result,
+          colors: backgroundColorArray,
+        });
       })
       .catch((e) => {
         throw e;
       });
-  }, []);
-  const colors = [
-    themeColors[theme].blue,
-    themeColors[theme].mauve,
-    themeColors[theme].peach,
-    themeColors[theme].green,
-    themeColors[theme].pink,
-    themeColors[theme].overlay,
-  ];
+  }, [theme]);
   return (
     <div className="category-chart">
       {empty ? (
         <span className="category-chart__empty-info">
-          Registre um gasto em alguma categoria e ele aparecerá aqui!
+          Nenhum gasto registrado hoje!
         </span>
       ) : (
         <div className="category-chart__container">
@@ -148,24 +218,15 @@ export const CategoryChart = () => {
               }}
               plugins={[ShadowPlugin]}
               data={{
-                labels: topCategories.map((category) => category[0]),
-                datasets: [
-                  {
-                    /*@ts-expect-error id property specified by datasetIdKey is needed for react-chartjs-2 reactivity */
-                    id: 1,
-                    label: "Dinheiro gasto",
-                    data: topCategories.map((category) => category[1]),
-                    offset: topCategories.length > 0 ? 16 : 0,
-                    backgroundColor: colors,
-                  },
-                ],
+                labels: data.labels,
+                datasets: data.datasets,
               }}
             />
           </div>
           <ul className="category-chart__legend">
-            {topCategories.map((topCategory, i) => {
+            {data.plain.map((topCategory, i) => {
               const [name, money, category] = topCategory;
-              const color = colors[i];
+              const color = data.colors[i];
               return (
                 <li className="category-chart__legend-item" key={name}>
                   <div

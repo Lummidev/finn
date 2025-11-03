@@ -4,8 +4,11 @@ import { EntryRepository } from "./EntryRepository";
 import dayjs from "dayjs";
 import type { Entry } from "../Entities/Entry";
 
-export const getMoneyExpentByCategory = async () => {
-  const entries = await EntryRepository.getAll();
+export const getMoneyExpentByCategoryToday = async () => {
+  const now = dayjs();
+  const entries = (await EntryRepository.getAll()).filter((entry) => {
+    return dayjs(entry.createdAtTimestampMiliseconds).isSameOrAfter(now, "day");
+  });
   const moneyExpentByCategory: Record<
     string,
     { category: Category; money: number }

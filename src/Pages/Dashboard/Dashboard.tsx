@@ -64,9 +64,7 @@ export const Dashboard = () => {
         </div>
 
         <div className="dashboard__chart">
-          <h2 className="dashboard__chart-title">
-            Dinheiro gasto por categoria
-          </h2>
+          <h2 className="dashboard__chart-title">Gastos de hoje</h2>
 
           <div className="dashboard__chart-content">
             <CategoryChart />
