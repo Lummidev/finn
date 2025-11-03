@@ -44,11 +44,6 @@ export const Settings = () => {
       ...settingsContext.settings,
       alwaysShowChatBar,
       theme,
-      objectives: {
-        daily,
-        weekly,
-        monthly,
-      },
     });
     setChanged(false);
   };

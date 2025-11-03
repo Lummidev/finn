@@ -203,7 +203,7 @@ export const MonthChart = () => {
                 stacked: true,
                 ticks: {
                   color: themeColors[theme].text,
-                  callback: (value, index) => {
+                  callback: (_, index) => {
                     return `${labels[index]}/${dayjs().format("MMM")}`;
                   },
                   font: () => {

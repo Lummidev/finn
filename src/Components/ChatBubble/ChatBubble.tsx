@@ -3,7 +3,6 @@ import "./ChatBubble.css";
 import {
   faCheck,
   faMoneyBill,
-  faList,
   faCalendar,
   faArrowUpRightFromSquare,
   type IconDefinition,

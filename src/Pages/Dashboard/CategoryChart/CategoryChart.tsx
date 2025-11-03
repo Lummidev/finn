@@ -6,7 +6,6 @@ import { getMoneyExpentByCategory } from "../../../Database/ReportRepository";
 import "./CategoryChart.css";
 import type { Category } from "../../../Entities/Category";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTag } from "@fortawesome/free-solid-svg-icons/faTag";
 import { faEllipsisH, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { categoryIcons } from "../../../categoryIcons";
 const themeColors: Record<string, Record<string, string>> = {
@@ -152,6 +151,7 @@ export const CategoryChart = () => {
                 labels: topCategories.map((category) => category[0]),
                 datasets: [
                   {
+                    /*@ts-expect-error id property specified by datasetIdKey is needed for react-chartjs-2 reactivity */
                     id: 1,
                     label: "Dinheiro gasto",
                     data: topCategories.map((category) => category[1]),

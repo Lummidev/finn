@@ -1,6 +1,6 @@
 import type { ManipulateType } from "dayjs";
 import type { Category } from "../Entities/Category";
-import { EntryRepository, type JoinedEntry } from "./EntryRepository";
+import { EntryRepository } from "./EntryRepository";
 import dayjs from "dayjs";
 import type { Entry } from "../Entities/Entry";
 
