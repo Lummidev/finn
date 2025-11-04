@@ -21,7 +21,11 @@ function App() {
     alwaysShowChatBar: false,
   });
   const messages = useLiveQuery<JoinedMessage[], JoinedMessage[]>(
-    () => MessageRepository.getAll(),
+    async () =>
+      (await MessageRepository.getAll()).sort(
+        (a, b) =>
+          b.createdAtTimestampMiliseconds - a.createdAtTimestampMiliseconds,
+      ),
     [],
     [],
   );
