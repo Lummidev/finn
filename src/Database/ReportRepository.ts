@@ -56,7 +56,7 @@ export const getMoneyExpentByCategoryAndMonthDay = async () => {
 
   const entries = await EntryRepository.getAll();
   const entriesInMonth = entries.filter((entry) =>
-    now.isSameOrAfter(dayjs(entry.createdAtTimestampMiliseconds, "month")),
+    dayjs(entry.createdAtTimestampMiliseconds).isSame(now, "month"),
   );
   const moneyExpentByCategoryAndMonthDay: Record<
     string,
