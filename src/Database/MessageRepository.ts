@@ -34,5 +34,7 @@ const getAll = async (): Promise<JoinedMessage[]> => {
     }),
   );
 };
-
-export const MessageRepository = { insert, getAll };
+const deleteAll = async () => {
+  await database.messages.clear();
+};
+export const MessageRepository = { insert, getAll, deleteAll };

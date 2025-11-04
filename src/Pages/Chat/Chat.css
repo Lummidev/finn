@@ -4,7 +4,7 @@
   flex-grow: 1;
 }
 .chat__title {
-  padding-left: 2rem;
+  padding: 0 2rem;
 }
 .chat__box {
   overflow-y: auto;
