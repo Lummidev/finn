@@ -1,19 +1,13 @@
-import type {
-  ChangeEventHandler,
-  HTMLInputTypeAttribute,
-  KeyboardEventHandler,
-} from "react";
+import type { ChangeEventHandler, KeyboardEventHandler } from "react";
 import "./LabeledInput.css";
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NumericFormat } from "react-number-format";
 
-interface LabeledInputProps {
+type LabeledInputProps = {
   name: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
   onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
-  value: string | number;
   placeholder?: string;
-  type?: HTMLInputTypeAttribute;
   step?: number;
   className?: string;
   min?: string;
@@ -23,7 +17,19 @@ interface LabeledInputProps {
     label: string;
     disabled?: boolean;
   } & ({ type: "button"; onClick: () => unknown } | { type: "submit" });
-}
+} & (
+  | {
+      type: "number";
+      value?: number;
+      prefix?: string;
+      onValueChange: (value: number | undefined) => unknown;
+    }
+  | {
+      type?: "text" | "date";
+      value: string;
+      onChange: ChangeEventHandler<HTMLInputElement>;
+    }
+);
 export const LabeledInput = (props: LabeledInputProps) => {
   return (
     <div className={`labeled-input ${props.className ?? ""}`}>
@@ -31,18 +37,36 @@ export const LabeledInput = (props: LabeledInputProps) => {
         {props.name}
       </label>
       <div className="labeled-input__input-row">
-        <input
-          className="labeled-input__input"
-          type={props.type ?? "text"}
-          step={props.step}
-          id={`id-${props.name}`}
-          onChange={props.onChange}
-          value={props.value}
-          placeholder={props.placeholder}
-          onKeyDown={props.onKeyDown}
-          min={props.min}
-          max={props.max}
-        />
+        {props.type === "number" ? (
+          <NumericFormat
+            id={`id-${props.name}`}
+            placeholder={props.placeholder}
+            onKeyDown={props.onKeyDown}
+            onValueChange={(values) => {
+              props.onValueChange(values.floatValue);
+            }}
+            value={props.value}
+            allowNegative={false}
+            allowedDecimalSeparators={[",", "."]}
+            decimalScale={2}
+            fixedDecimalScale={true}
+            className="labeled-input__input"
+            prefix={props.prefix}
+          />
+        ) : (
+          <input
+            className="labeled-input__input"
+            type={props.type ?? "text"}
+            id={`id-${props.name}`}
+            onChange={props.onChange}
+            value={props.value}
+            placeholder={props.placeholder}
+            onKeyDown={props.onKeyDown}
+            min={props.min}
+            max={props.max}
+          />
+        )}
+
         {!!props.button && (
           <button
             className="labeled-input__button"

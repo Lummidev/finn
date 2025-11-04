@@ -143,30 +143,24 @@
   width: 0;
   outline: none;
 }
-.settings__money-input-container {
-  display: flex;
-  align-items: end;
-  border-bottom: 0.2rem solid var(--theme-overlay0);
-}
-.settings__money-input-container:has(:focus) {
-  border-bottom: 0.2rem solid var(--theme-accent);
-}
-.settings__money-input-container:has(:invalid) {
-  border-bottom: 0.2rem solid var(--theme-red);
-}
-.settings__money-input-unit {
-  font-weight: 500;
-}
+
 .settings__money-input {
   min-width: 5ch;
   -moz-appearance: textfield;
   background-color: inherit;
   color: inherit;
-  text-align: right;
   max-width: 15ch;
   border: 0;
+  border-bottom: 0.2rem solid var(--theme-overlay0);
   outline: none;
   font-size: 1.3rem;
+  transition: border-bottom 100ms;
+}
+.settings__money-input:focus {
+  border-bottom: 0.2rem solid var(--theme-accent);
+}
+.settings__money-input:invalid {
+  border-bottom: 0.2rem solid var(--theme-red);
 }
 .settings__money-input ::-webkit-outer-spin-button,
 .settings__money-input ::-webkit-inner-spin-button {

@@ -24,12 +24,13 @@ import { getUniqueWords } from "../../util";
 import { categoryIcons } from "../../categoryIcons";
 import { ChooseCategoryModal } from "../../Components/ChooseCategoryModal/ChooseCategoryModal";
 import { FormModal } from "../../Components/FormModal/FormModal";
+import { numericFormatter } from "react-number-format";
 
 export const ViewExpense = () => {
   const [entry, setEntry] = useState<JoinedEntry | undefined>();
   const [editing, setEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
-  const [editedMoney, setEditedMoney] = useState("");
+  const [editedMoney, setEditedMoney] = useState<number | undefined>(0);
   const [editedNote, setEditedNote] = useState("");
   const [showCategoryChoice, setShowCategoryChoice] = useState(false);
   const [showWordChoice, setShowWordChoice] = useState(false);
@@ -65,24 +66,20 @@ export const ViewExpense = () => {
     console.log(entry);
     setEditing(true);
     setEditedDescription(entry.description);
-    setEditedMoney(
-      entry.moneyExpent.toLocaleString("en", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-    );
+    setEditedMoney(entry.moneyExpent);
     setEditedNote(entry.note ?? "");
   };
 
   const validName = editedDescription.trim().length > 0;
-  const validMoney =
-    editedMoney.trim().length > 0 && !isNaN(Number(editedMoney.trim()));
+  const validMoney = !editedMoney || (editedMoney >= 0 && !isNaN(editedMoney));
   const editExpenseFormID = "edit-expense";
   const saveEdit = () => {
     if (!entry || !(validName && validMoney)) return;
     const newDescription = editedDescription.trim();
     const newNote = editedNote.trim();
-    const newMoneyExpent = Math.trunc(Number(editedMoney.trim()) * 100) / 100;
+    const newMoneyExpent = !editedMoney
+      ? 0
+      : Math.trunc(editedMoney * 100) / 100;
     const newEntry: Entry = {
       ...entry,
       description: newDescription,
@@ -355,15 +352,16 @@ export const ViewExpense = () => {
           <LabeledInput
             name="Dinheiro Gasto"
             type="number"
-            placeholder={entry.moneyExpent.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
+            placeholder={numericFormatter(entry.moneyExpent.toString(), {
+              prefix: "R$",
+              decimalScale: 2,
+              fixedDecimalScale: true,
             })}
-            step={0.01}
             value={editedMoney}
-            onChange={(e) => {
-              setEditedMoney(e.target.value);
+            onValueChange={(value) => {
+              setEditedMoney(value);
             }}
+            prefix="R$"
           />
           <LabeledInput
             name="Observação"

@@ -13,26 +13,23 @@ import { SettingsContext } from "../../Context/SettingsContext";
 import { Settings as SettingsManager } from "../../settings";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { AutoResizeInput } from "../../Components/AutoResizeInput/AutoResizeInput";
-import { formatNumberWithoutSeparators } from "../../util";
+import { NumericFormat } from "react-number-format";
 
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
   const [accentColor, setAccentColor] = useState("blue");
   const [alwaysShowChatBar, setAlwaysShowChatBar] = useState(false);
   const [changed, setChanged] = useState(false);
-  const [dailyExpense, setDailyExpense] = useState("");
-  const [weeklyExpense, setWeeklyExpense] = useState("");
-  const [monthlyExpense, setMonthlyExpense] = useState("");
+  const [dailyExpense, setDailyExpense] = useState<number | undefined>(0);
+  const [weeklyExpense, setWeeklyExpense] = useState<number | undefined>(0);
+  const [monthlyExpense, setMonthlyExpense] = useState<number | undefined>(0);
   const settingsContext = use(SettingsContext);
   const saveSettings = () => {
     const [daily, weekly, monthly] = [
       dailyExpense,
       weeklyExpense,
       monthlyExpense,
-    ].map((e) => {
-      const num = Number(e.replace(",", "."));
-      return !isNaN(num) ? num : 0;
-    });
+    ].map((num) => num ?? 0);
     SettingsManager.dailyObjective = daily;
     SettingsManager.weeklyObjective = weekly;
     SettingsManager.monthlyObjective = monthly;
@@ -59,9 +56,9 @@ export const Settings = () => {
     setAccentColor(accentColor);
     setAlwaysShowChatBar(alwaysShowChatBar);
 
-    setDailyExpense(formatNumberWithoutSeparators(daily));
-    setWeeklyExpense(formatNumberWithoutSeparators(weekly));
-    setMonthlyExpense(formatNumberWithoutSeparators(monthly));
+    setDailyExpense(daily);
+    setWeeklyExpense(weekly);
+    setMonthlyExpense(monthly);
   }, []);
 
   const accentColors = [
@@ -120,8 +117,8 @@ export const Settings = () => {
   const objectives: {
     label: string;
     id: string;
-    state: string;
-    setState: Dispatch<SetStateAction<string>>;
+    state: number | undefined;
+    setState: Dispatch<SetStateAction<number | undefined>>;
   }[] = [
     {
       label: "Meta de gasto diário máximo",
@@ -142,7 +139,6 @@ export const Settings = () => {
       setState: setMonthlyExpense,
     },
   ];
-  const numberRegex = "[0-9]+([\\.,][0-9]{1,2})?";
   return (
     <div className="settings">
       <PageHeader
@@ -287,45 +283,42 @@ export const Settings = () => {
                     {objective.label}
                   </label>
 
-                  <div className="settings__money-input-container">
-                    <span className="settings__money-input-unit">R$</span>
-                    <AutoResizeInput
-                      id={objective.id}
-                      type="text"
-                      pattern={numberRegex}
-                      className="settings__money-input"
-                      value={objective.state}
-                      inputMode="numeric"
-                      enterKeyHint="done"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          e.currentTarget.blur();
-                          return;
-                        }
-                      }}
-                      onChange={(e) => {
-                        objective.setState(e.target.value);
-                        setChanged(true);
-                      }}
-                      onFocus={(e) => {
-                        setTimeout(() => {
-                          e.target.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start",
-                          });
-                        }, 300);
-                      }}
-                      onBlur={(e) => {
-                        const num = Number(e.target.value.replace(",", "."));
-                        if (!isNaN(num)) {
-                          objective.setState(
-                            formatNumberWithoutSeparators(num),
-                          );
-                        }
-                      }}
-                    />
-                  </div>
+                  <NumericFormat
+                    customInput={AutoResizeInput}
+                    prefix="R$"
+                    allowNegative={false}
+                    allowedDecimalSeparators={[",", "."]}
+                    decimalScale={2}
+                    fixedDecimalScale={true}
+                    className="settings__money-input"
+                    id={objective.id}
+                    value={objective.state}
+                    enterKeyHint="done"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        e.currentTarget.blur();
+                        return;
+                      }
+                    }}
+                    onValueChange={(values) => {
+                      objective.setState(values.floatValue);
+                      setChanged(true);
+                    }}
+                    onFocus={(e) => {
+                      setTimeout(() => {
+                        e.target.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }, 300);
+                    }}
+                    onBlur={() => {
+                      if (!objective.state) {
+                        objective.setState(0);
+                      }
+                    }}
+                  />
                 </div>
               );
             })}
