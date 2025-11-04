@@ -301,9 +301,14 @@ export const Settings = () => {
                         return;
                       }
                     }}
-                    onValueChange={(values) => {
+                    onValueChange={(values, { source }) => {
                       objective.setState(values.floatValue);
-                      setChanged(true);
+
+                      // I would import { SourceType } from "react-number-format/types/types",
+                      // but for some reason the code doesn't compile when I try it.
+                      // It says the file doesn't exist :thinking:
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+                      if (source === "event") setChanged(true);
                     }}
                     onFocus={(e) => {
                       setTimeout(() => {
