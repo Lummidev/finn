@@ -162,7 +162,7 @@ export const CategoryChart = () => {
             id: 1,
             label: "Dinheiro gasto",
             data: result.map((category) => category[1]),
-            offset: result.length > 0 ? 16 : 0,
+            offset: result.length > 1 ? 16 : 0,
             backgroundColor: backgroundColorArray,
           },
         ];
