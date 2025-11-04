@@ -1,9 +1,9 @@
 .navigation {
   display: flex;
   min-height: fit-content;
-  margin-top: 1rem;
   border-top: 1px solid
     color-mix(in srgb, var(--theme-surface0) 30%, transparent 70%);
+  z-index: 1;
 }
 .navigation__button {
   color: var(--theme-text);

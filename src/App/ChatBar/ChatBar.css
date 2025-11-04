@@ -1,10 +1,11 @@
 .chat-bar {
   background-color: var(--theme-base);
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
   border-radius: 2rem;
   padding: 0.5rem;
   display: flex;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .chat-bar__input {
