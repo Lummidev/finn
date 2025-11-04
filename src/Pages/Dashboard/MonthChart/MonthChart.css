@@ -1,4 +1,5 @@
 .month-chart {
+  width: 100%;
 }
 .month-chart__container {
   position: relative;
