@@ -249,10 +249,13 @@ export const MonthChart = () => {
                     if (label) {
                       label += ": ";
                     }
-                    label += new Intl.NumberFormat(undefined, {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(context.parsed.y);
+                    if (context.parsed.y) {
+                      label += new Intl.NumberFormat(undefined, {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(context.parsed.y);
+                    }
+
                     return label;
                   },
                   title: (context) => {
