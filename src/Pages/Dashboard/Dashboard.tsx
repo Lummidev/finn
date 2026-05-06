@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { CategoryChart } from "./CategoryChart/CategoryChart";
 import "./Dashboard.css";
@@ -44,16 +44,18 @@ export const Dashboard = () => {
           <h2 className="dashboard__section-title">Gastos</h2>
           <div className="dashboard__display-row">
             {objectives.length > 0 ? (
-              <div className="dashboard__display-grid">
-                {objectives.map((objective) => (
+              objectives.map((objective, i) => (
+                <Fragment key={objective.title}>
                   <ObjectiveDisplay
                     expent={objective.expent}
                     goal={objective.goal}
                     title={objective.title}
-                    key={objective.title}
                   />
-                ))}
-              </div>
+                  {i != objectives.length - 1 && (
+                    <span className="dashboard__horizontal-separator" />
+                  )}
+                </Fragment>
+              ))
             ) : (
               <span className="dashboard__notice">
                 Configure uma meta de gastos na página de ajustes e ela

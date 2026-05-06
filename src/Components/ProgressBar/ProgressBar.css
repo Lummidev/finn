@@ -1,0 +1,33 @@
+.progress-bar {
+  width: 100%;
+  background-color: var(--theme-surface0);
+  border-radius: 1rem;
+  padding: 0.2rem;
+}
+.progress-bar--warn {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-surface0) 70%,
+    var(--theme-red) 30%
+  );
+}
+.progress-bar--caution {
+  background-color: color-mix(
+    in srgb,
+    var(--theme-surface0) 70%,
+    var(--theme-yellow) 30%
+  );
+}
+.progress-bar__bar {
+  display: block;
+  height: 1rem;
+  background-color: var(--theme-accent);
+  border-radius: 1rem;
+}
+
+.progress-bar__bar--caution {
+  background-color: var(--theme-yellow);
+}
+.progress-bar__bar--warn {
+  background-color: var(--theme-red);
+}

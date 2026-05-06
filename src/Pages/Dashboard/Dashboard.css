@@ -20,6 +20,13 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+.dashboard__horizontal-separator {
+  width: 100%;
+  display: block;
+  border-top: 1px solid var(--theme-surface0);
+  opacity: 30%;
+  margin: 10px 0;
+}
 .dashboard__notice {
   color: var(--theme-subtext1);
 }
