@@ -8,12 +8,18 @@ import {
 } from "react";
 import "./Settings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowUpRightFromSquare,
+  faCoins,
+  faMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
 import { SettingsContext } from "../../Context/SettingsContext";
 import { Settings as SettingsManager } from "../../settings";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { AutoResizeInput } from "../../Components/AutoResizeInput/AutoResizeInput";
 import { NumericFormat } from "react-number-format";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
@@ -330,6 +336,78 @@ export const Settings = () => {
           </div>
         </fieldset>
       </form>
+      <div className="settings__about">
+        <div className="settings__logo-container">
+          <FontAwesomeIcon icon={faCoins} />
+        </div>
+        <h2 className="settings__logo-title">Finn</h2>
+
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/Lummidev/finn"
+          className="settings__github-link"
+        >
+          <FontAwesomeIcon icon={faGithub} /> Ver no GitHub
+          <FontAwesomeIcon
+            icon={faArrowUpRightFromSquare}
+            color="var(--theme-overlay0)"
+          />
+        </a>
+        <div className="settings__credits">
+          <p>
+            Desenvolvido por{" "}
+            <span className="settings__my-name">Gabriel Valeriano</span> com{" "}
+            <a
+              href="https://react.dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="settings__link settings__link--react"
+            >
+              React
+            </a>
+            ,{" "}
+            <a
+              href="https://vite.dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="settings__link settings__link--vite"
+            >
+              Vite
+            </a>{" "}
+            e{" "}
+            <a
+              href="https://dexie.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="settings__link settings__link--dexie"
+            >
+              Dexie
+            </a>
+            .
+          </p>
+          <p>
+            Ícones{" "}
+            <a
+              href="https://fontawesome.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="settings__link"
+            >
+              Font Awesome
+            </a>{" "}
+            e gráficos feitos com{" "}
+            <a
+              href="https://www.chartjs.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="settings__link"
+            >
+              Chart.js
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
