@@ -20,6 +20,8 @@ import { CategoryRepository } from "../../Database/CategoryRepository";
 import { categoryIcons } from "../../categoryIcons";
 import { ChooseCategoryModal } from "../../Components/ChooseCategoryModal/ChooseCategoryModal";
 import { DateModal } from "../../Components/DateModal/DateModal";
+import { useTranslation } from "react-i18next";
+import { formatRelativeDate } from "../../util";
 export const Expenses = () => {
   const [dateEntryRecord, setDateEntryRecord] = useState<
     Record<string, JoinedEntry[]>
@@ -38,7 +40,7 @@ export const Expenses = () => {
   const [oldestTimestampMiliseconds, setOldestTimestampMiliseconds] = useState(
     Date.now().valueOf(),
   );
-
+  const { t } = useTranslation("expenses");
   useEffect(() => {
     CategoryRepository.getAll()
       .then((categories) => {
@@ -132,17 +134,17 @@ export const Expenses = () => {
     if (!filterByCategory) return "";
     if (categoryIDs.length === 1) {
       if (categoryIDs[0] === "none") {
-        return "Sem Categoria";
+        return t("noCategory", { ns: "common" });
       } else {
         for (const category of categories) {
           if (category.id === categoryIDs[0]) {
             return category.name;
           }
         }
-        return "ID inválido";
+        return t("invalidCategoryID");
       }
     } else if (categoryIDs.length >= 1) {
-      return `${categoryIDs.length} Categorias`;
+      return t("categoryFilterCounter", { count: categoryIDs.length });
     }
   };
 
@@ -162,17 +164,15 @@ export const Expenses = () => {
     else return categoryIcons[iconName]?.icon ?? faQuestion;
   };
   const currentDateFilter = () => {
-    if (!dateFilter) return "Data inválida";
+    if (!dateFilter) return t("invalidDate");
     const { fromDate, toDate } = dateFilter;
-    const from = dayjs(fromDate);
-    const to = dayjs(toDate);
-    const toIsToday = dayjs().isSame(to, "day");
-    const fromIsYesterday = dayjs().subtract(1, "day").isSame(from, "day");
-    return `${fromIsYesterday ? "Ontem" : from.format("L")} - ${toIsToday ? "Hoje" : to.format("L")}`;
+    const from = formatRelativeDate(fromDate);
+    const to = formatRelativeDate(toDate);
+    return `${from} - ${to}`;
   };
   return (
     <div className="expenses">
-      <PageHeader title="Gastos" />
+      <PageHeader title={t("pageNames.expenses", { ns: "common" })} />
 
       <div className="expenses__filter">
         <form
@@ -188,7 +188,7 @@ export const Expenses = () => {
           }}
         >
           <input
-            placeholder="Pesquisar"
+            placeholder={t("search")}
             className="expenses__search-input"
             value={searchText}
             onChange={(e) => {
@@ -224,7 +224,7 @@ export const Expenses = () => {
                   {selectedCategoryName()}
                 </span>
               ) : (
-                "Categoria"
+                t("categoryFilterButton")
               )}
               <span className="expenses__selected-filter-icon">
                 <FontAwesomeIcon icon={faChevronDown} />
@@ -239,8 +239,8 @@ export const Expenses = () => {
                 startCategorySearch(selectedCategoryIDs);
               }}
               visible={showCategoryMenu}
-              primaryButtonLabel="Filtrar"
-              secondaryButtonLabel="Limpar Filtro"
+              primaryButtonLabel={t("modalFilterButton")}
+              secondaryButtonLabel={t("modalClearFilterButton")}
               secondaryButtonAction={() => {
                 clearCategorySearch();
               }}
@@ -264,7 +264,7 @@ export const Expenses = () => {
                   {currentDateFilter()}
                 </span>
               ) : (
-                "Período"
+                t("dateFilterButton")
               )}
               <span className="expenses__selected-filter-icon">
                 <FontAwesomeIcon icon={faChevronDown} />
@@ -281,8 +281,8 @@ export const Expenses = () => {
                 searchParams.set("toDate", to);
                 setSearchParams(searchParams);
               }}
-              primaryButtonLabel="Filtrar"
-              secondaryButtonLabel="Limpar Filtro"
+              primaryButtonLabel={t("modalFilterButton")}
+              secondaryButtonLabel={t("modalClearFilterButton")}
               secondaryButtonAction={() => {
                 searchParams.delete("fromDate");
                 searchParams.delete("toDate");
@@ -300,7 +300,7 @@ export const Expenses = () => {
               }}
             >
               <FontAwesomeIcon icon={faFilterCircleXmark} />
-              Limpar
+              {t("clearFilterButton")}
             </button>
           </div>
         </div>
@@ -328,37 +328,46 @@ export const Expenses = () => {
                         <div className="expenses__item-date-category">
                           <span>
                             {dayjs(entry.createdAtTimestampMiliseconds).format(
-                              "HH:mm",
+                              "LT",
                             )}
                           </span>
                           <span>•</span>
                           {entry.category ? (
                             <span>{entry.category.name}</span>
                           ) : (
-                            <span>Sem categoria</span>
+                            <span>{t("noCategory", { ns: "common" })}</span>
                           )}
-                          {entry.updatedAtTimestampMiliseconds && (
-                            <>
-                              <span>•</span>
-                              Editado{" "}
-                              {dayjs.duration({ days: 1 }).asMilliseconds() <
-                              entry.updatedAtTimestampMiliseconds
-                                ? dayjs(
-                                    entry.updatedAtTimestampMiliseconds,
-                                  ).fromNow()
-                                : dayjs(
-                                    entry.updatedAtTimestampMiliseconds,
-                                  ).format("L")}
-                            </>
-                          )}
+                          {((updatedAtMilis?: number) => {
+                            if (!updatedAtMilis) return <></>;
+                            const now = dayjs();
+                            const updatedAt = dayjs(updatedAtMilis);
+                            return (
+                              <>
+                                <span>•</span>
+
+                                {now.diff(updatedAt, "day") < 1
+                                  ? t("editedRelativeTime", {
+                                      localizedRelativeTimeString:
+                                        updatedAt.fromNow(),
+                                    })
+                                  : t("editedOnDate", {
+                                      date: updatedAt.toDate(),
+                                    })}
+                              </>
+                            );
+                          })(entry.updatedAtTimestampMiliseconds)}
                         </div>
                       </div>
                     </div>
                     <div className="expenses__item-money">
-                      R$
-                      {entry.moneyExpent.toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 2,
+                      {t("currency", {
+                        value: entry.moneyExpent,
+                        ns: "common",
+                        formatParams: {
+                          value: {
+                            currency: "BRL",
+                          },
+                        },
                       })}
                     </div>
                   </Link>

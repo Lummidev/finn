@@ -3,6 +3,7 @@ import { FormModal } from "../FormModal/FormModal";
 import "./DateModal.css";
 import dayjs, { type ManipulateType } from "dayjs";
 import { LabeledInput } from "../LabeledInput/LabeledInput";
+import { useTranslation } from "react-i18next";
 interface DateModalProps {
   visible: boolean;
   close: () => unknown;
@@ -17,6 +18,7 @@ const inputFormat = "YYYY-MM-DD";
 export const DateModal = (props: DateModalProps) => {
   const [fromDate, setFromDate] = useState(dayjs().format(inputFormat));
   const [toDate, setToDate] = useState(dayjs().format(inputFormat));
+  const { t } = useTranslation("dateModal");
   const activeSuggestion = (countFromNow: number, unit: ManipulateType) => {
     return (
       dayjs(toDate).isSame(dayjs(), "day") &&
@@ -29,22 +31,22 @@ export const DateModal = (props: DateModalProps) => {
     unit: ManipulateType;
   }[] = [
     {
-      label: "Ontem",
+      label: t("suggestions.yesterday"),
       count: 1,
       unit: "days",
     },
     {
-      label: "7 dias",
+      label: t("suggestions.sevenDays"),
       count: 7,
       unit: "days",
     },
     {
-      label: "1 mês",
+      label: t("suggestions.oneMonth"),
       count: 1,
       unit: "month",
     },
     {
-      label: "3 meses",
+      label: t("suggestions.threeMonths"),
       count: 3,
       unit: "months",
     },
@@ -54,11 +56,11 @@ export const DateModal = (props: DateModalProps) => {
 
     return dayjs()
       .subtract(suggestion.count, suggestion.unit)
-      .isSameOrAfter(oldest, "day");
+      .isSameOrAfter(oldest, "date");
   });
   return (
     <FormModal
-      title="Selecione um Período"
+      title={t("timePeriodModalTitle")}
       visible={props.visible}
       close={() => {
         props.close();
@@ -100,7 +102,7 @@ export const DateModal = (props: DateModalProps) => {
         <LabeledInput
           type="date"
           className="date-modal__input"
-          name="Data de Início"
+          name={t("timePeriodDatesLabels.start")}
           min={dayjs(props.oldestPossibleTimestampMiliseconds).format(
             inputFormat,
           )}
@@ -114,7 +116,7 @@ export const DateModal = (props: DateModalProps) => {
         <LabeledInput
           type="date"
           className="date-modal__input"
-          name="Data Final"
+          name={t("timePeriodDatesLabels.end")}
           value={toDate}
           min={fromDate}
           max={dayjs().format(inputFormat)}

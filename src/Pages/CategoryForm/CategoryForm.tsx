@@ -14,6 +14,7 @@ import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { LabeledInput } from "../../Components/LabeledInput/LabeledInput";
 import { ChooseIconModal } from "../../Components/ChooseIconModal/ChooseIconModal";
 import { categoryIcons } from "../../categoryIcons";
+import { useTranslation } from "react-i18next";
 export const CategoryForm = () => {
   const [name, setName] = useState("");
   const [words, setWords] = useState<string[]>([]);
@@ -23,7 +24,7 @@ export const CategoryForm = () => {
   const [showIconChoice, setShowIconChoice] = useState(false);
   const [newIconName, setNewIconName] = useState<string | undefined>();
   const navigate = useNavigate();
-
+  const { t } = useTranslation("categoryForm");
   useEffect(() => {
     setValidName(name.trim().length > 0);
     setValidWord(
@@ -64,13 +65,13 @@ export const CategoryForm = () => {
       <PageHeader
         buttons={{
           primary: {
-            name: "Salvar",
+            name: t("save", { ns: "common" }),
             disabled: !validName,
             submit: true,
             formID: "new-category-form",
           },
         }}
-        title="Nova Categoria"
+        title={t("pageNames.newCategory", { ns: "common" })}
       />
       <form
         id="new-category-form"
@@ -85,7 +86,7 @@ export const CategoryForm = () => {
             id="edit-icon-button"
             className="category-form__edit-icon-button"
             type="button"
-            aria-label="Mudar Ícone"
+            aria-label={t("changeIconButton")}
             onClick={() => {
               setShowIconChoice(true);
             }}
@@ -95,8 +96,8 @@ export const CategoryForm = () => {
 
           <LabeledInput
             className="category-form__edit-name"
-            name="Nome"
-            placeholder="Farmácia"
+            name={t("name")}
+            placeholder={t("placeholders.name")}
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -105,8 +106,8 @@ export const CategoryForm = () => {
         </div>
         <div className="category-form__labeled-input">
           <LabeledInput
-            name="Palavras Extras"
-            placeholder="paracetamol"
+            name={t("keywords")}
+            placeholder={t("placeholders.keywords")}
             value={newWord}
             button={{
               icon: faPlus,
@@ -114,7 +115,7 @@ export const CategoryForm = () => {
               onClick: () => {
                 if (validWord) addWord();
               },
-              label: "Adicionar Palavra",
+              label: t("addWordButton"),
               disabled: !validWord,
             }}
             onChange={(e) => {
@@ -136,6 +137,7 @@ export const CategoryForm = () => {
                     onClick={() => removeWord(word)}
                     type="button"
                     className="category-form__remove-word-button"
+                    aria-label={t("removeWordButton")}
                   >
                     <FontAwesomeIcon icon={faTrash} />
                   </button>

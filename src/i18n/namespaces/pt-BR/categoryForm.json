@@ -1,0 +1,11 @@
+{
+  "changeIconButton": "Mudar Ícone",
+  "placeholders": {
+    "name": "Farmácia",
+    "keywords": "paracetamol"
+  },
+  "name": "Nome",
+  "keywords": "Palavras-chave",
+  "addWordButton": "Adicionar Palavra-chave",
+  "removeWordButton": "Remover Palavra-chave"
+}

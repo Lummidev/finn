@@ -54,7 +54,9 @@ dayjs.extend(duration);
 dayjs.extend(isBetween);
 dayjs.extend(minMax);
 dayjs.extend(isSameOrAfter);
-dayjs.locale("pt-br");
+dayjs.locale("en");
+
+import "./i18n/setup.ts";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>

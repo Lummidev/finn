@@ -8,8 +8,10 @@ import { faGripVertical, faTag } from "@fortawesome/free-solid-svg-icons";
 import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { useNavigate } from "react-router";
 import { categoryIcons } from "../../categoryIcons";
+import { useTranslation } from "react-i18next";
 export const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const { t } = useTranslation("categories");
   const navigate = useNavigate();
   useEffect(() => {
     CategoryRepository.getAll()
@@ -23,10 +25,10 @@ export const Categories = () => {
   return (
     <div className="categories">
       <PageHeader
-        title="Categorias"
+        title={t("pageNames.categories", { ns: "common" })}
         buttons={{
           secondary: {
-            name: "Nova Categoria",
+            name: t("newCategory"),
             onAction: () => {
               navigate("/categories/new");
             },

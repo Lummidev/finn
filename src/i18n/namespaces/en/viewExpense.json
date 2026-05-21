@@ -1,0 +1,25 @@
+{
+  "pageTitle": "Expense",
+  "editExpenseButton": "Edit expense",
+  "deleteExpenseButton": "Delete expense",
+  "saveEditButton": "Save",
+  "cancelEditButton": "Cancel",
+  "expenseDetails": "Expense details",
+  "expenseDetailsFieldsTitles": {
+    "date": "Date",
+    "time": "Time",
+    "category": "Category"
+  },
+  "keywordsModal": {
+    "title": "Choose keywords",
+    "dismiss": "Dismiss",
+    "description": "Would you like to add one or more of the words from the description of this expense as keywords of the \"{{categoryName}}\" category?"
+  },
+  "note": "Note",
+  "noNote": "No note",
+  "editForm": {
+    "description": "Description",
+    "moneySpent": "Money spent",
+    "notePlaceholder": "Write a note about the expense here"
+  }
+}

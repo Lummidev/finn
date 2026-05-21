@@ -6,6 +6,7 @@ import { CategoryRepository } from "../../Database/CategoryRepository";
 import type { Category } from "../../Entities/Category";
 import { FormModal } from "../FormModal/FormModal";
 import "./ChooseCategoryModal.css";
+import { useTranslation } from "react-i18next";
 
 type ChooseCategoryModalProps = {
   visible: boolean;
@@ -32,6 +33,7 @@ export const ChooseCategoryModal = (props: ChooseCategoryModalProps) => {
     string | undefined
   >();
   const [categories, setCategories] = useState<Category[]>([]);
+  const { t } = useTranslation("chooseCategoryModal");
   useEffect(() => {
     CategoryRepository.getAll()
       .then((categories) => {
@@ -59,7 +61,11 @@ export const ChooseCategoryModal = (props: ChooseCategoryModalProps) => {
       }
     }
   }, [props.visible, props.many, checkInitial]);
-  const none = { id: "none", name: "Sem Categoria", iconName: undefined };
+  const none = {
+    id: "none",
+    name: t("noCategory", { ns: "common" }),
+    iconName: undefined,
+  };
   const categoryOptions = categories.map((category) => {
     return {
       id: category.id,
@@ -87,7 +93,7 @@ export const ChooseCategoryModal = (props: ChooseCategoryModalProps) => {
 
   return (
     <FormModal
-      title={`Escolha uma ${props.many ? "ou mais Categorias" : "Categoria"}`}
+      title={props.many ? t("titleMultipleChoice") : t("titleSingleChoice")}
       visible={props.visible}
       close={() => {
         props.close();

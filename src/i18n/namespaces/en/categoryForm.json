@@ -1,0 +1,11 @@
+{
+  "changeIconButton": "Change Icon",
+  "placeholders": {
+    "name": "Drugstore",
+    "keywords": "Ibuprofen"
+  },
+  "name": "Name",
+  "keywords": "Keywords",
+  "addWordButton": "Add keyword",
+  "removeWordButton": "Remove keyword"
+}

@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { categoryIcons } from "../../../categoryIcons";
 import { faQuestion, faTag } from "@fortawesome/free-solid-svg-icons";
 import type { ChartDataset } from "chart.js";
+import { useTranslation } from "react-i18next";
 const themeColors: Record<string, Record<string, string>> = {
   dark: {
     blue: "#8aadf4",
@@ -50,8 +51,16 @@ export const MonthChart = () => {
   const [labels, setLabels] = useState<string[]>([]);
   const { settings } = use(SettingsContext);
   const theme = settings.theme;
+  const { t } = useTranslation();
+  const formatParams = {
+    value: {
+      currency: "BRL",
+    },
+  };
   useEffect(() => {
-    getMoneyExpentByCategoryAndMonthDay()
+    const noCategory = t("noCategory", { ns: "common" });
+
+    getMoneyExpentByCategoryAndMonthDay(noCategory)
       .then((result) => {
         const { blue, red, teal, peach, mauve, yellow, pink, green, flamingo } =
           themeColors[theme];
@@ -80,11 +89,10 @@ export const MonthChart = () => {
         } & ChartDataset<"bar", number[]>)[] = [];
         Object.keys(result)
           .sort((a, b) => {
-            if (a === "Sem Categoria") {
+            if (a === noCategory) {
               return 1;
             }
-
-            if (b === "Sem Categoria") {
+            if (b === noCategory) {
               return -1;
             }
             return a.localeCompare(b);
@@ -150,7 +158,10 @@ export const MonthChart = () => {
       .catch((e) => {
         throw e;
       });
-  }, [theme]);
+  }, [theme, t]);
+  useEffect(() => {
+    console.log(labels);
+  }, [labels]);
   return (
     <div className="month-chart">
       <ul className="month-chart__legend">
@@ -204,7 +215,12 @@ export const MonthChart = () => {
                 ticks: {
                   color: themeColors[theme].text,
                   callback: (_, index) => {
-                    return `${labels[index]}/${dayjs().format("MMM")}`;
+                    const date = dayjs().set("date", Number(labels[index]));
+
+                    return t("dayAndMonth", {
+                      ns: "common",
+                      date: date.toDate(),
+                    });
                   },
                   font: () => {
                     return { weight: "bold" };
@@ -223,9 +239,10 @@ export const MonthChart = () => {
                   },
                   callback: (label) =>
                     typeof label === "number"
-                      ? label.toLocaleString(undefined, {
-                          style: "currency",
-                          currency: "BRL",
+                      ? t("currency", {
+                          ns: "common",
+                          value: label,
+                          formatParams,
                         })
                       : label,
                 },
@@ -250,17 +267,22 @@ export const MonthChart = () => {
                       label += ": ";
                     }
                     if (context.parsed.y) {
-                      label += new Intl.NumberFormat(undefined, {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(context.parsed.y);
+                      label += t("currency", {
+                        ns: "common",
+                        value: context.parsed.y,
+                        formatParams,
+                      });
                     }
 
                     return label;
                   },
                   title: (context) => {
-                    const title = context[0].label;
-                    return `${title}/${dayjs().format("MMM")}`;
+                    const title = Number(context[0].label);
+                    const date = dayjs().set("date", title);
+                    return t("dayAndMonth", {
+                      ns: "common",
+                      date: date.toDate(),
+                    });
                   },
                 },
               },

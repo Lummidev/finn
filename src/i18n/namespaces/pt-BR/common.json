@@ -1,0 +1,21 @@
+{
+  "saveChanges": "Salvar Alterações",
+  "save": "Salvar",
+  "cancel": "Cancelar",
+  "compactCurrency": "{{value, currency(notation: compact; compactDisplay: short)}}",
+  "currency": "{{value, currency}}",
+  "dayAndMonth": "{{date, datetime(month: 2-digit; day: 2-digit)}}",
+  "noCategory": "Sem Categoria",
+  "relativeDateFormat": "{{diff, relativeTime(range: days; numeric: auto)}}",
+  "weekdayDateFormat": "{{date,dateTime(weekday: long)}}",
+  "fullDateFormat": "{{date,dateTime(style: short)}}",
+
+  "pageNames": {
+    "settings": "Ajustes",
+    "categories": "Categorias",
+    "expenses": "Gastos",
+    "dashboard": "Resumo",
+    "chat": "Chat",
+    "newCategory": "Nova Categoria"
+  }
+}

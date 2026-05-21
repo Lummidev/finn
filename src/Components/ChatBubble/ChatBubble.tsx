@@ -15,6 +15,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import type { JoinedMessage } from "../../Database/MessageRepository";
 import { Link } from "react-router";
 import { categoryIcons } from "../../categoryIcons";
+import { useTranslation } from "react-i18next";
 interface ChatBubbleProps {
   message: JoinedMessage;
 }
@@ -22,6 +23,7 @@ interface ChatBubbleProps {
 export const ChatBubble = (props: ChatBubbleProps) => {
   const error = props.message.messageType === "error";
   const deleted = !!props.message.entryID && !props.message.entry;
+  const { t } = useTranslation("chatBubble");
   const showIcon = (iconName?: string): IconDefinition => {
     if (!iconName) return faTag;
     const icon = categoryIcons[iconName]?.icon;
@@ -42,17 +44,21 @@ export const ChatBubble = (props: ChatBubbleProps) => {
         <div className="chat-bubble__display">
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faCheck} />
-            Gasto Registrado!
+            {t("confirmationMessage")}
           </div>
           <div className="chat-bubble__display-row">
             "{message.initialEntryInformation.description}"
           </div>
           <div className="chat-bubble__display-row">
             <FontAwesomeIcon icon={faMoneyBill} />
-            {new Intl.NumberFormat(undefined, {
-              style: "currency",
-              currency: "BRL",
-            }).format(message.initialEntryInformation.moneyExpent)}
+            {t("currency", {
+              value: message.initialEntryInformation.moneyExpent,
+              formatParams: {
+                value: {
+                  currency: "BRL",
+                },
+              },
+            })}
           </div>
           <div className="chat-bubble__display-row">
             {message.initialEntryInformation.category ? (
@@ -67,7 +73,7 @@ export const ChatBubble = (props: ChatBubbleProps) => {
             ) : (
               <>
                 <FontAwesomeIcon icon={faEllipsisH} />
-                Sem Categoria
+                {t("noCategory", { ns: "common" })}
               </>
             )}
           </div>
@@ -93,12 +99,12 @@ export const ChatBubble = (props: ChatBubbleProps) => {
           <div
             className={`chat-bubble__date  ${error ? "chat-bubble__date--error" : ""}`}
           >
-            {dayjs(props.message.createdAtTimestampMiliseconds).format("HH:mm")}
+            {dayjs(props.message.createdAtTimestampMiliseconds).format("LT")}
           </div>
         </div>
         {deleted && (
           <span className="chat-bubble__deleted-notice">
-            Esse gasto foi excluído
+            {t("deletedExpense")}
           </span>
         )}
       </div>

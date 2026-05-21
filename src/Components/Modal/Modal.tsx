@@ -8,6 +8,7 @@ import {
 import "./Modal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 interface ModalProps {
   visible: boolean;
   title: string;
@@ -15,6 +16,7 @@ interface ModalProps {
 }
 export const Modal = (props: PropsWithChildren<ModalProps>) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { t } = useTranslation("modal");
   useEffect(() => {
     if (!dialogRef.current) return;
     if (props.visible) {
@@ -59,7 +61,7 @@ export const Modal = (props: PropsWithChildren<ModalProps>) => {
           type="button"
           className="modal__close-button"
           onClick={props.onClose}
-          aria-label="Fechar"
+          aria-label={t("closeModal")}
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>

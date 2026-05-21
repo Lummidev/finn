@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Modal } from "../Modal/Modal";
 import "./FormModal.css";
+import { useTranslation } from "react-i18next";
 interface FormModalProps {
   title: string;
   visible: boolean;
@@ -11,6 +12,7 @@ interface FormModalProps {
   secondaryButtonAction?: () => unknown;
 }
 export const FormModal = (props: PropsWithChildren<FormModalProps>) => {
+  const { t } = useTranslation("formModal");
   return (
     <Modal title={props.title} visible={props.visible} onClose={props.close}>
       <form
@@ -25,7 +27,7 @@ export const FormModal = (props: PropsWithChildren<FormModalProps>) => {
           type="submit"
           className="form-modal__button form-modal__button--primary"
         >
-          {props.primaryButtonLabel ?? "Salvar"}
+          {props.primaryButtonLabel ?? t("defaultPrimaryButtonLabel")}
         </button>
         <button
           type="button"
@@ -37,7 +39,7 @@ export const FormModal = (props: PropsWithChildren<FormModalProps>) => {
             props.close();
           }}
         >
-          {props.secondaryButtonLabel ?? "Cancelar"}
+          {props.secondaryButtonLabel ?? t("defaultSecondayButtonLabel")}
         </button>
       </form>
     </Modal>

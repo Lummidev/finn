@@ -3,8 +3,10 @@ import {
   useEffect,
   useId,
   useState,
+  type ChangeEventHandler,
   type Dispatch,
   type SetStateAction,
+  type ReactNode,
 } from "react";
 import "./Settings.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,9 +22,48 @@ import { PageHeader } from "../../Components/PageHeader/PageHeader";
 import { AutoResizeInput } from "../../Components/AutoResizeInput/AutoResizeInput";
 import { NumericFormat } from "react-number-format";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
-
+import { Trans, useTranslation } from "react-i18next";
+const SettingsFieldsetWithRadioOptions = ({
+  title,
+  radioGroup,
+  options,
+  currentState,
+}: {
+  title: string;
+  radioGroup: string;
+  currentState: string;
+  options: {
+    name: string;
+    value: string;
+    onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement>;
+    icon?: ReactNode;
+  }[];
+}) => {
+  return (
+    <fieldset className="settings__sub-group">
+      <legend className="settings__sub-group-legend">{title}</legend>
+      <div className="settings__theme-buttons">
+        {options.map((option) => (
+          <label key={option.name} className="settings__theme-label">
+            <input
+              name={radioGroup}
+              className="settings__theme-radio"
+              type="radio"
+              value={option.value}
+              checked={currentState === option.value}
+              onChange={option.onChange}
+            />
+            {option.icon ?? <></>}
+            {option.name}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+};
 export const Settings = () => {
   const [theme, setTheme] = useState("dark");
+  const [language, setLanguage] = useState("en");
   const [accentColor, setAccentColor] = useState("blue");
   const [alwaysShowChatBar, setAlwaysShowChatBar] = useState(false);
   const [changed, setChanged] = useState(false);
@@ -30,6 +71,7 @@ export const Settings = () => {
   const [weeklyExpense, setWeeklyExpense] = useState<number | undefined>(0);
   const [monthlyExpense, setMonthlyExpense] = useState<number | undefined>(0);
   const settingsContext = use(SettingsContext);
+  const { t, i18n } = useTranslation("settings");
   const saveSettings = () => {
     const [daily, weekly, monthly] = [
       dailyExpense,
@@ -48,6 +90,9 @@ export const Settings = () => {
       alwaysShowChatBar,
       theme,
     });
+    i18n.changeLanguage(language).catch((e) => {
+      throw e;
+    });
     setChanged(false);
   };
 
@@ -58,6 +103,10 @@ export const Settings = () => {
       theme,
       objectives: { daily, weekly, monthly },
     } = SettingsManager.load();
+    const language = i18n.language;
+    if (language) {
+      setLanguage(language);
+    }
     setTheme(theme);
     setAccentColor(accentColor);
     setAlwaysShowChatBar(alwaysShowChatBar);
@@ -69,7 +118,7 @@ export const Settings = () => {
 
   const accentColors = [
     {
-      name: "Flamingo",
+      name: t("accentColors.flamingo"),
       value: "flamingo",
       code: {
         light: "#dd7878",
@@ -77,7 +126,7 @@ export const Settings = () => {
       },
     },
     {
-      name: "Rosa",
+      name: t("accentColors.pink"),
       value: "pink",
       code: {
         light: "#ea76cb",
@@ -85,7 +134,7 @@ export const Settings = () => {
       },
     },
     {
-      name: "Malva",
+      name: t("accentColors.mauve"),
       value: "mauve",
       code: {
         light: "#8839ef",
@@ -93,7 +142,7 @@ export const Settings = () => {
       },
     },
     {
-      name: "Pêssego",
+      name: t("accentColors.peach"),
       value: "peach",
       code: {
         light: "#fe640b",
@@ -101,7 +150,7 @@ export const Settings = () => {
       },
     },
     {
-      name: "Azul-petróleo",
+      name: t("accentColors.teal"),
       value: "teal",
       code: {
         light: "#179299",
@@ -109,7 +158,7 @@ export const Settings = () => {
       },
     },
     {
-      name: "Azul",
+      name: t("accentColors.blue"),
       value: "blue",
       code: {
         light: "#1e66f5",
@@ -127,19 +176,19 @@ export const Settings = () => {
     setState: Dispatch<SetStateAction<number | undefined>>;
   }[] = [
     {
-      label: "Meta de gasto diário máximo",
+      label: t("goals.daily"),
       id: dailyExpenseId,
       state: dailyExpense,
       setState: setDailyExpense,
     },
     {
-      label: "Meta de gasto semanal máximo",
+      label: t("goals.weekly"),
       id: weeklyExpenseId,
       state: weeklyExpense,
       setState: setWeeklyExpense,
     },
     {
-      label: "Meta de gasto mensal máximo",
+      label: t("goals.monthly"),
       id: monthlyExpenseId,
       state: monthlyExpense,
       setState: setMonthlyExpense,
@@ -148,14 +197,14 @@ export const Settings = () => {
   return (
     <div className="settings">
       <PageHeader
-        title="Ajustes"
+        title={t("pageNames.settings", { ns: "common" })}
         buttons={
           changed
             ? {
                 primary: {
                   submit: true,
                   formID: "settings-form",
-                  name: "Salvar Alterações",
+                  name: t("saveChanges", { ns: "common" }),
                 },
               }
             : undefined
@@ -170,46 +219,61 @@ export const Settings = () => {
         }}
       >
         <fieldset className="settings__group">
-          <legend className="settings__group-legend">Geral</legend>
+          <legend className="settings__group-legend">
+            {t("sectionTitles.general")}
+          </legend>
           <div className="settings__group-container">
-            <fieldset className="settings__sub-group">
-              <legend className="settings__sub-group-legend">Tema</legend>
-              <div className="settings__theme-buttons">
-                <label className="settings__theme-label">
-                  <input
-                    name="theme-options"
-                    className="settings__theme-radio"
-                    type="radio"
-                    value="light"
-                    checked={theme === "light"}
-                    onChange={(e) => {
-                      setTheme(e.target.value);
-                      setChanged(true);
-                    }}
-                  />
-                  <FontAwesomeIcon icon={faSun} />
-                  Latte
-                </label>
-                <label className="settings__theme-label">
-                  <input
-                    name="theme-options"
-                    type="radio"
-                    className="settings__theme-radio"
-                    value="dark"
-                    checked={theme === "dark"}
-                    onChange={(e) => {
-                      setTheme(e.target.value);
-                      setChanged(true);
-                    }}
-                  />
-                  <FontAwesomeIcon icon={faMoon} />
-                  Machiatto
-                </label>
-              </div>
-            </fieldset>
+            <SettingsFieldsetWithRadioOptions
+              title={t("sectionTitles.theme")}
+              radioGroup="theme-options"
+              currentState={theme}
+              options={[
+                {
+                  name: t("themes.light"),
+                  value: "light",
+                  onChange: (e) => {
+                    setTheme(e.target.value);
+                    setChanged(true);
+                  },
+                  icon: <FontAwesomeIcon icon={faSun} />,
+                },
+                {
+                  name: t("themes.dark"),
+                  value: "dark",
+                  onChange: (e) => {
+                    setTheme(e.target.value);
+                    setChanged(true);
+                  },
+                  icon: <FontAwesomeIcon icon={faMoon} />,
+                },
+              ]}
+            />
+            <SettingsFieldsetWithRadioOptions
+              title={t("sectionTitles.language")}
+              radioGroup="language-options"
+              currentState={language}
+              options={[
+                {
+                  name: "English",
+                  value: "en",
+                  onChange: (e) => {
+                    setLanguage(e.target.value);
+                    setChanged(true);
+                  },
+                },
+                {
+                  name: "Português",
+                  value: "pt-BR",
+                  onChange: (e) => {
+                    setLanguage(e.target.value);
+                    setChanged(true);
+                  },
+                },
+              ]}
+            />
             <fieldset className="settings__sub-group">
               <legend className="settings__sub-group-legend">
-                Cor de Destaque
+                {t("sectionTitles.accentColor")}
               </legend>
               <div className="settings__color-select">
                 {accentColors.map((color) => {
@@ -252,7 +316,7 @@ export const Settings = () => {
                 className="settings__list-label"
               >
                 <span className="settings__sub-group-legend">
-                  Manter barra de chat visível
+                  {t("keepChatBarVisible")}
                 </span>
                 <div className="settings__switch-container">
                   <input
@@ -277,7 +341,9 @@ export const Settings = () => {
           </div>
         </fieldset>
         <fieldset className="settings__group">
-          <legend className="settings__group-legend">Metas</legend>
+          <legend className="settings__group-legend">
+            {t("sectionTitles.goals")}
+          </legend>
           <div className="settings__group-container">
             {objectives.map((objective) => {
               return (
@@ -291,7 +357,6 @@ export const Settings = () => {
 
                   <NumericFormat
                     customInput={AutoResizeInput}
-                    prefix="R$"
                     allowNegative={false}
                     allowedDecimalSeparators={[",", "."]}
                     decimalScale={2}
@@ -348,7 +413,7 @@ export const Settings = () => {
           href="https://github.com/Lummidev/finn"
           className="settings__github-link"
         >
-          <FontAwesomeIcon icon={faGithub} /> Ver no GitHub
+          <FontAwesomeIcon icon={faGithub} /> {t("seeOnGithub")}
           <FontAwesomeIcon
             icon={faArrowUpRightFromSquare}
             color="var(--theme-overlay0)"
@@ -356,55 +421,61 @@ export const Settings = () => {
         </a>
         <div className="settings__credits">
           <p>
-            Desenvolvido por{" "}
-            <span className="settings__my-name">Gabriel Valeriano</span> com{" "}
-            <a
-              href="https://react.dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="settings__link settings__link--react"
-            >
-              React
-            </a>
-            ,{" "}
-            <a
-              href="https://vite.dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="settings__link settings__link--vite"
-            >
-              Vite
-            </a>{" "}
-            e{" "}
-            <a
-              href="https://dexie.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="settings__link settings__link--dexie"
-            >
-              Dexie
-            </a>
-            .
+            <Trans
+              i18nKey={"credits.libraries"}
+              ns="settings"
+              components={{
+                name: <span className="settings__my-name" />,
+                react: (
+                  <a
+                    href="https://react.dev/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="settings__link settings__link--react"
+                  />
+                ),
+                vite: (
+                  <a
+                    href="https://vite.dev/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="settings__link settings__link--vite"
+                  />
+                ),
+                dexie: (
+                  <a
+                    href="https://dexie.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="settings__link settings__link--dexie"
+                  />
+                ),
+              }}
+            />
           </p>
           <p>
-            Ícones{" "}
-            <a
-              href="https://fontawesome.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="settings__link"
-            >
-              Font Awesome
-            </a>{" "}
-            e gráficos feitos com{" "}
-            <a
-              href="https://www.chartjs.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="settings__link"
-            >
-              Chart.js
-            </a>
+            <Trans
+              i18nKey={"credits.more"}
+              ns="settings"
+              components={{
+                fa: (
+                  <a
+                    href="https://fontawesome.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="settings__link"
+                  />
+                ),
+                chart: (
+                  <a
+                    href="https://www.chartjs.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="settings__link"
+                  />
+                ),
+              }}
+            />
           </p>
         </div>
       </div>

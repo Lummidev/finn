@@ -1,0 +1,13 @@
+{
+  "timePeriodModalTitle": "Escolha um período de tempo",
+  "suggestions": {
+    "yesterday": "Ontem",
+    "sevenDays": "7 Dias",
+    "oneMonth": "1 mês",
+    "threeMonths": "3 mês"
+  },
+  "timePeriodDatesLabels": {
+    "start": "Data de início",
+    "end": "Data final"
+  }
+}

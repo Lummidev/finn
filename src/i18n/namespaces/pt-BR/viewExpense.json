@@ -1,0 +1,25 @@
+{
+  "pageTitle": "Gasto",
+  "editExpenseButton": "Editar gasto",
+  "deleteExpenseButton": "Excluir gasto",
+  "saveEditButton": "Salvar",
+  "cancelEditButton": "Cancelar",
+  "expenseDetails": "Detalhes do gasto",
+  "expenseDetailsFieldsTitles": {
+    "date": "Data",
+    "time": "Hora",
+    "category": "Categoria"
+  },
+  "keywordsModal": {
+    "title": "Escolher Palavras-chave",
+    "dismiss": "Dispensar",
+    "description": "Você gostaria de adicionar uma ou mais das palavras da descrição deste gasto como palavras-chave da categoria \"{{categoryName}}\""
+  },
+  "note": "Nota",
+  "noNote": "Sem nota",
+  "editForm": {
+    "description": "Descrição",
+    "moneySpent": "Dinheiro gasto",
+    "notePlaceholder": "Escreva uma nota sobre a descrição aqui"
+  }
+}

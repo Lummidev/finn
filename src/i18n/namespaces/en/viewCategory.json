@@ -1,0 +1,25 @@
+{
+  "periodOptions": {
+    "thisMonth": "This month",
+    "lastThreeMonths": "In the last 3 months",
+    "thisYear": "This year",
+    "sinceTheBeginning": "Since the beginning"
+  },
+  "editCategoryButton": "Edit Category",
+  "deleteCategoryButton": "Delete Category",
+  "pageTitle": {
+    "normal": "Category",
+    "editing": "Editing Category"
+  },
+  "nameInputLabel": "Name",
+  "newKeywordInputLabel": "New Keyword",
+  "addKeywordButtonLabel": "Add keyword",
+  "categoryInformationText": "The category's name is considered a keyword when detecting an expense's category automatically",
+  "keywords": "Keywords",
+  "noKeywords": "There are no keywords in this category",
+  "details": "Details",
+  "moneySpent": "Money spent",
+  "period": "Period",
+  "timePeriodModalTitle": "Select a time period",
+  "selectButton": "Select"
+}
