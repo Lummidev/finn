@@ -28,3 +28,14 @@ export const formatRelativeDate = (date: string) => {
   }
   return capitalize(output);
 };
+export class AppError extends Error {
+  code: string;
+  details?: string;
+  constructor(code: string, details?: string) {
+    super();
+    this.code = code;
+    this.details = details;
+    this.name = "appError";
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}

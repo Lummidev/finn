@@ -17,7 +17,7 @@ import chooseIconModal from "../i18n/namespaces/en/chooseIconModal.json";
 import dateModal from "../i18n/namespaces/en/dateModal.json";
 import formModal from "../i18n/namespaces/en/formModal.json";
 import modal from "../i18n/namespaces/en/modal.json";
-
+import messageErrors from "../i18n/namespaces/en/messageErrors.json";
 declare module "i18next" {
   interface CustomTypeOptions {
     defaultNS: "common";
@@ -41,6 +41,7 @@ declare module "i18next" {
       dateModal: typeof dateModal;
       formModal: typeof formModal;
       modal: typeof modal;
+      messageErrors: typeof messageErrors;
     };
   }
 }

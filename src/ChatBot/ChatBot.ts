@@ -1,11 +1,11 @@
 import type { Entry } from "../Entities/Entry";
 import { parseMessageComponents } from "./Parser/parser";
-import { ParserError } from "./Parser/ParserError";
 import { EntryRepository } from "../Database/EntryRepository";
 import {
   MessageRepository,
   type JoinedMessage,
 } from "../Database/MessageRepository";
+import { AppError } from "../util";
 
 export const handleMessage = async (text: string): Promise<JoinedMessage> => {
   try {
@@ -36,13 +36,18 @@ export const handleMessage = async (text: string): Promise<JoinedMessage> => {
       },
     };
   } catch (e) {
-    let content: string;
-    if (e instanceof ParserError) {
-      content = e.message;
+    let code: string;
+    const unknownCode = "unknown";
+    if (e instanceof AppError) {
+      code = e.code;
     } else {
-      content = JSON.stringify(e, null, " ");
+      code = unknownCode;
     }
-
-    return await MessageRepository.insert({ messageType: "error", content });
+    return await MessageRepository.insert({
+      messageType: "error",
+      errorCode: code,
+      errorDetails:
+        code === unknownCode ? JSON.stringify(e, null, " ") : undefined,
+    });
   }
 };

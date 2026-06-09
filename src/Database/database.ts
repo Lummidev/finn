@@ -13,5 +13,15 @@ database.version(1).stores({
   entries: "id, createdAtTimestampMiliseconds, categoryID",
   messages: "id, createdAtTimestampMiliseconds",
 });
-
+database.version(2).upgrade((tx) => {
+  return tx
+    .table("messages")
+    .toCollection()
+    .modify((message: Message) => {
+      if (message.messageType === "error") {
+        message.errorCode = "parserError.noMoney";
+        delete message.content;
+      }
+    });
+});
 export { database };
