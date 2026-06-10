@@ -1,14 +1,20 @@
+import { useTranslation } from "react-i18next";
 import { ProgressBar } from "../../../Components/ProgressBar/ProgressBar";
-import { abbreviateNumber } from "../../../util";
 import "./ObjectiveDisplay.css";
 interface ObjectiveDisplayProps {
-  expent: number;
+  spent: number;
   goal: number;
   title: string;
 }
 export const ObjectiveDisplay = (props: ObjectiveDisplayProps) => {
-  const caution = props.goal - props.expent <= props.goal * 0.1;
-  const warning = props.goal - props.expent < 0;
+  const caution = props.goal - props.spent <= props.goal * 0.1;
+  const warning = props.goal - props.spent < 0;
+  const formatParams = {
+    value: {
+      currency: "BRL",
+    },
+  };
+  const { t } = useTranslation("objectiveDisplay");
   return (
     <div className="objective-display">
       <div className="objective-display__left">
@@ -17,10 +23,19 @@ export const ObjectiveDisplay = (props: ObjectiveDisplayProps) => {
           <div
             className={`objective-display__main ${caution ? (warning ? "objective-display__main--warning" : "objective-display__main--caution") : ""}`}
           >
-            {"R$" + abbreviateNumber(props.expent)}
+            {t("compactCurrency", {
+              value: props.spent,
+              ns: "common",
+              formatParams,
+            })}
           </div>
           <div className="objective-display__goal-container">
-            {"/" + abbreviateNumber(props.goal)}
+            /
+            {t("compactCurrency", {
+              value: props.goal,
+              ns: "common",
+              formatParams,
+            })}
           </div>
         </div>
       </div>
@@ -29,7 +44,7 @@ export const ObjectiveDisplay = (props: ObjectiveDisplayProps) => {
         <ProgressBar
           caution={caution}
           warn={warning}
-          current={props.expent}
+          current={props.spent}
           max={props.goal}
         />
       </div>

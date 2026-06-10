@@ -1,0 +1,8 @@
+{
+  "clearChat": "Limpar Chat",
+  "dateGroups": {
+    "todayOrYesterday": "{{diff, relativeTime(range: days; numeric: auto)}}",
+    "sameWeek": "{{date, dateTime(weekday: long)}}",
+    "default": "{{date, dateTime(dateStyle: long)}}"
+  }
+}

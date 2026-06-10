@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router";
 import "./ViewCategory.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Category } from "../../Entities/Category";
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +21,7 @@ import { ChooseIconModal } from "../../Components/ChooseIconModal/ChooseIconModa
 import type { ManipulateType } from "dayjs";
 import { FormModal } from "../../Components/FormModal/FormModal";
 import { getTotalExpensesOfCategory } from "../../Database/ReportRepository";
+import { useTranslation } from "react-i18next";
 interface PeriodPair {
   count: number;
   type: ManipulateType;
@@ -42,24 +43,28 @@ export const ViewCategory = () => {
   const [moneyExpent, setMoneyExpent] = useState(0);
   const params = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation("viewCategory");
   const periodOptions: Record<
     string,
     { label: string; period: PeriodPair | null }
-  > = {
-    month: {
-      label: "Neste mês",
-      period: { count: 1, type: "month" },
-    },
-    threeMonths: {
-      label: "Nos últimos 3 meses",
-      period: { count: 3, type: "months" },
-    },
-    year: {
-      label: "Neste ano",
-      period: { count: 1, type: "year" },
-    },
-    all: { label: "Desde o início", period: null },
-  };
+  > = useMemo(
+    () => ({
+      month: {
+        label: t("periodOptions.thisMonth"),
+        period: { count: 1, type: "month" },
+      },
+      threeMonths: {
+        label: t("periodOptions.lastThreeMonths"),
+        period: { count: 3, type: "months" },
+      },
+      year: {
+        label: t("periodOptions.thisYear"),
+        period: { count: 1, type: "year" },
+      },
+      all: { label: t("periodOptions.sinceTheBeginning"), period: null },
+    }),
+    [t],
+  );
   const startEditing = () => {
     if (!category) return;
     setEditedName(category.name);
@@ -126,7 +131,7 @@ export const ViewCategory = () => {
       .catch((e) => {
         throw e;
       });
-  }, [params, periodKey]);
+  }, [params, periodKey, periodOptions]);
   useEffect(() => {
     setValidName(editedName.trim().length > 0);
     setValidWord(
@@ -137,26 +142,29 @@ export const ViewCategory = () => {
   const buttons = editing
     ? {
         primary: {
-          name: "Salvar",
+          name: t("save", { ns: "common" }),
           disabled: !validName,
           submit: true,
           formID: "edit-category",
         },
-        secondary: { name: "Cancelar", onAction: () => setEditing(false) },
+        secondary: {
+          name: t("cancel", { ns: "common" }),
+          onAction: () => setEditing(false),
+        },
       }
     : undefined;
   const subMenu = editing
     ? undefined
     : [
         {
-          name: "Editar Categoria",
+          name: t("editCategoryButton"),
           onAction: () => {
             startEditing();
           },
           icon: faPencil,
         },
         {
-          name: "Excluir Categoria",
+          name: t("deleteCategoryButton"),
           onAction: () => removeCategory(),
           icon: faTrash,
           destructive: true,
@@ -179,7 +187,7 @@ export const ViewCategory = () => {
   return (
     <div className="view-category">
       <PageHeader
-        title={`${editing ? "Editando " : ""}Categoria`}
+        title={editing ? t("pageTitle.editing") : t("pageTitle.normal")}
         buttons={buttons}
         subMenu={subMenu}
       />
@@ -211,7 +219,7 @@ export const ViewCategory = () => {
                     />
                   </button>
                   <LabeledInput
-                    name="Nome"
+                    name={t("nameInputLabel")}
                     className="view-category__edit-name"
                     placeholder={category.name}
                     value={editedName}
@@ -221,14 +229,14 @@ export const ViewCategory = () => {
                 <div className="view-category__words">
                   <div>
                     <LabeledInput
-                      name="Nova Palavra"
+                      name={t("newKeywordInputLabel")}
                       button={{
                         type: "button",
                         onClick: () => {
                           if (validWord) addWord();
                         },
                         icon: faPlus,
-                        label: "Adicionar palavra",
+                        label: t("addKeywordButtonLabel"),
                         disabled: !validWord,
                       }}
                       value={newWord}
@@ -282,12 +290,11 @@ export const ViewCategory = () => {
                 <h2 className="view-category__name">{category.name}</h2>
               </div>
               <span className="view-category__information-text">
-                <FontAwesomeIcon icon={faCircleInfo} /> O nome da categoria é
-                considerado como uma das palavras para a detecção automática de
-                categoria
+                <FontAwesomeIcon icon={faCircleInfo} />{" "}
+                {t("categoryInformationText")}
               </span>
               <div className="view-category__words">
-                <h2 className="view-category__subtitle">Palavras</h2>
+                <h2 className="view-category__subtitle">{t("keywords")}</h2>
 
                 {category.words.length > 0 ? (
                   <>
@@ -307,17 +314,16 @@ export const ViewCategory = () => {
                 ) : (
                   <>
                     <span className="view-category__information-text">
-                      <FontAwesomeIcon icon={faCircleInfo} /> Não há palavras
-                      nessa categoria
+                      <FontAwesomeIcon icon={faCircleInfo} /> {t("noKeywords")}
                     </span>
                   </>
                 )}
               </div>
               <div className="view-category__details">
-                <h2 className="view-category__subtitle">Detalhes</h2>
+                <h2 className="view-category__subtitle">{t("details")}</h2>
                 <div className="view-category__details-row">
                   <div className="view-category__row-title">
-                    Dinheiro gasto
+                    {t("moneySpent")}
                     <button
                       className="view-category__select-period-button"
                       type="button"
@@ -325,14 +331,19 @@ export const ViewCategory = () => {
                         setShowPeriodModal(true);
                       }}
                     >
-                      {periodOptions[periodKey].label || "Período"}
+                      {periodOptions[periodKey].label || t("period")}
                       <FontAwesomeIcon icon={faChevronDown} />
                     </button>
                   </div>
                   <div className="view-category__row-data view-category__row-data--money">
-                    {moneyExpent.toLocaleString(undefined, {
-                      style: "currency",
-                      currency: "BRL",
+                    {t("currency", {
+                      ns: "common",
+                      value: moneyExpent,
+                      formatParams: {
+                        value: {
+                          currency: "BRL",
+                        },
+                      },
                     })}
                   </div>
                 </div>
@@ -340,7 +351,7 @@ export const ViewCategory = () => {
             </div>
           )}
           <FormModal
-            title={"Selecione um Período"}
+            title={t("timePeriodModalTitle")}
             close={() => {
               setShowPeriodModal(false);
             }}
@@ -349,7 +360,7 @@ export const ViewCategory = () => {
               confirmPeriod();
               setShowPeriodModal(false);
             }}
-            primaryButtonLabel="Selecionar"
+            primaryButtonLabel={t("selectButton")}
             secondaryButtonAction={() => {
               setSelectedPeriodKey(periodKey);
             }}

@@ -8,6 +8,7 @@ import type { Category } from "../../../Entities/Category";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { categoryIcons } from "../../../categoryIcons";
+import { useTranslation } from "react-i18next";
 const themeColors: Record<string, Record<string, string>> = {
   dark: {
     blue: "#8aadf4",
@@ -68,6 +69,10 @@ export const CategoryChart = () => {
     colors: [],
   });
   const [empty, setEmpty] = useState(false);
+  const { t } = useTranslation("categoryChart");
+  const formatParams = {
+    value: { currency: "BRL" },
+  };
   useEffect(() => {
     getMoneyExpentByCategoryToday()
       .then((data) => {
@@ -95,11 +100,11 @@ export const CategoryChart = () => {
         ];
         if (data.moneyWithNoCategory > 0) {
           dataArray.push([
-            "Sem Categoria",
+            t("noCategory", { ns: "common" }),
             data.moneyWithNoCategory,
             {
               id: "none",
-              name: "Sem Categoria",
+              name: t("noCategory", { ns: "common" }),
               precedence: 0,
               words: [],
             },
@@ -141,11 +146,11 @@ export const CategoryChart = () => {
           result = [
             ...top5,
             [
-              "Outras",
+              t("otherCategories"),
               other,
               {
                 id: "other",
-                name: "Outras",
+                name: t("otherCategories"),
                 precedence: 0,
                 words: [],
                 iconName: "ellipsis",
@@ -160,7 +165,7 @@ export const CategoryChart = () => {
           {
             /*@ts-expect-error id property specified by datasetIdKey is needed for react-chartjs-2 reactivity */
             id: 1,
-            label: "Dinheiro gasto",
+            label: t("moneySpent"),
             data: result.map((category) => category[1]),
             offset: result.length > 1 ? 16 : 0,
             backgroundColor: backgroundColorArray,
@@ -176,12 +181,12 @@ export const CategoryChart = () => {
       .catch((e) => {
         throw e;
       });
-  }, [theme]);
+  }, [theme, t]);
   return (
     <div className="category-chart">
       {empty ? (
         <span className="category-chart__empty-info">
-          Nenhum gasto registrado hoje!
+          {t("noExpensesToday")}
         </span>
       ) : (
         <div className="category-chart__container">
@@ -206,10 +211,12 @@ export const CategoryChart = () => {
                         if (label) {
                           label += ": ";
                         }
-                        label += new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(context.parsed);
+
+                        label += t("currency", {
+                          ns: "common",
+                          value: context.parsed,
+                          formatParams,
+                        });
                         return label;
                       },
                     },
@@ -235,10 +242,11 @@ export const CategoryChart = () => {
                   ></div>
                   <div className="category-chart__legend-details">
                     <span className="category-chart__legend-money">
-                      {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(money)}
+                      {t("currency", {
+                        value: money,
+                        ns: "common",
+                        formatParams,
+                      })}
                     </span>
                     <span className="category-chart__legend-name">
                       {category.iconName && (

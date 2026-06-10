@@ -1,0 +1,20 @@
+{
+  "saveChanges": "Save Changes",
+  "save": "Save",
+  "cancel": "Cancel",
+  "compactCurrency": "{{value, currency(notation: compact; compactDisplay: short)}}",
+  "currency": "{{value, currency}}",
+  "dayAndMonth": "{{date, datetime(month: 2-digit; day: 2-digit)}}",
+  "noCategory": "No category",
+  "relativeDateFormat": "{{diff, relativeTime(range: days; numeric: auto)}}",
+  "weekdayDateFormat": "{{date,dateTime(weekday: long)}}",
+  "fullDateFormat": "{{date,dateTime(style: short)}}",
+  "pageNames": {
+    "settings": "Settings",
+    "categories": "Categories",
+    "expenses": "Expenses",
+    "dashboard": "Dashboard",
+    "chat": "Chat",
+    "newCategory": "New Category"
+  }
+}

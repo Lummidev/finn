@@ -1,6 +1,6 @@
 import { CategoryRepository } from "../../Database/CategoryRepository";
 import type { Category } from "../../Entities/Category";
-import { ParserError } from "./ParserError";
+import { ParserError, ParserErrorKind } from "./ParserError";
 interface MessageComponents {
   moneyExpent: number;
   description: string;
@@ -50,7 +50,7 @@ const getMoney = (message: string) => {
   } else {
     const commonNumberMatches = [...message.matchAll(commonNumberRegex)];
     if (commonNumberMatches.length === 0) {
-      throw new ParserError("Não foi detectado valor monetário na mensagem");
+      throw new ParserError(ParserErrorKind.noMoney);
     }
     numberCandidates = commonNumberMatches;
   }
@@ -62,11 +62,11 @@ const getMoney = (message: string) => {
     numbersWithDecimals.length > 0 ? numbersWithDecimals : numberCandidates
   ).pop();
   if (!finalNumber) {
-    throw new ParserError("Não foi detectado valor monetário na mensagem");
+    throw new ParserError(ParserErrorKind.noMoney);
   }
   const money = parseFloat(finalNumber[0].replace(",", ".").replace("R$", ""));
   if (isNaN(money)) {
-    throw new ParserError("Foi detectado valor monetário inválido na mensagem");
+    throw new ParserError(ParserErrorKind.invalidMoney);
   }
   return {
     money,

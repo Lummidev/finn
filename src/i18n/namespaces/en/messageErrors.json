@@ -1,0 +1,8 @@
+{
+  "parserError": {
+    "noMoney": "No monetary value was detected in the message.",
+    "invalidMoney": "An invalid monetary value as detected in the message."
+  },
+  "unknown": "An unknown error occurred.",
+  "checkDetails": "Check details below."
+}

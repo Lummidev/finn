@@ -1,0 +1,13 @@
+{
+  "invalidCategoryID": "Invalid ID",
+  "categoryFilterCounter": "{{count}} Categories",
+  "invalidDate": "Invalid Date",
+  "search": "Search",
+  "categoryFilterButton": "Category",
+  "modalFilterButton": "Filter",
+  "modalClearFilterButton": "Clear Filter",
+  "dateFilterButton": "Date",
+  "clearFilterButton": "Clear",
+  "editedOnDate": "Edited on {{date, dateTime(style: short)}}",
+  "editedRelativeTime": "Edited {{localizedRelativeTimeString}}"
+}

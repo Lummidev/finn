@@ -24,7 +24,7 @@ import { getUniqueWords } from "../../util";
 import { categoryIcons } from "../../categoryIcons";
 import { ChooseCategoryModal } from "../../Components/ChooseCategoryModal/ChooseCategoryModal";
 import { FormModal } from "../../Components/FormModal/FormModal";
-import { numericFormatter } from "react-number-format";
+import { useTranslation } from "react-i18next";
 
 export const ViewExpense = () => {
   const [entry, setEntry] = useState<JoinedEntry | undefined>();
@@ -38,7 +38,7 @@ export const ViewExpense = () => {
   const [selectedNewWords, setSelectedNewWords] = useState<string[]>([]);
   const params = useParams();
   const navigate = useNavigate();
-
+  const { t } = useTranslation("viewExpense");
   useEffect(() => {
     if (!params.id) return;
     EntryRepository.get(params.id)
@@ -63,7 +63,6 @@ export const ViewExpense = () => {
   };
   const startEdit = () => {
     if (!entry) return;
-    console.log(entry);
     setEditing(true);
     setEditedDescription(entry.description);
     setEditedMoney(entry.moneyExpent);
@@ -160,17 +159,17 @@ export const ViewExpense = () => {
   return (
     <div className="view-expense">
       <PageHeader
-        title="Gasto"
+        title={t("pageTitle")}
         subMenu={
           !editing
             ? [
                 {
-                  name: "Editar Gasto",
+                  name: t("editExpenseButton"),
                   icon: faPencil,
                   onAction: startEdit,
                 },
                 {
-                  name: "Excluir Gasto",
+                  name: t("deleteExpenseButton"),
                   destructive: true,
                   icon: faTrash,
                   onAction: removeEntry,
@@ -182,13 +181,13 @@ export const ViewExpense = () => {
           editing
             ? {
                 primary: {
-                  name: "Salvar",
+                  name: t("saveEditButton"),
                   submit: true,
                   formID: editExpenseFormID,
                   disabled: !(validName && validMoney),
                 },
                 secondary: {
-                  name: "Cancelar",
+                  name: t("cancelEditButton"),
                   onAction: () => {
                     setEditing(false);
                   },
@@ -206,33 +205,41 @@ export const ViewExpense = () => {
             <FontAwesomeIcon icon={showIcon(entry.category?.iconName)} />
           </div>
           <div className="view-expense__money">
-            R$
-            {entry.moneyExpent.toLocaleString(undefined, {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
+            {t("currency", {
+              ns: "common",
+              value: entry.moneyExpent,
+              formatParams: {
+                value: {
+                  currency: "BRL",
+                },
+              },
             })}
           </div>
           <div className="view-expense__description">{entry.description}</div>
 
           <div className="view-expense__about">
-            <h2 className="view-expense__about-title">Sobre esse gasto</h2>
+            <h2 className="view-expense__about-title">{t("expenseDetails")}</h2>
             <div className="view-expense__rows">
               <div className="view-expense__row">
-                <h3 className="view-expense__row-title">Data</h3>
+                <h3 className="view-expense__row-title">
+                  {t("expenseDetailsFieldsTitles.date")}
+                </h3>
                 <div className="view-expense__row-data">
-                  {dayjs(entry.createdAtTimestampMiliseconds).format(
-                    "dddd, LL",
-                  )}
+                  {dayjs(entry.createdAtTimestampMiliseconds).format("LL")}
                 </div>
               </div>
               <div className="view-expense__row">
-                <h3 className="view-expense__row-title">Horário</h3>
+                <h3 className="view-expense__row-title">
+                  {t("expenseDetailsFieldsTitles.time")}
+                </h3>
                 <div className="view-expense__row-data">
-                  {dayjs(entry.createdAtTimestampMiliseconds).format("HH:mm")}
+                  {dayjs(entry.createdAtTimestampMiliseconds).format("LT")}
                 </div>
               </div>
               <div className="view-expense__row">
-                <h3 className="view-expense__row-title">Categoria</h3>
+                <h3 className="view-expense__row-title">
+                  {t("expenseDetailsFieldsTitles.category")}
+                </h3>
                 <div className="view-expense__row-data">
                   <button
                     type="button"
@@ -244,7 +251,7 @@ export const ViewExpense = () => {
                     {entry.category ? (
                       <>{entry.category.name}</>
                     ) : (
-                      <div>Sem categoria</div>
+                      <div>{t("noCategory", { ns: "common" })}</div>
                     )}
                     <FontAwesomeIcon icon={faChevronDown} />
                   </button>
@@ -261,7 +268,7 @@ export const ViewExpense = () => {
                     }}
                   />
                   <FormModal
-                    title="Escolher Palavras"
+                    title={t("keywordsModal.title")}
                     visible={showWordChoice}
                     close={() => {
                       setShowWordChoice(false);
@@ -274,12 +281,12 @@ export const ViewExpense = () => {
                     secondaryButtonAction={() => {
                       setSelectedNewWords([]);
                     }}
-                    secondaryButtonLabel="Dispensar"
+                    secondaryButtonLabel={t("keywordsModal.dismiss")}
                   >
                     <span className="view-expense__word-choice-description">
-                      Você gostaria de adicionar alguma das palavras da
-                      descrição desse gasto à categoria{" "}
-                      {!!targetCategory && targetCategory.name}?
+                      {t("keywordsModal.description", {
+                        categoryName: !!targetCategory && targetCategory.name,
+                      })}
                     </span>
                     <div className="view-expense__word-list">
                       {!!entry &&
@@ -318,14 +325,12 @@ export const ViewExpense = () => {
                 </div>
               </div>
               <div className="view-expense__row">
-                <h3 className="view-expense__row-title">Observação</h3>
+                <h3 className="view-expense__row-title">{t("note")}</h3>
                 <div className="view-expense__row-data">
                   {entry.note && entry.note.length > 0 ? (
                     entry.note
                   ) : (
-                    <span className="view-expense__no-note">
-                      Nenhuma observação
-                    </span>
+                    <span className="view-expense__no-note">{t("noNote")}</span>
                   )}
                 </div>
               </div>
@@ -342,7 +347,7 @@ export const ViewExpense = () => {
           }}
         >
           <LabeledInput
-            name="Descrição"
+            name={t("editForm.description")}
             placeholder={entry.description}
             value={editedDescription}
             onChange={(e) => {
@@ -350,23 +355,26 @@ export const ViewExpense = () => {
             }}
           />
           <LabeledInput
-            name="Dinheiro Gasto"
+            name={t("editForm.moneySpent")}
             type="number"
-            placeholder={numericFormatter(entry.moneyExpent.toString(), {
-              prefix: "R$",
-              decimalScale: 2,
-              fixedDecimalScale: true,
+            placeholder={t("currency", {
+              ns: "common",
+              value: entry.moneyExpent,
+              formatParams: {
+                value: {
+                  currency: "BRL",
+                },
+              },
             })}
             value={editedMoney}
             onValueChange={(value) => {
               setEditedMoney(value);
             }}
-            prefix="R$"
           />
           <LabeledInput
-            name="Observação"
+            name={t("note")}
             type="text"
-            placeholder="Escreva uma observação sobre o gasto aqui"
+            placeholder={t("editForm.notePlaceholder")}
             value={editedNote}
             onChange={(e) => {
               setEditedNote(e.target.value);

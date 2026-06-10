@@ -3,6 +3,7 @@ import { categoryIcons } from "../../categoryIcons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ChooseIconModal.css";
 import { FormModal } from "../FormModal/FormModal";
+import { useTranslation } from "react-i18next";
 interface ChooseIconModalProps {
   visible: boolean;
   close: () => unknown;
@@ -13,6 +14,7 @@ export const ChooseIconModal = (props: ChooseIconModalProps) => {
   const [selectedIconName, setSelectedIconName] = useState<
     string | undefined
   >();
+  const { t } = useTranslation("chooseIconModal");
   useEffect(() => {
     if (props.visible) {
       setSelectedIconName(props.initialIconName);
@@ -22,7 +24,7 @@ export const ChooseIconModal = (props: ChooseIconModalProps) => {
   }, [props.visible, props.initialIconName]);
   return (
     <FormModal
-      title="Escolha um ícone"
+      title={t("title")}
       visible={props.visible}
       close={props.close}
       onSubmit={() => {

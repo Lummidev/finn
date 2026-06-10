@@ -1,0 +1,9 @@
+{
+  "today": "Today",
+  "week": "Week",
+  "month": "Month",
+  "expenseGoals": "Expense goals",
+  "noGoalsNotice": "Set an expense goal in the settings page and it will show up here!",
+  "todaysExpenses": "Today's expenses",
+  "monthlyExpenses": "Monthly expenses"
+}

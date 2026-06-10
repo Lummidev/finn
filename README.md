@@ -87,4 +87,3 @@ This is a [React](https://react.dev/) app that uses the [Dexie](https://dexie.or
   - Summarizing daily expenses
   - Warning if you're close to exceeding a goal's limit
 - Exporting data to .csv
-- English language option (the app is only available in Portuguese right now)

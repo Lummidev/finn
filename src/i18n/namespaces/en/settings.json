@@ -1,0 +1,32 @@
+{
+  "keepChatBarVisible": "Keep chat bar visible",
+  "sectionTitles": {
+    "theme": "Theme",
+    "language": "Language",
+    "general": "General",
+    "accentColor": "Accent color",
+    "goals": "Goals"
+  },
+  "goals": {
+    "daily": "Maximum daily expenses",
+    "weekly": "Maximum weekly expenses",
+    "monthly": "Maximum monthly expenses"
+  },
+  "themes": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "accentColors": {
+    "flamingo": "Flamingo",
+    "pink": "Pink",
+    "mauve": "Mauve",
+    "peach": "Peach",
+    "teal": "Teal",
+    "blue": "Blue"
+  },
+  "seeOnGithub": "See on Github",
+  "credits": {
+    "libraries": "Developed by <name>Gabriel Valeriano</name>, with <react>React</react>, <vite>Vite</vite>, and <dexie>Dexie</dexie>.",
+    "more": "Icons by <fa>Font Awesome</fa> and charts created with <chart>Chart.js</chart>"
+  }
+}

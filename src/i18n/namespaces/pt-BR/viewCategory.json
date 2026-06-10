@@ -1,0 +1,25 @@
+{
+  "periodOptions": {
+    "thisMonth": "Neste mês",
+    "lastThreeMonths": "Nos últimos 3 meses",
+    "thisYear": "Neste ano",
+    "sinceTheBeginning": "Desde o Início"
+  },
+  "editCategoryButton": "Editar Categoria",
+  "deleteCategoryButton": "Excluir Categoria",
+  "pageTitle": {
+    "normal": "Categoria",
+    "editing": "Editando Categoria"
+  },
+  "nameInputLabel": "Nome",
+  "newKeywordInputLabel": "Nova Palavra-chave",
+  "addKeywordButtonLabel": "Adicionar Palavra-chave",
+  "categoryInformationText": "O nome da categoria é considerado uma palavra-chave para a detecção automática de categoria do gasto",
+  "keywords": "Palavras-chave",
+  "noKeywords": "Não há palavras nessa categoria",
+  "details": "Detalhes",
+  "moneySpent": "Dinheiro gasto",
+  "period": "Período",
+  "timePeriodModalTitle": "Selecione um período de tempo",
+  "selectButton": "Selecionar"
+}

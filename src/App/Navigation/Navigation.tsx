@@ -10,9 +10,10 @@ import {
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router";
+import { useTranslation } from "react-i18next";
 export const Navigation = () => {
   const location = useLocation();
-
+  const { t } = useTranslation("common");
   const activeLocationClass = (path: string) => {
     const active = location.pathname.split("/")[1] === path.split("/")[1];
     return {
@@ -22,27 +23,27 @@ export const Navigation = () => {
   };
   const links: { name: string; pathName: string; icon: IconDefinition }[] = [
     {
-      name: "Ajustes",
+      name: t("pageNames.settings"),
       pathName: "/settings",
       icon: faGear,
     },
     {
-      name: "Categorias",
+      name: t("pageNames.categories"),
       pathName: "/categories",
       icon: faLayerGroup,
     },
     {
-      name: "Gastos",
+      name: t("pageNames.expenses"),
       pathName: "/expenses",
       icon: faList,
     },
     {
-      name: "Resumo",
+      name: t("pageNames.dashboard"),
       pathName: "/",
       icon: faChartSimple,
     },
     {
-      name: "Chat",
+      name: t("pageNames.chat"),
       pathName: "/chat",
       icon: faComments,
     },

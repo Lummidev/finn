@@ -13,9 +13,15 @@ import { useNavigate } from "react-router";
 import { SettingsContext } from "../Context/SettingsContext";
 import { Settings } from "../settings";
 import { useLiveQuery } from "dexie-react-hooks";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
+
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const {
+    i18n: { language },
+  } = useTranslation();
   const [settings, setSettings] = useState({
     theme: "dark",
     alwaysShowChatBar: false,
@@ -38,7 +44,9 @@ function App() {
       content: trimmedText,
     });
   };
-
+  useEffect(() => {
+    dayjs.locale(language);
+  }, [language]);
   useEffect(() => {
     const { theme, alwaysShowChatBar } = Settings.load();
     setSettings({ theme, alwaysShowChatBar });

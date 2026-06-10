@@ -7,32 +7,17 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { MessageRepository } from "../../Database/MessageRepository";
 import type { Message } from "../../Entities/Message";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
+import { formatRelativeDate } from "../../util";
 
 export const Chat = () => {
+  const { t } = useTranslation("chat");
   const messageHistory = use(MessageContext);
   const dateMessageGroups = useMemo(() => {
     const messagesGroupedByDate: Record<string, Message[]> = {};
     messageHistory.forEach((message) => {
       const date = dayjs(message.createdAtTimestampMiliseconds).startOf("day");
-      const today = dayjs().startOf("day");
-      const diff = today.diff(date, "days");
-      const weekPlusAgo = diff > 6;
-      const beforeYesterday = diff > 1;
-      const yesterday = diff === 1;
-      const formattedDate = ((formattedDate) => {
-        return (
-          String(formattedDate[0]).toUpperCase() +
-          String(formattedDate).slice(1)
-        );
-      })(
-        weekPlusAgo
-          ? date.format("L")
-          : beforeYesterday
-            ? date.format("dddd")
-            : yesterday
-              ? "Ontem"
-              : "Hoje",
-      );
+      const formattedDate = formatRelativeDate(date.toISOString());
       if (!messagesGroupedByDate[formattedDate]) {
         messagesGroupedByDate[formattedDate] = [message];
       } else {
@@ -48,10 +33,10 @@ export const Chat = () => {
     <div className={`chat`}>
       <PageHeader
         className="chat__title"
-        title="Chat"
+        title={t("pageNames.chat", { ns: "common" })}
         subMenu={[
           {
-            name: "Limpar chat",
+            name: t("clearChat"),
             destructive: true,
             icon: faTrash,
             onAction: () => {

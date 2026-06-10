@@ -3,7 +3,7 @@ import type { Category } from "../Entities/Category";
 import { EntryRepository } from "./EntryRepository";
 import dayjs from "dayjs";
 import type { Entry } from "../Entities/Entry";
-
+import i18n from "i18next";
 export const getMoneyExpentByCategoryToday = async () => {
   const now = dayjs();
   const entries = (await EntryRepository.getAll()).filter((entry) => {
@@ -51,7 +51,9 @@ export const getTotalExpensesOfCategory = async (
     0,
   );
 };
-export const getMoneyExpentByCategoryAndMonthDay = async () => {
+export const getMoneyExpentByCategoryAndMonthDay = async (
+  noCategoryString: string = i18n.t("noCategory", { ns: "common" }),
+) => {
   const now = dayjs();
 
   const entries = await EntryRepository.getAll();
@@ -70,7 +72,7 @@ export const getMoneyExpentByCategoryAndMonthDay = async () => {
     const day = dayjs(entry.createdAtTimestampMiliseconds).date();
     let id: string | undefined;
     let iconName: string | undefined;
-    let categoryName = "Sem Categoria";
+    let categoryName = noCategoryString;
     const category = entry.category;
     if (category) {
       id = category.id;
