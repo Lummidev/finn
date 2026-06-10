@@ -39,7 +39,7 @@ export const FormModal = (props: PropsWithChildren<FormModalProps>) => {
             props.close();
           }}
         >
-          {props.secondaryButtonLabel ?? t("defaultSecondayButtonLabel")}
+          {props.secondaryButtonLabel ?? t("defaultSecondaryButtonLabel")}
         </button>
       </form>
     </Modal>
