@@ -85,4 +85,3 @@ Esse é um aplicativo [React](https://react.dev/) que utiliza a biblioteca [Dexi
   - De resumo dos gastos do dia
   - De aviso caso estiver próximo do limite de uma meta
 - Exportação dos dados
-- Inglês como opção de linguagem
