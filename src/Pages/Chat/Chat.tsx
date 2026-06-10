@@ -8,7 +8,7 @@ import { MessageRepository } from "../../Database/MessageRepository";
 import type { Message } from "../../Entities/Message";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
-import { capitalize, formatRelativeDate } from "../../util";
+import { formatRelativeDate } from "../../util";
 
 export const Chat = () => {
   const { t } = useTranslation("chat");
