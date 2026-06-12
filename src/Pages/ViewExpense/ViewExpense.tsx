@@ -65,7 +65,7 @@ export const ViewExpense = () => {
     if (!entry) return;
     setEditing(true);
     setEditedDescription(entry.description);
-    setEditedMoney(entry.moneyExpent);
+    setEditedMoney(entry.moneySpent);
     setEditedNote(entry.note ?? "");
   };
 
@@ -76,13 +76,13 @@ export const ViewExpense = () => {
     if (!entry || !(validName && validMoney)) return;
     const newDescription = editedDescription.trim();
     const newNote = editedNote.trim();
-    const newMoneyExpent = !editedMoney
+    const newMoneySpent = !editedMoney
       ? 0
       : Math.trunc(editedMoney * 100) / 100;
     const newEntry: Entry = {
       ...entry,
       description: newDescription,
-      moneyExpent: newMoneyExpent,
+      moneySpent: newMoneySpent,
       note: newNote,
     };
     EntryRepository.update(newEntry)
@@ -207,7 +207,7 @@ export const ViewExpense = () => {
           <div className="view-expense__money">
             {t("currency", {
               ns: "common",
-              value: entry.moneyExpent,
+              value: entry.moneySpent,
               formatParams: {
                 value: {
                   currency: "BRL",
@@ -225,7 +225,7 @@ export const ViewExpense = () => {
                   {t("expenseDetailsFieldsTitles.date")}
                 </h3>
                 <div className="view-expense__row-data">
-                  {dayjs(entry.createdAtTimestampMiliseconds).format("LL")}
+                  {dayjs(entry.createdAtTimestampMilliseconds).format("LL")}
                 </div>
               </div>
               <div className="view-expense__row">
@@ -233,7 +233,7 @@ export const ViewExpense = () => {
                   {t("expenseDetailsFieldsTitles.time")}
                 </h3>
                 <div className="view-expense__row-data">
-                  {dayjs(entry.createdAtTimestampMiliseconds).format("LT")}
+                  {dayjs(entry.createdAtTimestampMilliseconds).format("LT")}
                 </div>
               </div>
               <div className="view-expense__row">
@@ -359,7 +359,7 @@ export const ViewExpense = () => {
             type="number"
             placeholder={t("currency", {
               ns: "common",
-              value: entry.moneyExpent,
+              value: entry.moneySpent,
               formatParams: {
                 value: {
                   currency: "BRL",

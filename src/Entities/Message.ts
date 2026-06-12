@@ -1,6 +1,6 @@
 export interface Message {
   id: string;
-  createdAtTimestampMiliseconds: number;
+  createdAtTimestampMilliseconds: number;
   messageType: "success" | "user" | "error";
   errorCode?: string;
   errorDetails?: string;
@@ -11,7 +11,7 @@ export interface Message {
       name: string;
       iconName?: string;
     };
-    moneyExpent: number;
+    moneySpent: number;
     description: string;
   };
 }

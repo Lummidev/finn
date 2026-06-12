@@ -1,9 +1,9 @@
 export interface Entry {
   id: string;
-  moneyExpent: number;
+  moneySpent: number;
   description: string;
-  createdAtTimestampMiliseconds: number;
-  updatedAtTimestampMiliseconds?: number;
+  createdAtTimestampMilliseconds: number;
+  updatedAtTimestampMilliseconds?: number;
   note?: string;
   categoryID?: string;
 }

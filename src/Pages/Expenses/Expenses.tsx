@@ -37,9 +37,8 @@ export const Expenses = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const filterByCategory = categoryIDs && categoryIDs.length > 0;
-  const [oldestTimestampMiliseconds, setOldestTimestampMiliseconds] = useState(
-    Date.now().valueOf(),
-  );
+  const [oldestTimestampMilliseconds, setOldestTimestampMilliseconds] =
+    useState(Date.now().valueOf());
   const { t } = useTranslation("expenses");
   useEffect(() => {
     CategoryRepository.getAll()
@@ -56,10 +55,10 @@ export const Expenses = () => {
           setDateEntryRecord(record);
           return;
         }
-        const oldestTimestampMiliseconds = [...entries].pop()
-          ?.createdAtTimestampMiliseconds;
-        setOldestTimestampMiliseconds(
-          oldestTimestampMiliseconds ?? Date.now().valueOf(),
+        const oldestTimestampMilliseconds = [...entries].pop()
+          ?.createdAtTimestampMilliseconds;
+        setOldestTimestampMilliseconds(
+          oldestTimestampMilliseconds ?? Date.now().valueOf(),
         );
         let filteredEntries = entries;
         if (dateFilter) {
@@ -67,7 +66,7 @@ export const Expenses = () => {
           const from = dayjs(fromDate).startOf("day");
           const to = dayjs(toDate).endOf("day");
           filteredEntries = entries.filter((entry) => {
-            const createdDate = dayjs(entry.createdAtTimestampMiliseconds);
+            const createdDate = dayjs(entry.createdAtTimestampMilliseconds);
             return createdDate.isBetween(from, to);
           });
         }
@@ -92,7 +91,7 @@ export const Expenses = () => {
           );
         }
         for (const entry of filteredEntries) {
-          const date = dayjs(entry.createdAtTimestampMiliseconds).format("LL");
+          const date = dayjs(entry.createdAtTimestampMilliseconds).format("LL");
           if (record[date]) {
             record[date] = [...record[date], entry];
           } else {
@@ -275,7 +274,7 @@ export const Expenses = () => {
               close={() => {
                 setShowDateModal(false);
               }}
-              oldestPossibleTimestampMiliseconds={oldestTimestampMiliseconds}
+              oldestPossibleTimestampMilliseconds={oldestTimestampMilliseconds}
               onSubmit={(from, to) => {
                 searchParams.set("fromDate", from);
                 searchParams.set("toDate", to);
@@ -327,7 +326,7 @@ export const Expenses = () => {
                         </h3>
                         <div className="expenses__item-date-category">
                           <span>
-                            {dayjs(entry.createdAtTimestampMiliseconds).format(
+                            {dayjs(entry.createdAtTimestampMilliseconds).format(
                               "LT",
                             )}
                           </span>
@@ -337,10 +336,10 @@ export const Expenses = () => {
                           ) : (
                             <span>{t("noCategory", { ns: "common" })}</span>
                           )}
-                          {((updatedAtMilis?: number) => {
-                            if (!updatedAtMilis) return <></>;
+                          {((updatedAtMilliseconds?: number) => {
+                            if (!updatedAtMilliseconds) return <></>;
                             const now = dayjs();
-                            const updatedAt = dayjs(updatedAtMilis);
+                            const updatedAt = dayjs(updatedAtMilliseconds);
                             return (
                               <>
                                 <span>•</span>
@@ -355,13 +354,13 @@ export const Expenses = () => {
                                     })}
                               </>
                             );
-                          })(entry.updatedAtTimestampMiliseconds)}
+                          })(entry.updatedAtTimestampMilliseconds)}
                         </div>
                       </div>
                     </div>
                     <div className="expenses__item-money">
                       {t("currency", {
-                        value: entry.moneyExpent,
+                        value: entry.moneySpent,
                         ns: "common",
                         formatParams: {
                           value: {

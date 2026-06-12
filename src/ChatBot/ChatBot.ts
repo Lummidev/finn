@@ -9,10 +9,10 @@ import { AppError } from "../util";
 
 export const handleMessage = async (text: string): Promise<JoinedMessage> => {
   try {
-    const { moneyExpent, description, category } =
+    const { moneySpent, description, category } =
       await parseMessageComponents(text);
     const savedEntry: Entry = await EntryRepository.insert({
-      moneyExpent,
+      moneySpent,
       description,
       categoryID: category?.id,
     });
@@ -20,7 +20,7 @@ export const handleMessage = async (text: string): Promise<JoinedMessage> => {
       messageType: "success",
       entryID: savedEntry.id,
       initialEntryInformation: {
-        moneyExpent,
+        moneySpent,
         description,
         category: category && {
           name: category.name,

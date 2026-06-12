@@ -5,7 +5,7 @@ import "./Dashboard.css";
 import { MonthChart } from "./MonthChart/MonthChart";
 import { ObjectiveDisplay } from "./ObjectiveDisplay/ObjectiveDisplay";
 import { Settings } from "../../settings";
-import { getMoneyExpentByPeriod } from "../../Database/ReportRepository";
+import { getMoneySpentByPeriod } from "../../Database/ReportRepository";
 import { useTranslation } from "react-i18next";
 
 export const Dashboard = () => {
@@ -23,7 +23,7 @@ export const Dashboard = () => {
   useEffect(() => {
     const { objectives } = Settings.load();
     setGoals(objectives);
-    getMoneyExpentByPeriod()
+    getMoneySpentByPeriod()
       .then((result) => {
         const { day, week, month } = result;
         setSpent({ day, week, month });
@@ -34,9 +34,9 @@ export const Dashboard = () => {
   }, []);
 
   const objectives = [
-    { title: t("today"), expent: spent.day, goal: goals.daily },
-    { title: t("week"), expent: spent.week, goal: goals.weekly },
-    { title: t("month"), expent: spent.month, goal: goals.monthly },
+    { title: t("today"), spent: spent.day, goal: goals.daily },
+    { title: t("week"), spent: spent.week, goal: goals.weekly },
+    { title: t("month"), spent: spent.month, goal: goals.monthly },
   ].filter((objective) => objective.goal > 0);
   return (
     <div className="dashboard">
@@ -49,7 +49,7 @@ export const Dashboard = () => {
               objectives.map((objective, i) => (
                 <Fragment key={objective.title}>
                   <ObjectiveDisplay
-                    spent={objective.expent}
+                    spent={objective.spent}
                     goal={objective.goal}
                     title={objective.title}
                   />

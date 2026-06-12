@@ -66,7 +66,7 @@ const MessageDisplay = ({ message }: { message: JoinedMessage }) => {
         <div className="chat-bubble__display-row">
           <FontAwesomeIcon icon={faMoneyBill} />
           {t("currency", {
-            value: message.initialEntryInformation.moneyExpent,
+            value: message.initialEntryInformation.moneySpent,
             formatParams: {
               value: {
                 currency: "BRL",
@@ -93,7 +93,7 @@ const MessageDisplay = ({ message }: { message: JoinedMessage }) => {
         </div>
         <div className="chat-bubble__display-row">
           <FontAwesomeIcon icon={faCalendar} />
-          {dayjs(message.createdAtTimestampMiliseconds).format("L")}
+          {dayjs(message.createdAtTimestampMilliseconds).format("L")}
         </div>
       </div>
     );
@@ -120,7 +120,7 @@ export const ChatBubble = (props: ChatBubbleProps) => {
           <div
             className={`chat-bubble__date  ${isErrorMessage ? "chat-bubble__date--error" : ""}`}
           >
-            {dayjs(props.message.createdAtTimestampMiliseconds).format("LT")}
+            {dayjs(props.message.createdAtTimestampMilliseconds).format("LT")}
           </div>
         </div>
         {entryDeleted && (

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 interface DateModalProps {
   visible: boolean;
   close: () => unknown;
-  oldestPossibleTimestampMiliseconds: number;
+  oldestPossibleTimestampMilliseconds: number;
   onSubmit: (fromDate: string, toDate: string) => unknown;
   primaryButtonLabel?: string;
   secondaryButtonLabel?: string;
@@ -52,7 +52,7 @@ export const DateModal = (props: DateModalProps) => {
     },
   ];
   const viableDateSuggestions = suggestionButtons.filter((suggestion) => {
-    const oldest = dayjs(props.oldestPossibleTimestampMiliseconds);
+    const oldest = dayjs(props.oldestPossibleTimestampMilliseconds);
 
     return dayjs()
       .subtract(suggestion.count, suggestion.unit)
@@ -103,7 +103,7 @@ export const DateModal = (props: DateModalProps) => {
           type="date"
           className="date-modal__input"
           name={t("timePeriodDatesLabels.start")}
-          min={dayjs(props.oldestPossibleTimestampMiliseconds).format(
+          min={dayjs(props.oldestPossibleTimestampMilliseconds).format(
             inputFormat,
           )}
           max={dayjs.min(dayjs(), dayjs(toDate)).format(inputFormat)}

@@ -4,32 +4,35 @@ import { EntryRepository } from "./EntryRepository";
 import dayjs from "dayjs";
 import type { Entry } from "../Entities/Entry";
 import i18n from "i18next";
-export const getMoneyExpentByCategoryToday = async () => {
+export const getMoneySpentByCategoryToday = async () => {
   const now = dayjs();
   const entries = (await EntryRepository.getAll()).filter((entry) => {
-    return dayjs(entry.createdAtTimestampMiliseconds).isSameOrAfter(now, "day");
+    return dayjs(entry.createdAtTimestampMilliseconds).isSameOrAfter(
+      now,
+      "day",
+    );
   });
-  const moneyExpentByCategory: Record<
+  const moneySpentByCategory: Record<
     string,
     { category: Category; money: number }
   > = {};
   let moneyWithNoCategory = 0;
   for (const entry of entries) {
     if (!entry.category) {
-      moneyWithNoCategory += entry.moneyExpent;
+      moneyWithNoCategory += entry.moneySpent;
     } else {
       const targetCategory = entry.category.name;
-      if (moneyExpentByCategory[targetCategory]) {
-        moneyExpentByCategory[targetCategory].money += entry.moneyExpent;
+      if (moneySpentByCategory[targetCategory]) {
+        moneySpentByCategory[targetCategory].money += entry.moneySpent;
       } else {
-        moneyExpentByCategory[targetCategory] = {
-          money: entry.moneyExpent,
+        moneySpentByCategory[targetCategory] = {
+          money: entry.moneySpent,
           category: entry.category,
         };
       }
     }
   }
-  return { moneyExpentByCategory, moneyWithNoCategory };
+  return { moneySpentByCategory, moneyWithNoCategory };
 };
 
 export const getTotalExpensesOfCategory = async (
@@ -40,36 +43,36 @@ export const getTotalExpensesOfCategory = async (
   if (period) {
     const targetDate = dayjs().subtract(period.count, period.type);
     entries = entries.filter((entry) =>
-      dayjs(entry.createdAtTimestampMiliseconds).isSameOrAfter(
+      dayjs(entry.createdAtTimestampMilliseconds).isSameOrAfter(
         targetDate,
         period.type,
       ),
     );
   }
   return entries.reduce(
-    (accumulator, currentEntry) => accumulator + currentEntry.moneyExpent,
+    (accumulator, currentEntry) => accumulator + currentEntry.moneySpent,
     0,
   );
 };
-export const getMoneyExpentByCategoryAndMonthDay = async (
+export const getMoneSpentByCategoryAndMonthDay = async (
   noCategoryString: string = i18n.t("noCategory", { ns: "common" }),
 ) => {
   const now = dayjs();
 
   const entries = await EntryRepository.getAll();
   const entriesInMonth = entries.filter((entry) =>
-    dayjs(entry.createdAtTimestampMiliseconds).isSame(now, "month"),
+    dayjs(entry.createdAtTimestampMilliseconds).isSame(now, "month"),
   );
-  const moneyExpentByCategoryAndMonthDay: Record<
+  const moneySpentByCategoryAndMonthDay: Record<
     string,
     {
       id?: string;
       iconName?: string;
-      moneyExpentPerDay: Record<number, number>;
+      moneySpentPerDay: Record<number, number>;
     }
   > = {};
   entriesInMonth.forEach((entry) => {
-    const day = dayjs(entry.createdAtTimestampMiliseconds).date();
+    const day = dayjs(entry.createdAtTimestampMilliseconds).date();
     let id: string | undefined;
     let iconName: string | undefined;
     let categoryName = noCategoryString;
@@ -79,35 +82,36 @@ export const getMoneyExpentByCategoryAndMonthDay = async (
       iconName = category.iconName;
       categoryName = category.name;
     }
-    const moneyExpent = entry.moneyExpent;
-    if (moneyExpentByCategoryAndMonthDay[categoryName]) {
-      if (
-        moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day]
-      ) {
-        moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day] +=
-          moneyExpent;
+    const moneySpent = entry.moneySpent;
+    if (moneySpentByCategoryAndMonthDay[categoryName]) {
+      if (moneySpentByCategoryAndMonthDay[categoryName].moneySpentPerDay[day]) {
+        moneySpentByCategoryAndMonthDay[categoryName].moneySpentPerDay[day] +=
+          moneySpent;
       } else {
-        moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day] =
-          moneyExpent;
+        moneySpentByCategoryAndMonthDay[categoryName].moneySpentPerDay[day] =
+          moneySpent;
       }
     } else {
-      moneyExpentByCategoryAndMonthDay[categoryName] = {
+      moneySpentByCategoryAndMonthDay[categoryName] = {
         id,
         iconName,
-        moneyExpentPerDay: {},
+        moneySpentPerDay: {},
       };
-      moneyExpentByCategoryAndMonthDay[categoryName].moneyExpentPerDay[day] =
-        moneyExpent;
+      moneySpentByCategoryAndMonthDay[categoryName].moneySpentPerDay[day] =
+        moneySpent;
     }
   });
-  return moneyExpentByCategoryAndMonthDay;
+  return moneySpentByCategoryAndMonthDay;
 };
-export const getMoneyExpentByPeriod = async () => {
+export const getMoneySpentByPeriod = async () => {
   const periodFilter = (period: ManipulateType) => {
     return (entry: Entry) =>
-      dayjs(entry.createdAtTimestampMiliseconds).isSameOrAfter(dayjs(), period);
+      dayjs(entry.createdAtTimestampMilliseconds).isSameOrAfter(
+        dayjs(),
+        period,
+      );
   };
-  const reducer = (sum: number, current: Entry) => sum + current.moneyExpent;
+  const reducer = (sum: number, current: Entry) => sum + current.moneySpent;
   const entries = await EntryRepository.getAll();
   const day = entries.filter(periodFilter("day")).reduce(reducer, 0);
   const week = entries.filter(periodFilter("week")).reduce(reducer, 0);

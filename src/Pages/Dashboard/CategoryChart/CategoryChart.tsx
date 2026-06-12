@@ -2,7 +2,7 @@ import { Doughnut } from "react-chartjs-2";
 import { SettingsContext } from "../../../Context/SettingsContext";
 import { use, useEffect, useState } from "react";
 import type { ChartDataset, Plugin } from "chart.js";
-import { getMoneyExpentByCategoryToday } from "../../../Database/ReportRepository";
+import { getMoneySpentByCategoryToday } from "../../../Database/ReportRepository";
 import "./CategoryChart.css";
 import type { Category } from "../../../Entities/Category";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -74,7 +74,7 @@ export const CategoryChart = () => {
     value: { currency: "BRL" },
   };
   useEffect(() => {
-    getMoneyExpentByCategoryToday()
+    getMoneySpentByCategoryToday()
       .then((data) => {
         const { blue, red, teal, peach, mauve, yellow, pink, green, flamingo } =
           themeColors[theme];
@@ -91,9 +91,9 @@ export const CategoryChart = () => {
           flamingo,
         ];
         const dataArray: [string, number, Category][] = [
-          ...Object.keys(data.moneyExpentByCategory).map(
+          ...Object.keys(data.moneySpentByCategory).map(
             (key): [string, number, Category] => {
-              const { category, money } = data.moneyExpentByCategory[key];
+              const { category, money } = data.moneySpentByCategory[key];
               return [key, money, category];
             },
           ),

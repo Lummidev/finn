@@ -16,7 +16,7 @@ export const Chat = () => {
   const dateMessageGroups = useMemo(() => {
     const messagesGroupedByDate: Record<string, Message[]> = {};
     messageHistory.forEach((message) => {
-      const date = dayjs(message.createdAtTimestampMiliseconds).startOf("day");
+      const date = dayjs(message.createdAtTimestampMilliseconds).startOf("day");
       const formattedDate = formatRelativeDate(date.toISOString());
       if (!messagesGroupedByDate[formattedDate]) {
         messagesGroupedByDate[formattedDate] = [message];

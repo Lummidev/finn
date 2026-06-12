@@ -22,7 +22,7 @@ import {
 const iconOptions: [IconDefinition, string][] = [
   [faBagShopping, "Sacola"],
   [faBook, "Livro"],
-  [faBurger, "Hambúrger"],
+  [faBurger, "Hambúrguer"],
   [faBus, "Ônibus"],
   [faCar, "Carro"],
   [faComputer, "Computador"],

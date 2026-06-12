@@ -40,7 +40,7 @@ export const ViewCategory = () => {
   const [periodKey, setPeriodKey] = useState<string>("month");
   const [selectedPeriodKey, setSelectedPeriodKey] = useState<string>("month");
   const [showIconChoice, setShowIconChoice] = useState(false);
-  const [moneyExpent, setMoneyExpent] = useState(0);
+  const [moneySpent, setMoneySpent] = useState(0);
   const params = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation("viewCategory");
@@ -125,8 +125,8 @@ export const ViewCategory = () => {
         ? { count: period.period.count, type: period.period.type }
         : undefined,
     )
-      .then((moneyExpent) => {
-        setMoneyExpent(moneyExpent);
+      .then((moneySpent) => {
+        setMoneySpent(moneySpent);
       })
       .catch((e) => {
         throw e;
@@ -338,7 +338,7 @@ export const ViewCategory = () => {
                   <div className="view-category__row-data view-category__row-data--money">
                     {t("currency", {
                       ns: "common",
-                      value: moneyExpent,
+                      value: moneySpent,
                       formatParams: {
                         value: {
                           currency: "BRL",

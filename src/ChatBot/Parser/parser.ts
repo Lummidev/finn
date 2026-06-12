@@ -2,7 +2,7 @@ import { CategoryRepository } from "../../Database/CategoryRepository";
 import type { Category } from "../../Entities/Category";
 import { ParserError, ParserErrorKind } from "./ParserError";
 interface MessageComponents {
-  moneyExpent: number;
+  moneySpent: number;
   description: string;
   category?: Category;
 }
@@ -118,7 +118,7 @@ export const parseMessageComponents = async (
     }
   }
   return {
-    moneyExpent: moneyFirstPass.money,
+    moneySpent: moneyFirstPass.money,
     description: trimmedMessage,
     category: categoryInfo?.category,
   };

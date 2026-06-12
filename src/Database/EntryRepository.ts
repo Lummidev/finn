@@ -10,7 +10,7 @@ export type JoinedEntry = Entry & {
 
 const getAll = async (): Promise<JoinedEntry[]> => {
   const entries = (
-    await database.entries.orderBy("createdAtTimestampMiliseconds").toArray()
+    await database.entries.orderBy("createdAtTimestampMilliseconds").toArray()
   ).reverse() as JoinedEntry[];
   await Promise.all(
     entries.map(async (entry) => {
@@ -24,7 +24,7 @@ const getAll = async (): Promise<JoinedEntry[]> => {
 
 const get = async (id: string): Promise<JoinedEntry | undefined> => {
   const entry: JoinedEntry | undefined = await database.entries.get(id);
-  if (entry && entry.categoryID) {
+  if (entry?.categoryID) {
     entry.category = await database.categories.get(entry.categoryID);
   }
   return entry;
@@ -37,13 +37,13 @@ const getByCategory = async (categoryID: string) => {
   return entries;
 };
 const insert = async (
-  props: Omit<Entry, "id" | "createdAtTimestampMiliseconds">,
+  props: Omit<Entry, "id" | "createdAtTimestampMilliseconds">,
 ) => {
-  const { moneyExpent, description, categoryID } = props;
+  const { moneySpent, description, categoryID } = props;
   const entry: Entry = {
     id: v4(),
-    createdAtTimestampMiliseconds: new Date().valueOf(),
-    moneyExpent,
+    createdAtTimestampMilliseconds: new Date().valueOf(),
+    moneySpent,
     description,
     categoryID,
   };
@@ -52,16 +52,16 @@ const insert = async (
   return entry;
 };
 const update = async (entry: Entry) => {
-  const { id, moneyExpent, description, categoryID, note } = entry;
+  const { id, moneySpent, description, categoryID, note } = entry;
   const oldEntry = await database.entries.get(id);
   if (!oldEntry) throw new Error("Tried to update entry that doesn't exist");
   const newEntry: Entry = {
     ...oldEntry,
-    moneyExpent,
+    moneySpent,
     description,
     categoryID,
     note,
-    updatedAtTimestampMiliseconds: new Date().valueOf(),
+    updatedAtTimestampMilliseconds: new Date().valueOf(),
   };
   await database.entries.put(newEntry);
 };
@@ -76,7 +76,7 @@ const removeCategoryFromAll = async (categoryID: string) => {
       await database.entries.put({
         ...entry,
         categoryID: undefined,
-        updatedAtTimestampMiliseconds: new Date().valueOf(),
+        updatedAtTimestampMilliseconds: new Date().valueOf(),
       });
     }),
   );

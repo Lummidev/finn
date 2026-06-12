@@ -8,12 +8,12 @@ export interface JoinedMessage extends Message {
 }
 
 const insert = async (
-  props: Omit<Message, "id" | "createdAtTimestampMiliseconds">,
+  props: Omit<Message, "id" | "createdAtTimestampMilliseconds">,
 ) => {
   const message: Message = {
     ...props,
     id: v4(),
-    createdAtTimestampMiliseconds: new Date().valueOf(),
+    createdAtTimestampMilliseconds: new Date().valueOf(),
   };
 
   await database.messages.add(message);
@@ -22,7 +22,7 @@ const insert = async (
 const getAll = async (): Promise<JoinedMessage[]> => {
   const messages = (
     (await database.messages
-      .orderBy("createdAtTimestampMiliseconds")
+      .orderBy("createdAtTimestampMilliseconds")
       .toArray()) as JoinedMessage[]
   ).reverse();
   return await Promise.all(

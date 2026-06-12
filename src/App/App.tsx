@@ -30,7 +30,7 @@ function App() {
     async () =>
       (await MessageRepository.getAll()).sort(
         (a, b) =>
-          b.createdAtTimestampMiliseconds - a.createdAtTimestampMiliseconds,
+          b.createdAtTimestampMilliseconds - a.createdAtTimestampMilliseconds,
       ),
     [],
     [],

@@ -1,6 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { getMoneyExpentByCategoryAndMonthDay } from "../../../Database/ReportRepository";
+import { getMoneSpentByCategoryAndMonthDay } from "../../../Database/ReportRepository";
 import dayjs from "dayjs";
 import { SettingsContext } from "../../../Context/SettingsContext";
 import "./MonthChart.css";
@@ -60,7 +60,7 @@ export const MonthChart = () => {
   useEffect(() => {
     const noCategory = t("noCategory", { ns: "common" });
 
-    getMoneyExpentByCategoryAndMonthDay(noCategory)
+    getMoneSpentByCategoryAndMonthDay(noCategory)
       .then((result) => {
         const { blue, red, teal, peach, mauve, yellow, pink, green, flamingo } =
           themeColors[theme];
@@ -99,10 +99,10 @@ export const MonthChart = () => {
           })
           .forEach((categoryName) => {
             const label = categoryName;
-            const { id, iconName, moneyExpentPerDay } = result[categoryName];
+            const { id, iconName, moneySpentPerDay } = result[categoryName];
             const data = [];
             for (let day = 1; day <= daysInMonth; day++) {
-              const amount = moneyExpentPerDay[day];
+              const amount = moneySpentPerDay[day];
               data.push(amount ?? 0);
             }
             datasets.push({
