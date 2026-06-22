@@ -34,19 +34,23 @@ Isso pode ser feito com o aplicativo hospedado no link de demonstração acima.
 
 Requisitos:
 
-- [Node.js](https://nodejs.org)>=22.12 (com npm)
+- [Node.js](https://nodejs.org)>=22.12
+- [pnpm](https://pnpm.io/)>=11
 - Um navegador de sua escolha
+
+> [!TIP]
+> Dica: Como dito na [documentação oficial do pnpm](https://pnpm.io/pt/installation#usando-corepack), você pode usar o comando `corepack enable pnpm`, que é distribuído com o Node.js, para instalar o pnpm no seu sistema.
 
 Clone o repositório e execute o comando
 
 ```sh
-npm install
+pnpm install
 ```
 
 na raiz do projeto para baixar as bibliotecas necessárias, e então
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 para executar o servidor de desenvolvimento. A aplicação estará disponível no URL http://localhost:5173/
@@ -54,7 +58,7 @@ para executar o servidor de desenvolvimento. A aplicação estará disponível n
 Alternativamente, use o comando abaixo para compilar a aplicação para a pasta `dist`:
 
 ```sh
-npm run build
+pnpm build
 ```
 
 Infelizmente, apenas executar o projeto com o servidor de desenvolvimento não é suficiente para fazê-lo ser instalável na sua rede local para fins de teste. Para isso, é necessário hospedar a aplicação compilada com o comando acima em um servidor que atenda a alguns requisitos, como redirecionamento para HTTPS com um certificado válido. Mais informações nesse [artigo do web.dev](https://web.dev/articles/install-criteria).

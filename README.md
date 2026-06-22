@@ -36,19 +36,23 @@ This can be done with the Demo app linked above.
 
 Prerequisites:
 
-- [Node.js](https://nodejs.org)>=22.12 (with npm)
+- [Node.js](https://nodejs.org)>=22.12
+- [pnpm](https://pnpm.io/)>=11
 - A browser of your choice
+
+> [!TIP]
+> As said in the [official pnpm docs](https://pnpm.io/installation#using-corepack), you can use the `corepack enable pnpm` command, which is shipped with Node.js, to install pnpm on your system.
 
 Clone the repository and run the command
 
 ```sh
-npm install
+pnpm install
 ```
 
 at the project's root to download the required libraries, and then
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 to run the development server. The app will be available at the URL http://localhost:5173/.
@@ -56,7 +60,7 @@ to run the development server. The app will be available at the URL http://local
 Alternatively, use the command below to build the app to the `dist` directory:
 
 ```sh
-npm run build
+pnpm build
 ```
 
 Unfortunately, simply running the app with the development server is not enough to make it installable in your local network for testing purposes. To do this, a server that hosts the application compiled with the command above must meet some requirements, like redirecting to HTTPS with a valid certificate. More information [in this web.dev article](https://web.dev/articles/install-criteria).
