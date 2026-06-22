@@ -16,7 +16,7 @@ export const capitalize = (str: string): string => {
 
 export const formatRelativeDate = (date: string) => {
   const d = dayjs(date).startOf("date");
-  const diff = d.diff(dayjs(), "day");
+  const diff = dayjs().diff(d, "day");
   const { t } = i18next;
   let output: string;
   if (diff <= 1) {

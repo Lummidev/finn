@@ -8,7 +8,7 @@
   "noCategory": "No category",
   "relativeDateFormat": "{{diff, relativeTime(range: days; numeric: auto)}}",
   "weekdayDateFormat": "{{date,dateTime(weekday: long)}}",
-  "fullDateFormat": "{{date,dateTime(style: short)}}",
+  "fullDateFormat": "{{date,dateTime(dateStyle: long)}}",
   "pageNames": {
     "settings": "Settings",
     "categories": "Categories",
