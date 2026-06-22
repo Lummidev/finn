@@ -49,6 +49,7 @@
     "vitest": "^4.1.8",
     "vitest-browser-react": "^2.2.0"
   },
+  "packageManager": "pnpm@11.6.0",
   "engines": {
     "node": ">=22.12",
     "pnpm": ">=11"
