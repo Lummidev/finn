@@ -20,7 +20,15 @@ export const formatRelativeDate = (date: string) => {
   const { t } = i18next;
   let output: string;
   if (diff <= 1) {
-    output = t("relativeDateFormat", { diff, ns: "common" });
+    // Dayjs.diff returns a positive number when comparing now (dayjs()) to a
+    // past date, but the relative date formatter interprets positive numbers
+    // as future dates, so:
+    // 1 => "Tomorrow"
+    // 0 => "Today"
+    // -1 => "Yesterday"
+    // So this is necessary.
+    let invertedDiff = diff * -1;
+    output = t("relativeDateFormat", { diff: invertedDiff, ns: "common" });
   } else if (diff < 7) {
     output = t("weekdayDateFormat", { date: d.toDate(), ns: "common" });
   } else {
