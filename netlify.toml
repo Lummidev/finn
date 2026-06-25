@@ -1,12 +1,21 @@
-[[headers]]
-  for = "/manifest.webmanifest"
-  [headers.values]
-    Content-Type = "application/manifest+json"
+# This redirect block is used in https://vite-pwa-org.netlify.app/deployment/netlify.html#basic-deployment-example 
+# with no explanation. It seems to ensure entering the website directly from a 
+# subpage (like /settings) works and doesn't throw a "page not found" error. 
+# Source: https://answers.netlify.com/t/netlify-page-not-found-when-sharing-react-router-dom-based-links/11744
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
 
 [[headers]]
-  for = "/assets/*"
-  [headers.values]
-    cache-control = '''
+for = "/manifest.webmanifest"
+[headers.values]
+Content-Type = "application/manifest+json"
+
+[[headers]]
+for = "/assets/*"
+[headers.values]
+cache-control = '''
     max-age=31536000,
     immutable
     '''
