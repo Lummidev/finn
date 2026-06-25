@@ -1,9 +1,52 @@
 .navigation {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  transition: none;
+  padding-top: 4px;
+}
+.navigation--bar {
+  font-size: 1.2rem;
+}
+.navigation--floating {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--theme-mantle) 80%, transparent 20%),
+    transparent
+  );
+  padding-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+.navigation--background-block {
+  background-image: none;
+  background-color: var(--theme-mantle);
+}
+
+.navigation__chat-bar {
+  padding: 0 0.5rem;
+  width: 100%;
+}
+.navigation__buttons {
   display: flex;
   min-height: fit-content;
+  justify-content: space-evenly;
+  padding: 0 1rem;
+}
+.navigation__buttons--floating {
+  background-color: var(--theme-surface0);
+  border-radius: 12rem;
+}
+.navigation__buttons--bar {
+  background-color: var(--theme-mantle);
   border-top: 1px solid
     color-mix(in srgb, var(--theme-surface0) 30%, transparent 70%);
-  z-index: 1;
+  width: 100%;
 }
 .navigation__button {
   color: var(--theme-text);
@@ -14,8 +57,9 @@
   flex-direction: column;
   font-weight: 400;
   text-decoration: none;
-  font-size: 1.2rem;
-  padding: 1rem 0;
+  height: 5.25rem;
+  width: 5.5rem;
+  z-index: 3;
 }
 .navigation__button:active .navigation__icon-element {
   transform: scale(0.9);
@@ -26,7 +70,6 @@
 .navigation__icon-element {
   transition: transform 0.1s;
 }
-
 .navigation__icon {
   position: relative;
   display: flex;
@@ -47,8 +90,8 @@
   right: 50%;
   transform: translate(50%, -50%);
   border-radius: 4rem;
-  height: 2.5rem;
-  width: 5rem;
+  height: 100%;
+  width: 100%;
   content: "";
   background-color: color-mix(
     in srgb,
@@ -59,11 +102,9 @@
 }
 @keyframes grow-background {
   from {
-    height: 2.5rem;
-    width: 2.5rem;
+    width: 50%;
   }
   to {
-    height: 2.5rem;
-    width: 5rem;
+    width: 100%;
   }
 }

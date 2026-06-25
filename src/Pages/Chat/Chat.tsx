@@ -1,4 +1,4 @@
-import { Fragment, use, useMemo } from "react";
+import { Fragment, use, useContext, useEffect, useMemo, useRef } from "react";
 import { ChatBubble } from "../../Components/ChatBubble/ChatBubble";
 import "./Chat.css";
 import { MessageContext } from "../../Context/MessageContext";
@@ -9,9 +9,12 @@ import type { Message } from "../../Entities/Message";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { formatRelativeDate } from "../../util";
+import { SettingsContext } from "../../Context/SettingsContext";
 
 export const Chat = () => {
   const { t } = useTranslation("chat");
+  const { settings } = useContext(SettingsContext);
+  const chatBoxRef = useRef<HTMLDivElement>(null);
   const messageHistory = use(MessageContext);
   const dateMessageGroups = useMemo(() => {
     const messagesGroupedByDate: Record<string, Message[]> = {};
@@ -29,6 +32,15 @@ export const Chat = () => {
     });
     return messagesGroupedByDate;
   }, [messageHistory]);
+  useEffect(() => {
+    const navHeight = document
+      .querySelector(".navigation")
+      ?.getBoundingClientRect().height;
+    if (!chatBoxRef?.current || !navHeight) {
+      return;
+    }
+    chatBoxRef.current.style.maxHeight = `calc(100dvh - var(--header-height) - ${navHeight}px)`;
+  }, [settings]);
   return (
     <div className={`chat`}>
       <PageHeader
@@ -47,7 +59,7 @@ export const Chat = () => {
           },
         ]}
       />
-      <div className="chat__box">
+      <div className="chat__box" ref={chatBoxRef}>
         {Object.keys(dateMessageGroups).map((date) => {
           const messages = dateMessageGroups[date];
           return (

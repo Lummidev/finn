@@ -5,7 +5,9 @@
     "language": "Language",
     "general": "General",
     "accentColor": "Accent color",
-    "goals": "Goals"
+    "goals": "Goals",
+    "preferences": "Preferences",
+    "navigationTabStyle": "Navigation tabs style"
   },
   "goals": {
     "daily": "Maximum daily expenses",
@@ -15,6 +17,10 @@
   "themes": {
     "light": "Light",
     "dark": "Dark"
+  },
+  "navigationTabStyles": {
+    "floating": "Floating",
+    "bar": "Bar"
   },
   "accentColors": {
     "flamingo": "Flamingo",

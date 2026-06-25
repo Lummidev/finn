@@ -2,6 +2,7 @@ import { createContext } from "react";
 interface SettingsContextProps {
   theme: string;
   alwaysShowChatBar: boolean;
+  navigationTabsStyle: string;
 }
 export const SettingsContext = createContext<{
   settings: SettingsContextProps;
@@ -10,6 +11,7 @@ export const SettingsContext = createContext<{
   settings: {
     theme: "dark",
     alwaysShowChatBar: false,
+    navigationTabsStyle: "floating",
   },
   setSettings: () => {},
 });

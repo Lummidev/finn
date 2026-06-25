@@ -3,9 +3,7 @@
   flex-direction: column;
   flex-grow: 1;
 }
-.chat__title {
-  padding: 0 2rem;
-}
+
 .chat__box {
   overflow-y: auto;
   scrollbar-color: var(--theme-surface2) transparent;
@@ -13,7 +11,7 @@
   display: flex;
   flex-direction: column-reverse;
   gap: 1rem;
-  padding: 2rem 4rem 2rem 4rem;
+  padding: 0 2rem;
 }
 .chat__date-separator {
   align-self: center;

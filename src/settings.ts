@@ -5,6 +5,7 @@ const defaults = {
   dailyObjective: 0,
   weeklyObjective: 0,
   monthlyObjective: 0,
+  navigationTabsStyle: "floating",
 };
 
 export class Settings {
@@ -72,6 +73,12 @@ export class Settings {
   public static set monthlyObjective(value: number) {
     Settings.setSetting("monthlyObjective", value);
   }
+  public static get navigationTabsStyle(): string | null {
+    return Settings.getSetting("navigationTabsStyle");
+  }
+  public static set navigationTabsStyle(value: string) {
+    Settings.setSetting("navigationTabsStyle", value);
+  }
   public static load() {
     const theme = Settings.theme ?? defaults.theme;
     const accentColor = Settings.accentColor ?? defaults.accentColor;
@@ -80,12 +87,15 @@ export class Settings {
     const daily = Settings.dailyObjective ?? defaults.dailyObjective;
     const weekly = Settings.weeklyObjective ?? defaults.weeklyObjective;
     const monthly = Settings.monthlyObjective ?? defaults.monthlyObjective;
+    const navigationTabsStyle =
+      Settings.navigationTabsStyle ?? defaults.navigationTabsStyle;
     this.setDataAttribute("theme", theme);
     this.setDataAttribute("accentcolor", accentColor);
     return {
       theme,
       accentColor,
       alwaysShowChatBar,
+      navigationTabsStyle,
       objectives: {
         daily,
         weekly,

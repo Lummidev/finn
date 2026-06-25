@@ -1,8 +1,19 @@
+:root {
+  --header-padding-vertical: 0.5em;
+  --header-height: calc(4em + (var(--header-padding-vertical) * 2));
+}
 .page-header {
-  position: relative;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: var(--header-padding-vertical) 2em;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: var(--theme-mantle);
+  z-index: 2;
 }
 .page-header__title {
   font-size: 2rem;

@@ -1,9 +1,7 @@
 .app {
-  height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-top: 1.5rem;
   background-color: var(--theme-mantle);
   color: var(--theme-text);
   -webkit-tap-highlight-color: transparent;
@@ -15,8 +13,12 @@
   scrollbar-width: thin;
   display: flex;
   flex: 1;
+  padding-top: var(--header-height);
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
-.app__chat-bar {
-  z-index: 1;
-  padding: 0 2rem;
+
+.app__content--chat {
+  padding-left: 0;
+  padding-right: 0;
 }

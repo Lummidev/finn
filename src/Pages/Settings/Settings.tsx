@@ -65,6 +65,7 @@ export const Settings = () => {
   const [theme, setTheme] = useState("dark");
   const [language, setLanguage] = useState("en");
   const [accentColor, setAccentColor] = useState("blue");
+  const [navigationTabsStyle, setNavigationTabsStyle] = useState("floating");
   const [alwaysShowChatBar, setAlwaysShowChatBar] = useState(false);
   const [changed, setChanged] = useState(false);
   const [dailyExpense, setDailyExpense] = useState<number | undefined>(0);
@@ -84,11 +85,12 @@ export const Settings = () => {
     SettingsManager.theme = theme;
     SettingsManager.accentColor = accentColor;
     SettingsManager.alwaysShowChatBar = alwaysShowChatBar;
-
+    SettingsManager.navigationTabsStyle = navigationTabsStyle;
     settingsContext.setSettings({
       ...settingsContext.settings,
       alwaysShowChatBar,
       theme,
+      navigationTabsStyle,
     });
     i18n.changeLanguage(language).catch((e) => {
       throw e;
@@ -100,6 +102,7 @@ export const Settings = () => {
     const {
       accentColor,
       alwaysShowChatBar,
+      navigationTabsStyle,
       theme,
       objectives: { daily, weekly, monthly },
     } = SettingsManager.load();
@@ -110,7 +113,7 @@ export const Settings = () => {
     setTheme(theme);
     setAccentColor(accentColor);
     setAlwaysShowChatBar(alwaysShowChatBar);
-
+    setNavigationTabsStyle(navigationTabsStyle);
     setDailyExpense(daily);
     setWeeklyExpense(weekly);
     setMonthlyExpense(monthly);
@@ -224,6 +227,36 @@ export const Settings = () => {
           </legend>
           <div className="settings__group-container">
             <SettingsFieldsetWithRadioOptions
+              title={t("sectionTitles.language")}
+              radioGroup="language-options"
+              currentState={language}
+              options={[
+                {
+                  name: "English",
+                  value: "en",
+                  onChange: (e) => {
+                    setLanguage(e.target.value);
+                    setChanged(true);
+                  },
+                },
+                {
+                  name: "Português",
+                  value: "pt-BR",
+                  onChange: (e) => {
+                    setLanguage(e.target.value);
+                    setChanged(true);
+                  },
+                },
+              ]}
+            />
+          </div>
+        </fieldset>
+        <fieldset className="settings__group">
+          <legend className="settings__group-legend">
+            {t("sectionTitles.preferences")}
+          </legend>
+          <div className="settings__group-container">
+            <SettingsFieldsetWithRadioOptions
               title={t("sectionTitles.theme")}
               radioGroup="theme-options"
               currentState={theme}
@@ -249,28 +282,29 @@ export const Settings = () => {
               ]}
             />
             <SettingsFieldsetWithRadioOptions
-              title={t("sectionTitles.language")}
-              radioGroup="language-options"
-              currentState={language}
+              title={t("sectionTitles.navigationTabStyle")}
+              radioGroup="navigation-tabs-options"
               options={[
                 {
-                  name: "English",
-                  value: "en",
+                  name: t("navigationTabStyles.floating"),
+                  value: "floating",
                   onChange: (e) => {
-                    setLanguage(e.target.value);
+                    setNavigationTabsStyle(e.target.value);
                     setChanged(true);
                   },
                 },
                 {
-                  name: "Português",
-                  value: "pt-BR",
+                  name: t("navigationTabStyles.bar"),
+                  value: "bar",
                   onChange: (e) => {
-                    setLanguage(e.target.value);
+                    setNavigationTabsStyle(e.target.value);
                     setChanged(true);
                   },
                 },
               ]}
+              currentState={navigationTabsStyle}
             />
+
             <fieldset className="settings__sub-group">
               <legend className="settings__sub-group-legend">
                 {t("sectionTitles.accentColor")}

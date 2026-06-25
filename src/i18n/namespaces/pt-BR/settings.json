@@ -5,7 +5,9 @@
     "language": "Idioma",
     "general": "Geral",
     "accentColor": "Cor de Destaque",
-    "goals": "Metas"
+    "goals": "Metas",
+    "preferences": "Preferências",
+    "navigationTabStyle": "Estilo das abas de navegação"
   },
   "goals": {
     "daily": "Gasto diário máximo",
@@ -15,6 +17,10 @@
   "themes": {
     "light": "Claro",
     "dark": "Escuro"
+  },
+  "navigationTabStyles": {
+    "floating": "Flutuante",
+    "bar": "Barra"
   },
   "accentColors": {
     "flamingo": "Flamingo",
