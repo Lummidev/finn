@@ -67,6 +67,7 @@ export const Navigation = () => {
   const shouldShowChatBar = settings.alwaysShowChatBar || atChat;
   const navigationStyle = `navigation--${settings.navigationTabsStyle}`;
   const buttonsStyle = `navigation__buttons--${settings.navigationTabsStyle}`;
+  const buttonStyle = `navigation__button--${settings.navigationTabsStyle}`;
   return (
     <footer
       className={`navigation ${navigationStyle} ${atChat ? "navigation--background-block" : ""} ${shouldShowChatBar ? "navigation--with-chat-bar" : ""}`}
@@ -86,7 +87,7 @@ export const Navigation = () => {
           <Link
             key={link.name}
             to={link.pathName}
-            className={`navigation__button ${activeLocationClass(link.pathName).link}`}
+            className={`navigation__button ${buttonStyle} ${activeLocationClass(link.pathName).link}`}
           >
             <div
               className={`navigation__icon ${activeLocationClass(link.pathName).icon}`}

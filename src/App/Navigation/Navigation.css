@@ -11,8 +11,13 @@
   transition: none;
   padding-top: 4px;
 }
+.navigation__chat-bar {
+  padding: 0 0.5rem;
+  width: 95%;
+}
 .navigation--bar {
   font-size: 1.2rem;
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 .navigation--floating {
   background-image: linear-gradient(
@@ -20,7 +25,7 @@
     color-mix(in srgb, var(--theme-mantle) 80%, transparent 20%),
     transparent
   );
-  padding-bottom: 1.5rem;
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0));
   font-size: 1.1rem;
 }
 .navigation--background-block {
@@ -28,26 +33,78 @@
   background-color: var(--theme-mantle);
 }
 
-.navigation__chat-bar {
-  padding: 0 0.5rem;
-  width: 100%;
-}
 .navigation__buttons {
-  display: flex;
+  position: relative;
+  display: grid;
   min-height: fit-content;
-  justify-content: space-evenly;
-  padding: 0 1rem;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: repeat(5, 1fr);
+  --navigation-button-highlight-background-color: color-mix(
+    in srgb,
+    var(--theme-accent) 15%,
+    transparent 85%
+  );
 }
 .navigation__buttons--floating {
   background-color: var(--theme-surface0);
-  border-radius: 12rem;
+  border-radius: 5rem;
+  padding: 0.5rem 1rem;
+  width: clamp(50%, 50rem, 95%);
+  --navigation-button-highlight-final-width: 110%;
+  --navigation-button-highlight-final-height: 100%;
 }
 .navigation__buttons--bar {
   background-color: var(--theme-mantle);
   border-top: 1px solid
     color-mix(in srgb, var(--theme-surface0) 30%, transparent 70%);
   width: 100%;
+  padding: 1rem 0.5rem;
 }
+.navigation__button--floating::before {
+  position: absolute;
+  border-radius: 10rem;
+  opacity: 0;
+  content: "";
+  animation: 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95) hide-background;
+}
+@keyframes hide-background {
+  from {
+    width: var(--navigation-button-highlight-final-width);
+    height: var(--navigation-button-highlight-final-height);
+    background-color: var(--navigation-button-highlight-background-color);
+    opacity: 1;
+  }
+  to {
+    width: 60%;
+    height: 50%;
+    background-color: transparent;
+    opacity: 0;
+  }
+}
+
+.navigation__button--floating.navigation__button--current::before {
+  position: absolute;
+  border-radius: 10rem;
+  width: var(--navigation-button-highlight-final-width);
+  height: 100%;
+  content: "";
+  opacity: 1;
+  background-color: var(--navigation-button-highlight-background-color);
+  animation: 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95) grow-background;
+}
+
+@keyframes grow-background {
+  from {
+    width: 85%;
+    height: 80%;
+  }
+  to {
+    width: var(--navigation-button-highlight-final-width);
+    height: var(--navigation-button-highlight-final-height);
+  }
+}
+
 .navigation__button {
   color: var(--theme-text);
   flex: 1;
@@ -55,56 +112,62 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  font-weight: 400;
+  font-weight: 500;
   text-decoration: none;
-  height: 5.25rem;
-  width: 5.5rem;
+  position: relative;
   z-index: 3;
 }
-.navigation__button:active .navigation__icon-element {
-  transform: scale(0.9);
+.navigation__button--bar {
+  padding: 0 0.5rem;
+  gap: 1rem;
+}
+.navigation__button--floating {
+  padding: 0.5rem 0.5rem;
+  gap: 0.3rem;
 }
 .navigation__button--current {
   font-weight: 700;
 }
-.navigation__icon-element {
-  transition: transform 0.1s;
-}
+
 .navigation__icon {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 2rem;
-  min-width: fit-content;
-  height: 2.5rem;
-  width: 5rem;
+  font-size: 1.4rem;
+  width: 100%;
 }
 
 .navigation__icon--current {
   color: color-mix(in srgb, var(--theme-accent) 10%, var(--theme-text) 90%);
 }
-.navigation__icon--current::before {
+.navigation__button--floating.navigation__button--current,
+.navigation__button--floating.navigation__button--current * {
+  color: var(--theme-accent);
+}
+.navigation__buttons--bar .navigation__icon--current::before {
   position: absolute;
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
   border-radius: 4rem;
-  height: 100%;
-  width: 100%;
+  height: 2.5rem;
+  width: 5.5rem;
   content: "";
-  background-color: color-mix(
-    in srgb,
-    var(--theme-accent) 15%,
-    transparent 85%
-  );
-  animation: 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) grow-background;
+  background-color: var(--navigation-button-highlight-background-color);
+  animation: 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) grow-background-width;
 }
-@keyframes grow-background {
+@keyframes grow-background-width {
   from {
-    width: 50%;
+    width: 2rem;
   }
   to {
-    width: 100%;
+    width: 5.5rem;
   }
+}
+.navigation__icon-element {
+  transition: transform 0.1s;
+}
+.navigation__button:active .navigation__icon-element {
+  transform: scale(0.9);
 }
